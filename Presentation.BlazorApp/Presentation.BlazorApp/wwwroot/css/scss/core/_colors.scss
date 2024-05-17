@@ -1,0 +1,72 @@
+:root {
+    --clr-bg-section: #FFFFFF;
+    --background-color: #FFFFFF;
+    --clr-transparent: transparent;
+    --clr-white: #FFFFFF;
+    --clr-gray-100: #F3F6FF;
+    --clr-gray-200: #EFF2FC;
+    --clr-gray-300: #E2E5F1;
+    --clr-gray-400: #D4D7E5;
+    --clr-gray-500: #B4B7C9;
+    --clr-gray-600: #9397AD;
+    --clr-gray-700: #565973;
+    --clr-gray-800: #33354D;
+    --clr-gray-900: #0B0F19;
+    --clr-text-header: #0B0F19;
+    --clr-text-body: #565973;
+    --clr-theme: #6366F1;
+    --clr-theme-secondary: #8B5CF6;
+    --clr-theme-opacity: #6365f114;
+    --clr-theme-gradient: (90deg, #6366F1 0%, #8B5CF6 50%, #D946EF 100%);
+    --clr-theme-gradient-background: (-1deg, rgba(99, 101, 241, 0.10) 0%, rgba(216, 70, 239, 0.05) 45%, rgba(241, 244, 253, 0.07) 75%);
+    --clr-danger: #EF4444;
+    --clr-success: #22C55E;
+    --clr-warning: #FFBA08;
+    --clr-info: #4C82F7;
+    --clr-label-dt: #565973;
+    --clr-toolbox: #FFFFFF;
+    --clr-sociallinks: #EFF2FC;
+    --clr-input: #FFFFFF;
+    --clr-favorite: #33354D;
+}
+
+:root.dark {
+    --clr-bg-section: #0B0F19;
+    --clr-gray-100: #151822;
+    --clr-gray-200: #33354D;
+    --clr-gray-300: #565973;
+    --clr-gray-400: #9397AD;
+    --clr-gray-500: #B4B7C9;
+    --clr-gray-600: #D4D7E5;
+    --clr-gray-700: #565973;
+    --clr-gray-800: #EFF2FC;
+    --clr-gray-900: #F3F6FF;
+    --clr-text-header: #FFFFFF;
+    --clr-text-body: #B5B7BA;
+    --clr-toolbox: #1E212B;
+    --clr-sociallinks: #171B25;
+    --clr-theme-gradient: (90deg, #6366F1 0%, #8B5CF6 50%, #D946EF 100%);
+    --clr-theme-gradient-background: (-1deg, rgba(99, 101, 241, 0.10) 0%, rgba(216, 70, 239, 0.05) 45%, rgba(241, 244, 253, 0.07) 75%);
+    --clr-input: #10141E;
+    --clr-favorite: #33354D;
+}
+
+@mixin shadow-s {
+    box-shadow: 0px 2px 6.4px -1px rgba(19, 16, 34, 0.03), 0px 4.4px 12px -1px rgba(19, 16, 34, 0.06);
+}
+
+@mixin shadow-m {
+    box-shadow: 0px 4px 9px -1px rgba(19, 16, 34, 0.03), 0px 4.4px 20px -1px rgba(19, 16, 34, 0.05);
+}
+
+@mixin shadow-l {
+    box-shadow: 0px 4px 13px -2px rgba(19, 16, 34, 0.06), 0px 4.8px 24.4px -6px rgba(19, 16, 34, 0.10);
+}
+
+@mixin theme-shadow {
+    box-shadow: 0px 8px 18px -8px rgba(99, 102, 241, 0.90);
+}
+
+@mixin theme-secondary-shadow {
+    box-shadow: 0px 8px 18px -8px rgba(19, 16, 34, 0.15);
+}

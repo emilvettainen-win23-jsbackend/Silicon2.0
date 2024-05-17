@@ -1,0 +1,287 @@
+﻿@page "/account/details"
+@using Infrastructure.Factories
+@using Infrastructure.Helpers.Responses
+@using Presentation.BlazorApp.Models.Account
+
+
+<PageTitle>Account Details</PageTitle>
+
+@inject ILogger<Index> Logger
+
+<section class="account-details">
+    <div class="container">
+        <div class="d-flex flex-column gap-4">
+            <h2>Account Details</h2>
+            <div class="basic-info">
+                <h5>Basic Info</h5>
+
+
+
+
+                <EditForm method="post" Model="BasicInfoForm" FormName="basic" OnValidSubmit="SaveBasicInfoAsync" Enhance novalidate>
+                    <DataAnnotationsValidator />
+                    <div class="content">
+
+                        <div id="form-firstname" class="input-group">
+                            <label>First name</label>
+                            @if (IsExternalAccount)
+                            {
+                                <InputText @bind-Value="BasicInfoForm.FirstName" class="form-control non-clickable" readonly />
+                            }
+                            else
+                            {
+                                <InputText @bind-Value="BasicInfoForm.FirstName" class="form-control" />
+                                <ValidationMessage For="() => BasicInfoForm.FirstName" class="text-danger" />
+                            }
+                        </div>
+
+                        <div id="form-lastname" class="input-group">
+                            <label>Lastname</label>
+                            @if (IsExternalAccount)
+                            {
+                                <InputText @bind-Value="BasicInfoForm.LastName" class="form-control non-clickable" readonly />
+                            }
+                            else
+                            {
+                                <InputText @bind-Value="BasicInfoForm.LastName" class="form-control" />
+                                <ValidationMessage For="() => BasicInfoForm.LastName" class="text-danger" />
+                            }
+                        </div>
+                        <div id="form-email" class="input-group">
+                            <label>Email</label>
+                            <InputText @bind-Value="BasicInfoForm.Email" class="form-control non-clickable" readonly />
+                        </div>
+
+
+                        <div id="form-phone" class="input-group">
+                            <label>Phone <span>(optional)</span></label>
+                            <InputText @bind-Value="BasicInfoForm.Phone" class="form-control" />
+                            <ValidationMessage For="() => BasicInfoForm.Phone" class="text-danger" />
+                        </div>
+                        <div id="form-bio" class="input-group">
+                            <label>Bio <span>(optional)</span></label>
+                            <InputText @bind-Value="BasicInfoForm.Biography" class="form-control" rows="3"></InputText>
+                            <ValidationMessage For="() => BasicInfoForm.Biography" class="text-danger" />
+                        </div>
+                        <div id="form-buttons">
+                            <button class="btn-gray-small" type="reset"> Cancel</button>
+                            <button class="btn-theme-small" type="submit">Save changes</button>
+                        </div>
+                    </div>
+                </EditForm>
+
+
+
+
+            </div>
+            <hr />
+
+            <div class="address-info">
+                <h5>Address</h5>
+                <EditForm FormName="address" Model="AddressInfoForm" OnValidSubmit="SaveAddressInfoAsync" method="post" Enhance novalidate>
+                    <div class="content">
+                        <div id="form-address-1" class="input-group">
+                            <label for="address1">Address line 1</label>
+                            <InputText id="address1" @bind-Value="AddressInfoForm.Addressline_1" class="form-control" />
+                            <ValidationMessage For="() => AddressInfoForm.Addressline_1" class="text-danger" />
+                        </div>
+                        <div id="form-address-2" class="input-group">
+                            <label for="address2">Address line 2 <span>(optional)</span></label>
+                            <InputText id="adress2" @bind-Value="AddressInfoForm.Addressline_2" class="form-control" />
+                        </div>
+                        <div id="form-postalcode" class="input-group">
+                            <label for="postalcode">PostalCode</label>
+                            <InputText id="postalcode" @bind-Value="AddressInfoForm.PostalCode" class="form-control" />
+                            <ValidationMessage For="() => AddressInfoForm.PostalCode" class="text-danger" />
+                        </div>
+                        <div id="form-city" class="input-group">
+                            <label for="city">City</label>
+                            <InputText id="city" @bind-Value="AddressInfoForm.City" class="form-control" />
+                            <ValidationMessage For="() => AddressInfoForm.City" class="text-danger" />
+                        </div>
+                        <div id="form-buttons">
+                            <button class="btn-gray-small" type="reset"> Cancel</button>
+                            <button class="btn-theme-small" type="submit">Save changes</button>
+                        </div>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+@* <div class="row">
+    <div class="col-md-6">
+        <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert" />
+            <div class="form-floating mb-3">
+                <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
+                <label for="username" class="form-label">Username</label>
+            </div>
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
+                <label for="phone-number" class="form-label">Phone number</label>
+                <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
+            </div>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+        </EditForm>
+    </div>
+</div> *@
+
+
+@* @page "/Account/Manage"
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Identity
+@using Presentation.BlazorApp.Data
+
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IdentityUserAccessor UserAccessor
+@inject IdentityRedirectManager RedirectManager
+
+<PageTitle>Profile</PageTitle>
+
+<h3>Profile</h3>
+<StatusMessage />
+
+<div class="row">
+    <div class="col-md-6">
+        <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert" />
+            <div class="form-floating mb-3">
+                <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
+                <label for="username" class="form-label">Username</label>
+            </div>
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
+                <label for="phone-number" class="form-label">Phone number</label>
+                <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
+            </div>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+        </EditForm>
+    </div>
+</div>
+
+*@
+
+@code {
+    private bool IsExternalAccount;
+
+
+    private ApplicationUser user = default!;
+
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+
+    [SupplyParameterFromForm(FormName ="basic")]
+    private BasicInfoModel BasicInfoForm { get; set; } = new();
+
+    [SupplyParameterFromForm(FormName ="address")]
+    private AddressInfoModel AddressInfoForm { get; set; } = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserService.GetCurrentUserAsync();
+        IsExternalAccount = user.IsExternalAccount;
+
+        // var basicInfo = await UserService.PopulateBaseInfoAsync(user.Id);
+
+        // BasicInfoForm ??= new BasicInfoModel { FirstName = basicInfo.FirstName , LastName = basicInfo.LastName, Email = basicInfo.Email, Phone = basicInfo.Phone, Biography = basicInfo.Biography};
+
+        BasicInfoForm.FirstName ??= user.FirstName;
+        BasicInfoForm.LastName ??= user.LastName;
+        BasicInfoForm.Email ??= user.Email!;
+        BasicInfoForm.Phone ??= user.PhoneNumber;
+        BasicInfoForm.Biography ??= user.Biography;
+
+        
+
+        var addressInfo = await AddressService.GetAddressInfoAsync(user.Id);
+        AddressInfoForm.Addressline_1 ??= addressInfo!.StreetName;
+        AddressInfoForm.Addressline_2 ??= addressInfo!.OptionalAddress;
+        AddressInfoForm.PostalCode ??= addressInfo!.PostalCode;
+        AddressInfoForm.City ??= addressInfo!.City;
+        
+    }
+
+    // private async Task OnValidSubmitAsync()
+    // {
+    //     if (Input.PhoneNumber != phoneNumber)
+    //     {
+    //         var setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+    //         if (!setPhoneResult.Succeeded)
+    //         {
+
+    //         }
+    //     }
+
+    //     await SignInManager.RefreshSignInAsync(user);
+
+    // }
+
+    private async Task SaveBasicInfoAsync()
+    {
+        try
+        {
+            var result = await UserService.UpdateBasicInfoAsync(user.Id, UserFactory.UpdateUserDto(BasicInfoForm.FirstName, BasicInfoForm.LastName, BasicInfoForm.Phone!, BasicInfoForm.Biography!));
+            switch (result.StatusCode)
+            {
+                case ResultStatus.OK:
+                    // await SignInManager.RefreshSignInAsync(user);
+
+                    break;
+
+                case ResultStatus.ERROR:
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"ERROR : AccountDetails.SaveBasicInfoAsync() :: {ex.Message}");
+        }
+    }
+
+    private async Task SaveAddressInfoAsync()
+    {
+        try
+        {
+            var result = await AddressService.CreateOrUpdateAddressInfoAsync(user.Id, AddressFactory.CreateAddressDto(AddressInfoForm.Addressline_1, AddressInfoForm.Addressline_2, AddressInfoForm.PostalCode, AddressInfoForm.City));
+            switch (result.StatusCode)
+            {
+                case ResultStatus.OK:
+                    // await SignInManager.RefreshSignInAsync(user);
+
+                    break;
+
+                case ResultStatus.ERROR:
+                    break;
+
+                default:
+                    break;
+                
+            }
+        }
+        catch (Exception ex)
+        {
+
+            Logger.LogError($"ERROR : AccountDetails.SaveAddressInfoAsync() :: {ex.Message}");
+        }
+        
+    }
+
+
+
+
+}

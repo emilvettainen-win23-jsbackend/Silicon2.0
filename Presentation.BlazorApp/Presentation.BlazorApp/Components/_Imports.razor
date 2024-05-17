@@ -1,0 +1,28 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using Infrastructure.Data.Entities
+@using Infrastructure.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.JSInterop
+@using Presentation.BlazorApp
+@using Presentation.BlazorApp.Client
+@using Presentation.BlazorApp.Components
+
+@using BlazorBootstrap;
+
+@inject AddressService AddressService
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject NavigationManager NavigationManager
+@inject UserService UserService
+@inject DarkModeService DarkModeService
+@inject IConfiguration Config
+@inject HttpClient Http
+
+@inject IHttpContextAccessor HttpContextAccessor

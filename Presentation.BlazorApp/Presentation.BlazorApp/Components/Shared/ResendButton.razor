@@ -1,0 +1,34 @@
+﻿<p>Didn´t receive an email? <button class="btn-resend" @onclick="ResendCodeAsync">Resend email</button></p>
+
+@code {
+
+    [Parameter]
+    public string? Email { get; set; }
+
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+
+    private async Task ResendCodeAsync()
+    {
+        try
+        {
+            var result = await Http.PostAsJsonAsync($"{Config["URI:GenerateCode"]}", new { Email = Email });
+            if (result.IsSuccessStatusCode)
+            {
+                //code resent
+            }
+            else
+            {
+                //try again
+            }
+        }
+        catch (Exception)
+        {
+            //contact support
+            throw;
+        }
+
+    }
+}

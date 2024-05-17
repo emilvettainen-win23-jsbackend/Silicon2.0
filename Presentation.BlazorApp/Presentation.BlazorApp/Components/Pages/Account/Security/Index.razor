@@ -1,0 +1,91 @@
+﻿@page "/account/security"
+@using System.ComponentModel.DataAnnotations
+
+
+<section class="account-security">
+    <div class="container">
+        <div class="d-flex flex-column gap-4">
+            @if (IsExternalAccount)
+            {
+                <div class="delete-account">
+                    <h5>Delete Account</h5>
+                    <EditForm FormName="delete" method="post" Model="DeleteAccountForm" OnValidSubmit="DeleteAccountAsync" novalidate>
+                        <DataAnnotationsValidator />
+                        <div class="content">
+                            <p class="text-m">When you delete your account, your public profile will be deactivated immediately. If you change your mind before the 14 days are up, sign in with your email and password, and we’ll send you a link to reactivate your account.</p>
+                            <div id="form-delete" class="checkbox-group">
+                                <InputCheckbox id="delete-account" @bind-Value="DeleteAccountForm.DeleteAccount" class="form-check-input" />
+                                <label for="delete-account">Yes, I want to delete my account</label>
+                                <ValidationMessage For="() => DeleteAccountForm.DeleteAccount" class="text-danger" />
+                            </div>
+                            <button class="btn-theme-small" type="submit">Delete</button>
+                        </div>
+                    </EditForm>
+                </div>
+            }
+            else
+            {
+                <h2>Security</h2>
+                <ChangePassword user="@user" @rendermode="InteractiveServer" />
+                <hr />
+                <div class="delete-account">
+                    <h5>Delete Account</h5>
+                    <EditForm FormName="delete" method="post" Model="DeleteAccountForm" OnValidSubmit="DeleteAccountAsync" novalidate>
+                        <DataAnnotationsValidator />
+                        <div class="content">
+                            <p class="text-m">When you delete your account, your public profile will be deactivated immediately. If you change your mind before the 14 days are up, sign in with your email and password, and we’ll send you a link to reactivate your account.</p>
+                            <div id="form-delete" class="checkbox-group">
+                                <InputCheckbox id="delete-account" @bind-Value="DeleteAccountForm.DeleteAccount" class="form-check-input" />
+                                <label for="delete-account">Yes, I want to delete my account</label>
+                                <ValidationMessage For="() => DeleteAccountForm.DeleteAccount" class="text-danger" />
+                            </div>
+                            <button class="btn-theme-small" type="submit">Delete</button>
+                        </div>
+                    </EditForm>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+
+
+@code {
+
+    private ApplicationUser user = default!;
+    private bool IsExternalAccount;
+
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm(FormName = "delete")]
+    private DeleteAccountModel DeleteAccountForm { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+        IsExternalAccount = user.IsExternalAccount;
+    }
+
+    private async Task DeleteAccountAsync()
+    {
+        user.EmailConfirmed = false;
+        var result = await UserManager.UpdateAsync(user);
+        if (result.Succeeded)
+        {
+            await SignInManager.SignOutAsync();
+            NavigationManager.NavigateTo("/");
+        }
+        //message
+
+    }
+
+    private sealed class DeleteAccountModel
+    {
+        [Required]
+        [Range(typeof(bool), "true", "true", ErrorMessage = "You must confirm")]
+        public bool DeleteAccount { get; set; } = false;
+    }
+
+}

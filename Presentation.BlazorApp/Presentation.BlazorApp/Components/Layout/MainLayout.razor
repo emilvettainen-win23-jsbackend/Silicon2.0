@@ -1,0 +1,42 @@
+﻿@inherits LayoutComponentBase
+
+
+<div class="wrapper">
+    <main>
+        @Body
+    </main>
+</div>
+
+
+
+
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+
+@code{
+    private bool IsDarkMode { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsDarkMode = await UserService.GetDarkModeSettingAsync();
+        DarkModeService.OnChangeAsync += HandleDarkModeChanged;
+    }
+
+    private async Task HandleDarkModeChanged()
+    {
+        await InvokeAsync(() =>
+        {
+            IsDarkMode = DarkModeService.IsDarkMode;
+            StateHasChanged();
+        });
+    }
+
+  
+
+}
