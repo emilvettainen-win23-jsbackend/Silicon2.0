@@ -1,0 +1,73 @@
+#signup {
+    padding: 2rem 0;
+
+    .container {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1rem;
+
+        h1 {
+            padding-bottom: .5rem;
+        }
+
+        form {
+            grid-column: 1/13;
+
+            @include lg {
+                grid-column: 3/11;
+            }
+
+            @include xl {
+                grid-column: 4/10;
+            }
+
+            @include xxl {
+                padding: 0 3rem;
+            }
+
+            .content {
+                display: grid;
+                gap: 1rem;
+                grid-template-columns: 1fr;
+                grid-template-areas: "firstname" "lastname" "email" "password" "confirm" "terms" "button";
+
+                @include md {
+                    grid-template-columns: repeat(2, 1fr);
+                    grid-template-areas: "firstname lastname" "email email" "password password" "confirm confirm" "terms terms" "button button";
+                }
+
+                .input-group {
+                }
+
+                #form-firstname {
+                    grid-area: firstname;
+                }
+
+                #form-lastname {
+                    grid-area: lastname;
+                }
+
+                #form-email {
+                    grid-area: email;
+                }
+
+                #form-password {
+                    grid-area: password;
+                }
+
+                #form-confirm {
+                    grid-area: confirm;
+                }
+
+                #form-terms {
+                    grid-area: terms;
+                    padding-top: .5rem;
+                }
+
+                #form-submit {
+                    grid-area: button;
+                }
+            }
+        }
+    }
+}

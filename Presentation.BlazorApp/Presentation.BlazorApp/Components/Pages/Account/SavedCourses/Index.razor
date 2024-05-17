@@ -1,0 +1,78 @@
+﻿@page "/account/savedcourses"
+
+
+@using Infrastructure.Helpers.Responses
+@using Presentation.BlazorApp.Models.Courses
+
+
+<section class="account-saved-courses">
+    <div class="container">
+        <div class="d-flex flex-column">
+
+            
+                <div class="saved-items">
+                    <h2>Saved Items</h2>
+                <button @onclick="RemoveCoursesAsync" class="btn-danger-medium delete-all"><i class="fa-regular fa-trash"></i>Delete all</button>
+                </div>
+
+
+                @if (courses == null && !IsError)
+                {
+                    <p>Loading...</p>
+                }
+                else if (IsError)
+                {
+                    <div>
+                        <h6 class="pt-5 text-center">We were unable to fetch the courses at this moment due to a technical error. Please try again later. If the problem persists, contact our support at support@example.com.</h6>
+                    </div>
+                }
+                else if (courses != null && courses.Any())
+                {
+                    <Presentation.BlazorApp.Components.Shared.CourseBox IsSavedCourses="true" courses="courses" />
+                }
+                else
+                {
+                    <div><h5 class="pt-4">No saved courses</h5></div>
+                }
+                
+              
+        </div>
+    </div>
+</section>
+@code {
+
+    private bool IsError;
+
+    private CourseBoxModel[]? courses; 
+
+
+    private async Task RemoveCoursesAsync()
+    {
+        try
+        {
+            var user = await UserService.GetCurrentUserAsync();
+            var result = await CourseService.DeleteAllCoursesAsync(user.Id);
+            switch (result.StatusCode)
+            {
+                case ResultStatus.OK:
+                    break;
+
+                case ResultStatus.SERVER_ERROR:
+                    IsError = true;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        catch (Exception)
+        {
+
+            IsError = true;
+        }
+
+
+        
+    }
+
+}

@@ -13,6 +13,36 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
+    <None Include="wwwroot\images\brands\brand1.svg" />
+    <None Include="wwwroot\images\brands\brand2.svg" />
+    <None Include="wwwroot\images\brands\brand3.svg" />
+    <None Include="wwwroot\images\brands\brand4.svg" />
+    <None Include="wwwroot\images\download-app\appstore-light.svg" />
+    <None Include="wwwroot\images\download-app\appstore.svg" />
+    <None Include="wwwroot\images\download-app\googleplay-light.svg" />
+    <None Include="wwwroot\images\download-app\googleplay.svg" />
+    <None Include="wwwroot\images\download-app\phones.svg" />
+    <None Include="wwwroot\images\download-app\rating.svg" />
+    <None Include="wwwroot\images\logo\logo-dark.svg" />
+    <None Include="wwwroot\images\logo\logo-light.svg" />
+    <None Include="wwwroot\images\manage-your-work\manage_work.svg" />
+    <None Include="wwwroot\images\newsletter\arrows.svg" />
+    <None Include="wwwroot\images\showcase\showcase_img.svg" />
+    <None Include="wwwroot\images\switch-between\mockup.svg" />
+    <None Include="wwwroot\images\tools\add-group.svg" />
+    <None Include="wwwroot\images\tools\bell.svg" />
+    <None Include="wwwroot\images\tools\chat.svg" />
+    <None Include="wwwroot\images\tools\presentation.svg" />
+    <None Include="wwwroot\images\tools\shield.svg" />
+    <None Include="wwwroot\images\tools\subtasks.svg" />
+    <None Include="wwwroot\images\work-tools\dropbox.svg" />
+    <None Include="wwwroot\images\work-tools\evernote.svg" />
+    <None Include="wwwroot\images\work-tools\gmail.svg" />
+    <None Include="wwwroot\images\work-tools\google.svg" />
+    <None Include="wwwroot\images\work-tools\mailchimp.svg" />
+    <None Include="wwwroot\images\work-tools\trello.svg" />
+    <None Include="wwwroot\images\work-tools\zlack.svg" />
+    <None Include="wwwroot\images\work-tools\zoom.svg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,10 +62,7 @@
 
   <ItemGroup>
     <Folder Include="Components\Pages\Account\Messages\" />
-    <Folder Include="Components\Pages\Account\SavedCourses\" />
-    <Folder Include="Components\Pages\Home\" />
     <Folder Include="Components\Pages\Contact\" />
-    <Folder Include="Components\Pages\Courses\" />
   </ItemGroup>
 
 </Project>

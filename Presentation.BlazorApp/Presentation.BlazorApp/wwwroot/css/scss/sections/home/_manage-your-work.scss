@@ -1,0 +1,48 @@
+.manage-work {
+    padding: 5rem 0;
+
+    .container {
+        align-items: center;
+
+        img {
+            grid-column: span 13;
+            max-width: 100%;
+        }
+
+        .work-list {
+            grid-column: span 13;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+
+            .btn-theme-medium {
+                align-self: start;
+
+                i {
+                    color: var(--clr-white);
+                }
+            }
+        }
+
+        @include lg {
+            img {
+                grid-column: 1 / 7;
+            }
+
+            .work-list {
+                grid-column: 8 / 13;
+            }
+        }
+
+        @include xl {
+            img {
+                grid-column: 1 / 8;
+            }
+
+            .work-list {
+                grid-column: 9 / 13;
+            }
+        }
+    }
+}

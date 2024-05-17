@@ -2,16 +2,19 @@ using Azure.Messaging.ServiceBus;
 using Infrastructure.Data.Contexts;
 using Infrastructure.Data.Entities;
 using Infrastructure.Repositories.Address;
+using Infrastructure.Repositories.Course;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Presentation.BlazorApp;
 using Presentation.BlazorApp.Components;
 using Presentation.BlazorApp.Configurations;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 
 
@@ -42,19 +45,24 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 .AddSignInManager()
 .AddDefaultTokenProviders();
 
+builder.Services.RegisterServices();
+builder.Services.RegisterRepositories();
 
+//builder.Services.AddScoped<UserService>();
+//builder.Services.AddScoped<AddressService>();
+//builder.Services.AddScoped<AddressRepository>();
+//builder.Services.AddScoped<UserAddressRepository>();
+//builder.Services.AddScoped<OptionalAddressRepository>();
 
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<AddressService>();
-builder.Services.AddScoped<AddressRepository>();
-builder.Services.AddScoped<UserAddressRepository>();
-builder.Services.AddScoped<OptionalAddressRepository>();
+//builder.Services.AddScoped<CourseService>();
+//builder.Services.AddScoped<SavedCourseRepository>();
+
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton(new ServiceBusClient(builder.Configuration.GetConnectionString("ServiceBusConnection")));
 
 
 builder.Services.AddBlazorBootstrap();
-builder.Services.AddScoped<DarkModeService>();
+//builder.Services.AddScoped<DarkModeService>();
 
 
 

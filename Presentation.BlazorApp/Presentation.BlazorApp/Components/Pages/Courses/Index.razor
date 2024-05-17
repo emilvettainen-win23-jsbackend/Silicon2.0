@@ -1,0 +1,92 @@
+﻿@using Presentation.BlazorApp.Models.Courses
+<section class="courses">
+    <div class="container">
+        
+            <div class="courses-options">
+                <h1 class="pb-3">Courses</h1>
+                <form class="filters">
+                    <div class="select">
+                        <div class="selected">All categories</div>
+                        <div class="select-options">
+                            <div class="option" data-value="all">All categories</div>
+                          @*   @if (courses != null)
+                            {
+                                foreach (var category in courses)
+                                {
+                                    <div class="option" data-value="@category">@category</div>
+                                }
+                            } *@
+                        </div>
+                    </div>
+                    <div class="input-search-group">
+                        <input id="searchQuery" name="searchQuery" placeholder="Search courses" />
+                        <i class="fa-regular fa-search"></i>
+                    </div>
+                </form>
+            </div>
+
+
+            @if (courses == null && !IsError)
+            {
+                <p>Loading ....</p>
+            }
+            else if (IsError)
+            {
+                <div>
+                    <h6 class="pt-5 text-center">We were unable to fetch the courses at this moment due to a technical error. Please try again later. If the problem persists, contact our support at support@example.com.</h6>
+                </div>
+            }
+            else if (courses != null && courses.Any())
+            {
+                <div id="boxes">
+
+                    <Presentation.BlazorApp.Components.Shared.CourseBox IsSavedCourses="false" courses="courses" />
+
+
+                   @*  @if (Model.Pagination != null && Model.Pagination.TotalPages > 1)
+                    {
+                        <div class="pagination">
+                            @for (int i = 1; i <= Model.Pagination.TotalPages; i++)
+                            {
+                                if (i == Model.Pagination.CurrentPage)
+                                {
+                                    <span class="btn-theme-small active-pag">@i</span>
+                                }
+                                else
+                                {
+                                    <a class="btn-theme-small next-pag" href="@Url.Action("Courses", new { pageNumber = i, pageSize = Model.Pagination.PageSize})">@i</a>
+                                }
+                            }
+                        </div>
+                    } *@
+                </div>
+                
+
+                
+            }
+            else if (courses != null && !courses.Any() && IsSearch)
+            {
+                <div>
+                    <h6 class="pt-5 text-center">Unfortunately, we found no courses matching your search.</h6>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <h6 class="pt-5 text-center">Currently there are no courses.</h6>
+                </div>
+            }
+
+
+
+     
+    </div>
+</section>
+
+@code {
+
+    private bool IsError;
+    private bool IsSearch;
+    private CourseBoxModel[]? courses; 
+
+}

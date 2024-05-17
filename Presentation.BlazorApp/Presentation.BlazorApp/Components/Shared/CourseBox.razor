@@ -1,0 +1,105 @@
+﻿@using Infrastructure.Helpers.Responses
+@using Microsoft.AspNetCore.Cors.Infrastructure
+@using Presentation.BlazorApp.Models.Courses
+<div class="courses-grid">
+
+    @foreach (var course in courses)
+    {
+        <article class="course-card">
+            <a href="/courses/details?id=@course.Id">
+                <img class="course-img" src="@(!string.IsNullOrEmpty(@course.CourseImageUrl) ? course.CourseImageUrl : "/uploads/courses-img/course_9.png")" alt="@course.CourseTitle">
+                @if (course.IsBestseller)
+                {
+                    <p class="best-seller text-s">Best Seller</p>
+                }
+                <div class="card-text">
+                    <div class="testar">
+                        <h5>@course.CourseTitle</h5>
+                        <p class="text-s">By @course.Author.FullName</p>
+                        @if (course.Price.DiscountPrice > 0)
+                        {
+                            <div class="course-price">
+                                <p class="text-lg discount-price">$@course.Price.DiscountPrice.Value.ToString("F2")</p>
+                                <p class="text-lg original-price">$@course.Price.OriginalPrice.ToString("F2")</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-lg">$@course.Price.OriginalPrice.ToString("F2")</p>
+                        }
+                        <span class="border border-1"></span>
+                    </div>
+
+                    <div class="card-info">
+                        <i class="fa-regular fa-clock">
+                            <p class="text-s">@course.Included.HoursOfVideo hours</p>
+                        </i>
+                        <i class="fa-regular fa-thumbs-up">
+                            <p class="text-s">@course.Rating.InProcent% (@(course.Rating.InNumbers / 1000m)K)</p>
+                        </i>
+                    </div>
+
+                </div>
+            </a>
+            @if (!IsSavedCourses)
+            {
+                <button @onclick="@(() => SaveCourseAsync(course.Id))" class="favorite" data-bs-trigger="hover" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Favorite" data-bs-custom-class="custom-tooltip"><i class="fa-solid fa-bookmark"></i></button>
+            }
+            else
+            {
+                <button @onclick="@(() => RemoveCourseAsync(course.Id))" class="favorite" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Remove" data-bs-custom-class="custom-tooltip"><i class="fa-solid fa-bookmark"></i></button>
+            }
+        </article>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public bool IsSavedCourses { get; set; }
+
+    [Parameter]
+    public CourseBoxModel[] courses { get; set; } = null!;
+
+
+    private async Task SaveCourseAsync(string courseId)
+    {
+        try
+        {
+            var user = await UserService.GetCurrentUserAsync();
+            var result = await CourseService.SaveCourseAsync(user.Id, courseId);
+            switch (result.StatusCode)
+            {
+                case ResultStatus.OK:
+                    break;
+
+                default:
+                    break;
+            }
+
+
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+
+    }
+
+    private async Task RemoveCourseAsync(string courseId)
+    {
+        var user = await UserService.GetCurrentUserAsync();
+        var result = await CourseService.DeleteOneCourseAsync(user.Id, courseId);
+        switch (result.StatusCode)
+        {
+            case ResultStatus.OK:
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
+}

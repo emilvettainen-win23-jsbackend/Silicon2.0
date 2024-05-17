@@ -1,0 +1,50 @@
+#confirmation {
+    padding: 2rem 0;
+
+    .container {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1rem;
+
+        h1 {
+            padding-bottom: .5rem;
+        }
+
+        form {
+            grid-column: 1/13;
+
+            @include lg {
+                grid-column: 3/11;
+            }
+
+            @include xl {
+                grid-column: 4/10;
+            }
+
+            @include xxl {
+                padding: 0 3rem;
+            }
+
+            .content {
+                display: grid;
+                gap: 1rem;
+                grid-template-columns: 1fr;
+                grid-template-areas: "code" "button";
+
+                @include md {
+                    grid-template-columns: repeat(2, 1fr);
+                    grid-template-areas: "code code" "button button";
+                }
+
+
+                #form-code {
+                    grid-area: code;
+                }
+
+                #form-submit {
+                    grid-area: button;
+                }
+            }
+        }
+    }
+}

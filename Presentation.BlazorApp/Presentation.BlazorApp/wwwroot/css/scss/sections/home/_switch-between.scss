@@ -1,0 +1,69 @@
+.switch-between {
+    background-image: linear-gradient(90deg, #000000 50%, #ffffff 50%);
+    padding: 2rem 0 4rem 0;
+
+    @include lg {
+        padding: 5rem 0 8rem 0;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        div {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            column-gap: 2rem;
+
+            h1 {
+
+                @include h3;
+                color: #FFFFFF;
+                text-align: center;
+                margin-left: .5rem;
+                padding: 2rem 0;
+                grid-column: 1/7;
+
+
+                @include sm {
+                    @include h2;
+                    color: #FFFFFF;
+                    padding: 4rem 0;
+                }
+
+                @include md {
+                    @include h1;
+                    color: #FFFFFF;
+                    text-align: center;
+                    padding: 4rem 0;
+                }
+
+                @include lg {
+                    text-align: end;
+                }
+
+                span {
+                    color: #0B0F19;
+                    margin-left: 1rem;
+                    grid-column: 7/13;
+                }
+            }
+
+            h1:nth-child(2) {
+                color: #0B0F19;
+                grid-column: 7/13;
+                text-align: center;
+
+
+                @include md {
+                    text-align: center;
+                }
+
+                @include lg {
+                    text-align: start;
+                }
+            }
+        }
+    }
+}
