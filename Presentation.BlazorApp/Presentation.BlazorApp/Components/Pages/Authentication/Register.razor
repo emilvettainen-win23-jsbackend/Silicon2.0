@@ -46,8 +46,16 @@
                     <label for="terms">I agree to the <NavLink href="/terms">Terms</NavLink> & <NavLink href="/conditions">Conditions</NavLink> </label>
                     <ValidationMessage For="() => SignUpForm.TermsAndConditions" class="text-danger" />
                 </div>
-                <button id="form-submit" class="btn-theme-large" type="submit">
-                    <span id="button-text">Sign Up</span>
+              
+
+                <button disabled="@IsBusy" id="form-submit" type="submit" class="btn-theme-large">
+                    @if (IsBusy)
+                    {
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    }
+                    <span>Sign Up</span>
                 </button>
             </div>
         </EditForm>
@@ -68,22 +76,37 @@
 
     public async Task SignUpAsync(EditContext editContext)
     {
-        var user = new ApplicationUser { UserName = SignUpForm.Email, Email = SignUpForm.Email, FirstName = SignUpForm.FirstName, LastName = SignUpForm.LastName, Created = DateTime.Now };
-        var createdResult = await UserService.CreateUserAsync(user, SignUpForm.Password);
-        switch (createdResult.StatusCode)
+        IsBusy = true;
+        try
         {
-            case ResultStatus.OK:
+            var user = new ApplicationUser { UserName = SignUpForm.Email, Email = SignUpForm.Email, FirstName = SignUpForm.FirstName, LastName = SignUpForm.LastName, Created = DateTime.Now };
+            var createdResult = await UserService.CreateUserAsync(user, SignUpForm.Password);
+            switch (createdResult.StatusCode)
+            {
+                case ResultStatus.OK:
 
-                // await UserService.VerificationRequest(SignUpForm.Email);
-                NavigationManager.NavigateTo($"account/registerconfirmation?email={SignUpForm.Email}&returnUrl={ReturnUrl}");
-                break;
+                    await UserService.VerificationRequest(SignUpForm.Email);
+                    NavigationManager.NavigateTo($"account/registerconfirmation?email={SignUpForm.Email}&returnUrl={ReturnUrl}");
+                    break;
 
-            case ResultStatus.EXISTS:
-                break;
+                case ResultStatus.EXISTS:
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
+
         }
+        catch (Exception)
+        {
+
+            throw;
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+       
     }
 
 

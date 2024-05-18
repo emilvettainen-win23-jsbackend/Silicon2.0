@@ -1,0 +1,12 @@
+﻿@using CurrieTechnologies.Razor.SweetAlert2
+@inject SweetAlertService Swal
+
+@code {
+   
+
+    public async Task ShowMessage(string Message, string Icon)
+    {
+        await Swal.FireAsync("", Message, Icon);
+    }
+
+}

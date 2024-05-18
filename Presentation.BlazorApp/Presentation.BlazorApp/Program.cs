@@ -1,4 +1,5 @@
 using Azure.Messaging.ServiceBus;
+using CurrieTechnologies.Razor.SweetAlert2;
 using Infrastructure.Data.Contexts;
 using Infrastructure.Data.Entities;
 using Infrastructure.Repositories.Address;
@@ -45,6 +46,19 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 .AddSignInManager()
 .AddDefaultTokenProviders();
 
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/signin";
+    options.LogoutPath = "/signout";
+    options.AccessDeniedPath = "/denied";
+
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    options.SlidingExpiration = true;
+});
+
 builder.Services.RegisterServices();
 builder.Services.RegisterRepositories();
 
@@ -64,7 +78,7 @@ builder.Services.AddSingleton(new ServiceBusClient(builder.Configuration.GetConn
 builder.Services.AddBlazorBootstrap();
 //builder.Services.AddScoped<DarkModeService>();
 
-
+builder.Services.AddSweetAlert2();
 
 
 var app = builder.Build();
@@ -81,6 +95,8 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseStatusCodePagesWithReExecute("/not-found", "?statusCode={0}");
 
 app.UseHttpsRedirection();
 

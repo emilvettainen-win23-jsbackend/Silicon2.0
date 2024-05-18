@@ -27,6 +27,8 @@
     <None Include="wwwroot\images\logo\logo-light.svg" />
     <None Include="wwwroot\images\manage-your-work\manage_work.svg" />
     <None Include="wwwroot\images\newsletter\arrows.svg" />
+    <None Include="wwwroot\images\not-found\404-dark.svg" />
+    <None Include="wwwroot\images\not-found\404-light.svg" />
     <None Include="wwwroot\images\showcase\showcase_img.svg" />
     <None Include="wwwroot\images\switch-between\mockup.svg" />
     <None Include="wwwroot\images\tools\add-group.svg" />
@@ -49,6 +51,8 @@
     <ProjectReference Include="..\..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Presentation.BlazorApp.Client\Presentation.BlazorApp.Client.csproj" />
     <PackageReference Include="Blazor.Bootstrap" Version="2.2.0" />
+    <PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.6.0" />
+  
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.5" />
@@ -63,6 +67,7 @@
   <ItemGroup>
     <Folder Include="Components\Pages\Account\Messages\" />
     <Folder Include="Components\Pages\Contact\" />
+    <Folder Include="Test\" />
   </ItemGroup>
 
 </Project>

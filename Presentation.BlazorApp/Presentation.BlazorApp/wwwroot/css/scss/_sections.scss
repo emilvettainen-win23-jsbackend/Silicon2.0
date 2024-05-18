@@ -1,10 +1,42 @@
-@import "./sections/_header.scss";
+@import './sections/_header.scss';
+@import './sections/_footer.scss';
+
+//Home
+@import './sections/home/_showcase.scss';
+@import './sections/home/_features.scss';
+@import './sections/home/_work-tools.scss';
+@import './sections/home/_switch-between.scss';
+@import './sections/home/_our-app.scss';
+@import './sections/home/_manage-your-work.scss';
+@import './sections/home/_newsletter.scss';
+@import './sections/home/_our-tools.scss';
+
+//Error
+@import './sections/error/_not-found.scss';
 
 
-@import "./sections/home/_showcase.scss";
-@import "./sections/home/_features.scss";
-@import "./sections/home/_work-tools.scss";
-@import "./sections/home/_switch-between.scss";
-@import "./sections/home/_our-app.scss";
-@import "./sections/home/_manage-your-work.scss";
-@import "./sections/home/_newsletter.scss";
+//Authentication
+@import './sections/authentication/_signup.scss';
+@import './sections/authentication/_signin.scss';
+@import './sections/authentication/_register-confirm.scss';
+@import './sections/authentication/_forgotpassword.scss';
+
+
+//Account
+@import './sections/account/_account.scss';
+@import './sections/account/details/_account-details.scss';
+@import './sections/account/security/_account-security.scss';
+@import './sections/account/saved-courses/_account-saved-courses.scss';
+@import './sections/account/notifications/_account-notifications.scss';
+@import './sections/account/messages/_account-messages.scss';
+
+
+//Courses
+@import './sections/courses/_all-courses.scss';
+@import './sections/courses/_work-with-us.scss';
+@import './sections/courses/course-details/_single-course-header.scss';
+@import './sections/courses/course-details/_single-course-description.scss';
+@import './sections/courses/course-details/_single-course-author.scss';
+
+//Contact
+@import './sections/contact/_contact.scss';

@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="@(IsDarkMode ? "dark" : "")">
 
 <head>
     <meta charset="utf-8" />
@@ -16,6 +16,20 @@
 <body>
     <Routes />
     <script src="_framework/blazor.web.js"></script>
+    <script src="_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js"></script>
 </body>
 
 </html>
+
+@code {
+    private bool IsDarkMode { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsDarkMode = await UserService.GetDarkModeSettingAsync();
+
+
+    }
+
+}

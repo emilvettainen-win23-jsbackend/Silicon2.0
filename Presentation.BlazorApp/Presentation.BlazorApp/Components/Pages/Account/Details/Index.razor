@@ -1,4 +1,5 @@
 ﻿@page "/account/details"
+@using Infrastructure.Dtos.User
 @using Infrastructure.Factories
 @using Infrastructure.Helpers.Responses
 @using Presentation.BlazorApp.Models.Account
@@ -174,7 +175,7 @@
     private bool IsExternalAccount;
 
 
-    private ApplicationUser user = default!;
+    private UserDto user = default!;
 
 
     [CascadingParameter]
@@ -199,8 +200,8 @@
 
         BasicInfoForm.FirstName ??= user.FirstName;
         BasicInfoForm.LastName ??= user.LastName;
-        BasicInfoForm.Email ??= user.Email!;
-        BasicInfoForm.Phone ??= user.PhoneNumber;
+        BasicInfoForm.Email ??= user.Email;
+        BasicInfoForm.Phone ??= user.Phone;
         BasicInfoForm.Biography ??= user.Biography;
 
         

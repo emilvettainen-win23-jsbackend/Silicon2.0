@@ -17,7 +17,7 @@
                     <p class="text-m">rating 4.7, 187K+ reviews</p>
                 </div>
                 <div class="app-img">
-                    <a href="#"><img src="/images/download-app/appstore.svg" alt="App Store"></a>
+                    <a href="#"><img src="/images/download-app/@(IsDarkMode ? "appstore-light.svg" : "appstore.svg")" alt="App Store"></a>
                 </div>
             </div>
             <div class="app">
@@ -34,7 +34,7 @@
                     <p class="text-m">rating 4.8, 30K+ reviews</p>
                 </div>
                 <div class="app-img">
-                    <a href="#"><img src="/images/download-app/googleplay.svg" alt="Google Play"></a>
+                    <a href="#"><img src="/images/download-app/@(IsDarkMode ? "googleplay-light.svg": "googleplay.svg")" alt="Google Play"></a>
                 </div>
             </div>
         </div>
@@ -42,5 +42,14 @@
 </section>
 
 @code {
+
+    private bool IsDarkMode { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        IsDarkMode = await UserService.GetDarkModeSettingAsync();
+
+    }
 
 }

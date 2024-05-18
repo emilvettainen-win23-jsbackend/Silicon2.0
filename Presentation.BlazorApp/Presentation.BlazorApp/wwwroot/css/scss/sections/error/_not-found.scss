@@ -1,0 +1,27 @@
+.not-found {
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .content {
+            img {
+            }
+            h1 {
+                text-align: center;
+            }
+            .text-xl {
+                text-align: center;
+                padding: 1rem 0;
+            }
+        }
+        nav {
+            a {
+
+                @include theme-shadow;
+            }
+        }
+    }
+}

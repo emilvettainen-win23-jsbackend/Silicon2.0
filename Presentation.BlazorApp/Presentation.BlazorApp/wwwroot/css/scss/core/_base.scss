@@ -2,6 +2,7 @@ html, body {
     @include standard-text;
     font-size: 16px;
     background-color: var(--clr-bg-section);
+   
 }
 
 img, svg {
@@ -274,3 +275,5 @@ h1:focus {
     right: 0.75rem;
     top: 0.5rem;
 }
+
+

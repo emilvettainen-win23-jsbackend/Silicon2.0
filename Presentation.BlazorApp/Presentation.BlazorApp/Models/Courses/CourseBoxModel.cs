@@ -6,6 +6,9 @@ public class CourseBoxModel
     public string? CourseImageUrl { get; set; }
     public string CourseTitle { get; set; } = null!;
     public bool IsBestseller { get; set; } = false;
+
+
+
     public string[]? Categories { get; set; }
     public RatingModel Rating { get; set; } = null!;
     public PriceModel Price { get; set; } = null!;

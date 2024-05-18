@@ -62,12 +62,19 @@
                 }
 
                 .account-options {
-                    display: flex;
-                    flex-direction: row;
-                    flex-wrap: wrap;
-                    justify-content: center;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    justify-items: center;
+                    
                     gap: 5px;
                     padding-top: 1.5rem;
+
+                    @include lg {
+                        grid-template-columns: 1fr;
+                        justify-items: inherit;
+                        width: 100%;
+                    }
+                    
 
                     .link-text {
                         display: none;
@@ -79,6 +86,30 @@
 
                         .link-text {
                             display: block;
+                        }
+                    }
+
+                    .btn-link {
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: center;
+                        gap: 8px;
+                        font-size: .875rem;
+                        font-weight: 600;
+                        line-height: 160%;
+                        border-radius: 6px;
+                        padding: 11px 28px;
+                        color: var(--clr-neutral);
+                        text-decoration: none;
+                        transition: all .2s ease-in-out;
+
+                        .rotate {
+                            transform: rotate(-90deg);
+                        }
+
+                        &:hover {
+                            color: var(--clr-text-header);
+                            background-color: var(--clr-gray-300);
                         }
                     }
 

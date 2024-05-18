@@ -1,0 +1,135 @@
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1rem;
+    grid-column: 1 / 13;
+    padding-top: 2rem;
+    gap: 2rem;
+
+    @include xxl {
+        grid-column: 5 / 13;
+    }
+}
+
+.course-card {
+    grid-column: span 12;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    z-index: 1;
+    position: relative;
+    @include shadow-s;
+
+    a {
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background-color: var(--clr-gray-100);
+
+        .course-img {
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            width: 100%;
+        }
+
+        .best-seller {
+            position: absolute;
+            top: 12px;
+            left: 20px;
+            color: var(--clr-white);
+            background-color: var(--clr-success);
+            border-radius: 6px;
+            padding: 1px 8px;
+        }
+
+        .card-text {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 1.5rem 1.0rem;
+            flex-grow: 1;
+
+            .testar {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                flex-grow: 1;
+
+                h5 {
+                    transition: all .2s ease-in-out;
+                    flex-grow: 1;
+                }
+
+                .text-lg {
+                    font-weight: 700;
+                    color: var(--clr-theme);
+                }
+
+                .border {
+                    border-color: var(--clr-gray-300);
+                }
+
+                .course-price {
+                    display: flex;
+                    gap: .5rem;
+
+                    .discount-price {
+                        color: var(--clr-danger);
+                    }
+
+                    .original-price {
+                        text-decoration: line-through;
+                        color: var(--clr-gray-600);
+                    }
+                }
+            }
+            .card-info {
+                display: flex;
+                gap: 20px;
+
+                i {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    color: var(--clr-gray-600);
+                    padding-top: 5px;
+                }
+            }
+        }
+        &:hover {
+
+            h5 {
+                color: var(--clr-theme);
+            }
+        }
+    }
+
+    @include md {
+        grid-column: span 6;
+    }
+
+    @include xl {
+        grid-column: span 4;
+    }
+
+    .favorite {
+        position: absolute;
+        top: 15px;
+        right: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--clr-favorite);
+        background-color: var(--clr-white);
+        padding: 10px 12px;
+        border-radius: 50%;
+        transition: color .2s ease-in-out;
+        border: none;
+        cursor: pointer;
+        z-index: 20;
+
+        &:hover {
+            color: var(--clr-theme);
+        }
+    }
+}

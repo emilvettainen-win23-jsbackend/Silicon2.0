@@ -1,10 +1,65 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@using Infrastructure.Dtos.User
+@using Microsoft.AspNetCore.Identity
 
 
+
+<aside class="account-panel">
+    <div class="content">
+        <div class="account-user">
+            <div class="account-user-img">
+                
+
+                <img src="@(!string.IsNullOrEmpty(user.ProfileImageUrl) ? user.ProfileImageUrl : "/images/user-profile.png")" alt="Profile Image"/>
+                <form method="post" enctype="multipart/form-data">
+                    <input id="uploadFile" hidden />
+                    <label for="uploadFile" class="fa-regular fa-arrows-rotate-reverse change-user-img"></label>
+                </form>
+
+
+            </div>
+            <h5>John Doe</h5>
+            <p class="text-m">John@domain.com</p>
+        </div>
+        <nav class="account-options">
+            <NavLink href="account/details" Match="NavLinkMatch.All"><i class="fa-regular fa-gear"></i><span class="link-text">Account Details</span></NavLink>
+            <NavLink href="account/security"><i class="fa-regular fa-lock"></i><span class="link-text">Security</span></NavLink>
+            <NavLink href="account/notifications"><i class="fa-regular fa-bell"></i><span class="link-text">Notifications</span></NavLink>
+            <NavLink href="account/messages"><i class="fa-regular fa-messages"></i><span class="link-text">Messages</span></NavLink>
+            <NavLink href="account/savedcourses"><i class="fa-regular fa-bookmark"></i><span class="link-text">Saved Courses</span></NavLink>
+            <EditForm FormName="signout" method="post" Model="Empty" novalidate OnValidSubmit="SignOutAsync">
+                <InputText hidden @bind-Value="Empty!.HiddenInput" />
+                <button class="btn-link" type="submit"><i class="fa-regular fa-arrow-right-from-bracket"></i><span class="link-text">Sign Out</span></button>
+            </EditForm>
+        </nav>
+    </div>
+</aside>
 
 
 
 
 @code {
-   
+
+    private UserDto user = default!;
+
+    [SupplyParameterFromForm(FormName ="signout")]
+    private EmptyForm? Empty { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserService.GetCurrentUserAsync();
+
+        Empty ??= new();
+
+    }
+
+    private async Task SignOutAsync()
+    {
+        await SignInManager.SignOutAsync();
+        NavigationManager.NavigateTo("/");
+    }
+
+    private sealed class EmptyForm
+    {
+        public string? HiddenInput;
+    }
 }

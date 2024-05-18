@@ -1,0 +1,30 @@
+﻿@rendermode InteractiveServer
+
+<div id="cookie-consent" class="cookie-consent fixed-bottom">
+    <div class="container">
+        <h6>We´re using cookies! Mummms.</h6>
+        <button class="btn-theme-medium" @onclick="AcceptCookies">OK</button>
+    </div>
+</div>
+
+@code {
+
+    private void AcceptCookies()
+    {
+        var option = new CookieOptions
+            {
+                Expires = DateTime.Now.AddYears(1),
+                HttpOnly = true,
+                Secure = true,
+            };
+
+        // Kontrollera om HttpContext är null
+        if (HttpContextAccessor.HttpContext != null)
+        {
+            HttpContextAccessor.HttpContext.Response.Cookies.Append("CookieConsent", "true", option);
+        }
+
+        StateHasChanged();
+    }
+
+}

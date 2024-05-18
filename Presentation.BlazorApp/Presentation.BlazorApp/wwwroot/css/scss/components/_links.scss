@@ -10,6 +10,20 @@ a {
     }
 }
 
+.btn-link {
+    @include standard-text;
+    color: var(--clr-theme);
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    background-color: transparent;
+    border: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
 
 .btn-resend {
     @include standard-text;
@@ -38,3 +52,4 @@ a {
         text-decoration: none;
     }
 }
+

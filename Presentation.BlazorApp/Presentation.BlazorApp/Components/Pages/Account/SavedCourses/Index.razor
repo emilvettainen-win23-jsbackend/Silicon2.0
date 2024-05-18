@@ -3,7 +3,7 @@
 
 @using Infrastructure.Helpers.Responses
 @using Presentation.BlazorApp.Models.Courses
-
+@attribute [StreamRendering]
 
 <section class="account-saved-courses">
     <div class="container">
@@ -18,7 +18,10 @@
 
                 @if (courses == null && !IsError)
                 {
-                    <p>Loading...</p>
+                    <div class="spinner-border m-5" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                
                 }
                 else if (IsError)
                 {
@@ -28,7 +31,7 @@
                 }
                 else if (courses != null && courses.Any())
                 {
-                    <Presentation.BlazorApp.Components.Shared.CourseBox IsSavedCourses="true" courses="courses" />
+                    <Presentation.BlazorApp.Components.Shared.CourseBox @rendermode="InteractiveServer" IsSavedCourses="true" courses="courses" />
                 }
                 else
                 {
@@ -43,7 +46,52 @@
 
     private bool IsError;
 
-    private CourseBoxModel[]? courses; 
+    private CourseBoxModel[]? courses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(3000);
+
+        courses = new CourseBoxModel[]
+        {
+            new CourseBoxModel
+            {
+            Id = "1",
+            CourseTitle = "Introduction to Blazor",
+            IsBestseller = true,
+            CourseImageUrl = "12345",
+
+            Author = new AuthorModel
+            {
+                FullName = "testtest"
+            },
+            Price = new PriceModel
+            {
+                OriginalPrice = 12.50M,
+                DiscountPrice = 10.00M
+            },
+            Included = new IncludedModel
+            {
+                HoursOfVideo = 20
+            },
+            Rating = new RatingModel
+            {
+                InNumbers = 200,
+                InProcent = 96
+            }
+
+            
+
+            }
+        };
+    }
+
+        
+
+    
+    
+        
+    
 
 
     private async Task RemoveCoursesAsync()
@@ -58,7 +106,7 @@
                     break;
 
                 case ResultStatus.SERVER_ERROR:
-                    IsError = true;
+                    
                     break;
 
                 default:
@@ -68,7 +116,7 @@
         catch (Exception)
         {
 
-            IsError = true;
+           
         }
 
 

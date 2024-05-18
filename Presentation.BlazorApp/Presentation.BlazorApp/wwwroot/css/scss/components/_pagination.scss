@@ -1,0 +1,20 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: .5rem;
+    padding-top: 2rem;
+
+    .active-pag{
+        &:hover{
+            background-color: var(--clr-theme);
+        }
+    }
+   
+    .next-pag{
+        background-color: var(--clr-gray-500);
+
+        &:hover{
+            background-color: var(--clr-theme);
+        }
+    }
+}

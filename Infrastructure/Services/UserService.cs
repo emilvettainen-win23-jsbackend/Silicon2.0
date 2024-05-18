@@ -35,18 +35,18 @@ public class UserService
  
     }
 
-    public async Task<ApplicationUser> GetCurrentUserAsync()
+    public async Task<UserDto> GetCurrentUserAsync()
     {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
         if (user.Identity == null || !user.Identity.IsAuthenticated)
         {
-            return new ApplicationUser();
+            return new UserDto();
         }
 
         var currentUser = await _userManager.GetUserAsync(user);
-        return currentUser ?? new ApplicationUser();
+        return UserFactory.GetUser(currentUser!) ?? new UserDto();
        
         
     }
@@ -194,10 +194,11 @@ public class UserService
                 return ResponseFactory.NotFound();
             }
 
-
-            await HandleNewsletterAsync(user, newsletter, email);
+            if (email != null)
+            {
+                await HandleNewsletterAsync(user, newsletter, email);
+            }
             
-
             user.DarkMode = darkMode;
             user.Newsletter = newsletter;
             user.NewsletterEmail = email ?? "";
@@ -206,11 +207,6 @@ public class UserService
             return updateResult.Succeeded ? ResponseFactory.Ok() : ResponseFactory.Error();
 
             
-
-
-
-
-
 
         }
         catch (Exception)
@@ -257,6 +253,11 @@ public class UserService
             throw;
         }
 
+    }
+
+    public async Task SignOutAsync()
+    {
+        await _signInManager.SignOutAsync();
     }
 
 

@@ -3,11 +3,8 @@
 @using Microsoft.AspNetCore.Identity
 @using System.ComponentModel.DataAnnotations
 
+
 @inject ILogger<Login> Logger
-
-
-
-
 
 
 <PageTitle>Sign In</PageTitle>
@@ -92,11 +89,13 @@
         var result = await SignInManager.PasswordSignInAsync(SignInForm.Email, SignInForm.Password, SignInForm.RememberMe, false);
         if (result.Succeeded)
         {
+            
             NavigationManager.NavigateTo(ReturnUrl ?? "/account/details");
+           
         }
         else if (result.IsNotAllowed)
         {
-            // await UserService.VerificationRequest(SignInForm.Email);
+            await UserService.VerificationRequest(SignInForm.Email);
             NavigationManager.NavigateTo($"account/registerconfirmation?email={SignInForm.Email}&returnUrl={ReturnUrl}");
         }
         else

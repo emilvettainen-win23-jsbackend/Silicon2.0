@@ -1,0 +1,84 @@
+.account-saved-courses {
+
+    .saved-items {
+        grid-column: 1/ 13;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: .5rem;
+
+        .btn-danger-medium {
+            background-color: transparent;
+            border-color: var(--clr-danger);
+
+            &:hover {
+                background-color: var(--clr-danger);
+            }
+        }
+    }
+
+    .course-card {
+        grid-column: span 12;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+        z-index: 1;
+        position: relative;
+        @include shadow-s;
+
+        a {
+            text-decoration: none;
+
+            .course-img {
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
+            }
+
+            .card-text {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                padding: 1.5rem 1.0rem;
+
+                h5 {
+                    transition: all .2s ease-in-out;
+                }
+
+                .text-lg {
+                    font-weight: 700;
+                    color: var(--clr-theme);
+                }
+
+                .border {
+                    border-color: var(--clr-gray-300);
+                }
+
+                .card-info {
+                    display: flex;
+                    gap: 20px;
+
+                    i {
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                        color: var(--clr-gray-600);
+                        padding-top: 5px;
+                    }
+                }
+            }
+            &:hover {
+
+                h5 {
+                    color: var(--clr-theme);
+                }
+            }
+        }
+
+        @include md {
+            grid-column: span 6;
+        }
+
+        @include xl {
+            grid-column: span 6;
+        }
+    }
+}

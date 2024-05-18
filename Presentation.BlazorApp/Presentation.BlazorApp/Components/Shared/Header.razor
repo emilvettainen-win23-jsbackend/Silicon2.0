@@ -1,7 +1,8 @@
-﻿<header>
+﻿@using Infrastructure.Dtos.User
+<header>
     <nav class="navbar navbar-expand-xl container hamburger-menu">
         <div class="container">
-            <a class="navbar-brand" href="/"><img id="logo-img" src="/images/logo/logo-light.svg" alt="SiliconDesign"></a>
+            <a class="navbar-brand" href="/"><img id="logo-img" src="/images/logo/@(IsDarkMode ? "logo-dark.svg" : "logo-light.svg")" alt="SiliconDesign"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
                 <i class="fa-sharp fa-regular fa-bars"></i>
@@ -41,7 +42,7 @@
                         <AuthorizeView>
                             <Authorized>
                                 <div class="navbar-profileimg">
-                                    <a href="account/details"><img src="@(!string.IsNullOrEmpty(user.ProfileImageUrl) ? user.ProfileImageUrl : "/images/user-profile.png")" alt="Profile Image"></a>
+                                    <a href="account/details"><img src="@(!string.IsNullOrEmpty(user!.ProfileImageUrl) ? user.ProfileImageUrl : "/images/user-profile.png")" alt="Profile Image"></a>
 
                                 </div>
                             </Authorized>
@@ -61,12 +62,14 @@
 
 
 @code {
-    private ApplicationUser user = default!;
+    private UserDto user = default!;
+    private bool IsDarkMode { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var currentUser = await UserService.GetCurrentUserAsync();
-        user = currentUser;
+        user = await UserService.GetCurrentUserAsync();
+        
+        IsDarkMode = await UserService.GetDarkModeSettingAsync();
     }
 
 }

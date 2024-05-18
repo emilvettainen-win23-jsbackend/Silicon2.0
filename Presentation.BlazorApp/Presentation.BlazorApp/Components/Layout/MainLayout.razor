@@ -1,14 +1,14 @@
 ﻿@inherits LayoutComponentBase
 
 
-<div class="wrapper">
-    <main>
-        <Presentation.BlazorApp.Components.Shared.Header />
-        @Body
-    </main>
-</div>
 
 
+
+<main class="wrapper">
+    <Header />
+    @Body
+    <Footer />
+</main>
 
 
 
@@ -19,25 +19,61 @@
 </div>
 
 
-@code{
-    private bool IsDarkMode { get; set; }
+@* @if (ShowCookies)
+{
+    <div id="cookie-consent" class="cookie-consent fixed-bottom">
+        <div class="container">
+            <h6>We´re using cookies! Mummms.</h6>
+            <EditForm Model="Form" FormName="cookie" OnSubmit="HandleSubmit" method="post" novalidate>
+                <InputText hidden @bind-Value="Form.Hidden" />
+                <button class="btn-theme-medium" type="submit">OK</button>
+            </EditForm>
+        </div>
+    </div>
+}
+ *@
+
+@code {
+    // private bool ShowCookies;
+
+    // [SupplyParameterFromForm(FormName ="cookie")]
+    // private FormModel Form { get; set; } = new();
+
+    // protected override void OnInitialized()
+    // {
+    //     Form ??= new();
+
+    //     @if (HttpContextAccessor.HttpContext!.Request.Cookies["CookieConsent"] == null)
+    //     {
+    //         ShowCookies = true;
+
+    //     }
+    // }
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        IsDarkMode = await UserService.GetDarkModeSettingAsync();
-        DarkModeService.OnChangeAsync += HandleDarkModeChanged;
-    }
+    // private void HandleSubmit()
+    // {
+    //     var option = new CookieOptions
+    //         {
+    //             Expires = DateTime.Now.AddYears(1),
+    //             HttpOnly = true,
+    //             Secure = true,
+    //         };
 
-    private async Task HandleDarkModeChanged()
-    {
-        await InvokeAsync(() =>
-        {
-            IsDarkMode = DarkModeService.IsDarkMode;
-            StateHasChanged();
-        });
-    }
+    //     // Kontrollera om HttpContext är null
+    //     if (HttpContextAccessor.HttpContext != null)
+    //     {
+    //         HttpContextAccessor.HttpContext.Response.Cookies.Append("CookieConsent", "true", option);
+    //     }
 
-  
+    //     StateHasChanged();
+    // }
 
+    // private sealed class FormModel
+    // {
+    //     public string? Hidden { get; set; }
+    // }
+
+
+    
 }

@@ -1,0 +1,90 @@
+.single-course-author {
+    padding: 5rem 0;
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+
+        @include md {
+            flex-direction: row;
+        }
+
+        .author-img {
+            width: 100%;
+
+            @include md {
+                width: 35%;
+                flex-grow: 1;
+            }
+        }
+
+        .author-info {
+            background-color: #0B0F19;
+            background-image: url(/images/courses/single-course/pattern.svg);
+            background-repeat: no-repeat;
+            background-position: 100% 50%;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            align-items: center;
+
+            @include md {
+                width: 35%;
+                flex-grow: 1;
+            }
+
+            div {
+                grid-column: 1 / 13;
+                padding: .5rem .5rem;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+
+                @include xl {
+                    grid-column: 2/7;
+                }
+
+                .author-information {
+                    border: 1px solid red;
+
+                    h1 {
+                        color: var(--clr-white);
+                        margin: 0;
+                    }
+
+                    p {
+                        text-wrap: pretty;
+                        margin: 0;
+                        color: var(--clr-white);
+                    }
+                }
+
+                .author-followers {
+                    display: flex;
+                    flex-direction: column;
+                    padding-top: 20px;
+                    gap: 20px;
+
+                    @include xl {
+                        flex-direction: row;
+                    }
+
+                    .youtube {
+                        background-color: var(--clr-danger);
+                        color: var(--clr-white);
+                        padding: .75rem 1rem;
+                        border-radius: 6px;
+                    }
+
+                    .facebook {
+                        background-color: var(--clr-info);
+                        color: var(--clr-white);
+                        padding: .75rem 1rem;
+                        border-radius: 6px;
+                    }
+                }
+            }
+        }
+    }
+}
