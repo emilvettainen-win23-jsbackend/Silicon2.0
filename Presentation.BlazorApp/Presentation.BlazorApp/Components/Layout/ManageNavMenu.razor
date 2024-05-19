@@ -7,18 +7,30 @@
     <div class="content">
         <div class="account-user">
             <div class="account-user-img">
-                
-
                 <img src="@(!string.IsNullOrEmpty(user.ProfileImageUrl) ? user.ProfileImageUrl : "/images/user-profile.png")" alt="Profile Image"/>
+
+
+
+                @* <EditForm FormName="profileimg" Model="ImageForm" Method="post" novalidate enctype="multipart/form-data">
+                    <InputFile OnChange="OnInputFileChange" id="uploadFile" hidden />
+                    <label for="uploadFile" class="fa-regular fa-arrows-rotate-reverse change-user-img"></label>
+                </EditForm> *@
+
+                <UploadProfileImg @rendermode="InteractiveServer" />
+
+@* 
+
                 <form method="post" enctype="multipart/form-data">
                     <input id="uploadFile" hidden />
                     <label for="uploadFile" class="fa-regular fa-arrows-rotate-reverse change-user-img"></label>
                 </form>
+ *@
+
 
 
             </div>
-            <h5>John Doe</h5>
-            <p class="text-m">John@domain.com</p>
+            <h5>@user.FirstName @user.LastName</h5>
+            <p class="text-m">@user.Email</p>
         </div>
         <nav class="account-options">
             <NavLink href="account/details" Match="NavLinkMatch.All"><i class="fa-regular fa-gear"></i><span class="link-text">Account Details</span></NavLink>
@@ -26,8 +38,8 @@
             <NavLink href="account/notifications"><i class="fa-regular fa-bell"></i><span class="link-text">Notifications</span></NavLink>
             <NavLink href="account/messages"><i class="fa-regular fa-messages"></i><span class="link-text">Messages</span></NavLink>
             <NavLink href="account/savedcourses"><i class="fa-regular fa-bookmark"></i><span class="link-text">Saved Courses</span></NavLink>
-            <EditForm FormName="signout" method="post" Model="Empty" novalidate OnValidSubmit="SignOutAsync">
-                <InputText hidden @bind-Value="Empty!.HiddenInput" />
+            <EditForm FormName="signout" method="post" Model="HiddenForm" novalidate OnValidSubmit="SignOutAsync">
+                <InputText hidden @bind-Value="HiddenForm!.HiddenInput" />
                 <button class="btn-link" type="submit"><i class="fa-regular fa-arrow-right-from-bracket"></i><span class="link-text">Sign Out</span></button>
             </EditForm>
         </nav>
@@ -42,15 +54,21 @@
     private UserDto user = default!;
 
     [SupplyParameterFromForm(FormName ="signout")]
-    private EmptyForm? Empty { get; set; }
+    private HiddenModel? HiddenForm { get; set; }
+
+    [SupplyParameterFromForm(FormName = "profileimg")]
+    private ProfileImageModel ImageForm { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         user = await UserService.GetCurrentUserAsync();
-
-        Empty ??= new();
+        HiddenForm ??= new();
 
     }
+
+   
+
+
 
     private async Task SignOutAsync()
     {
@@ -58,8 +76,14 @@
         NavigationManager.NavigateTo("/");
     }
 
-    private sealed class EmptyForm
+    private sealed class HiddenModel
     {
         public string? HiddenInput;
+    }
+
+    private sealed class ProfileImageModel
+    {
+        public IBrowserFile? File { get; set; }
+        public string? ProfileImageUrl { get; set; }
     }
 }

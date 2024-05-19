@@ -102,6 +102,7 @@ public class UserService
             user.Modified = DateTime.Now;
 
             var updateResult = await _userManager.UpdateAsync(user);
+         
             return updateResult.Succeeded ? ResponseFactory.Ok() : ResponseFactory.Error();
         }
         catch (Exception ex)

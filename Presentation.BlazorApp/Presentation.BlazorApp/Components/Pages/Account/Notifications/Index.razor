@@ -2,6 +2,7 @@
 @using System.ComponentModel.DataAnnotations
 @using Infrastructure.Dtos.User
 @using Infrastructure.Helpers.Responses
+@using System.Text.RegularExpressions
 
 @* @inject IHttpContextAccessor HttpContextAccessor *@
 
@@ -13,8 +14,8 @@
             <h2>Notifications</h2>
             <div class="manage-notifications">
 
-                <EditForm FormName="notify" Model="NotifyForm" method="post" OnSubmit="HandleSubmitAsync" Enhance novalidate>
-                    
+                <EditForm FormName="notify" Model="NotifyForm" method="post" OnValidSubmit="HandleSubmitAsync" Enhance novalidate>
+                    <DataAnnotationsValidator />
                     <div class="content">
                        
                         <div id="form-notify" class="input-group">
@@ -82,7 +83,7 @@
     {
         user = await UserService.GetCurrentUserAsync();
 
-        NotifyForm.Email ??= user.NewsletterEmail ?? string.Empty;
+        NotifyForm.Email ??= user.NewsletterEmail;
         NotifyForm.Newsletter = user.Newsletter;
         NotifyForm.DarkMode = user.DarkMode;
 
@@ -97,10 +98,7 @@
             switch (result.StatusCode)
             {
                 case ResultStatus.OK:
-                    // var theme = NotifyForm.DarkMode ? "dark" : "light";
-                    // HttpContext.Session.SetString("DarkMode", theme);
-
-                    NavigationManager.NavigateTo("account/notifications");
+                    NavigationManager.Refresh();
 
 
                     break;
@@ -125,6 +123,7 @@
 
     private sealed class NotifyModel
     {
+        [RequiredIfNewsletterChecked]
         [DataType(DataType.EmailAddress)]
         public string? Email { get; set; }
 
@@ -133,4 +132,26 @@
         public bool DarkMode { get; set; } = false;
     }
 
+
+    public class RequiredIfNewsletterCheckedAttribute : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
+        {
+            var notifyModel = (NotifyModel)validationContext.ObjectInstance;
+            var email = value as string;
+
+            // Regex pattern for validating email addresses
+            var emailPattern = @"^(([^<>()\[\]\\.,;:\s@\""]+(\.[^<>()\[\]\\.,;:\s@\""]+)*)|(\"".+\""))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$";
+
+            if (notifyModel.Newsletter)
+            {
+                if (string.IsNullOrEmpty(email) || !Regex.IsMatch(email, emailPattern))
+                {
+                    return new ValidationResult("A valid email is required when subscribed to the newsletter.");
+                }
+            }
+
+            return ValidationResult.Success!;
+        }
+    }
 }

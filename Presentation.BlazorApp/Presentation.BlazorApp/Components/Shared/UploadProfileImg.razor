@@ -1,0 +1,65 @@
+﻿@using System.Net.Http.Headers
+
+<InputFile id="uploadFile" OnChange="OnInputFileChange" accept="image/*" hidden />
+<label for="uploadFile" class="fa-regular fa-arrows-rotate-reverse change-user-img"></label>
+
+@code {
+
+    private int MaxFileSize = 8000 * 1024;
+
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+
+        var browserFile = e.File;
+
+        if (browserFile != null)
+        {
+
+            if (browserFile.Size > MaxFileSize)
+            {
+                //message
+                return;
+            }
+
+            var fileStream = browserFile.OpenReadStream(MaxFileSize);
+            var fileContent = new StreamContent(fileStream);
+
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(browserFile.ContentType);
+            using var formData = new MultipartFormDataContent();
+            formData.Add(fileContent, "profilesimg", browserFile.Name);
+
+
+            try
+            {
+                var response = await Http.PostAsJsonAsync("", formData);
+                if (response.IsSuccessStatusCode)
+                {
+                    var imageUrl = await response.Content.ReadAsStringAsync();
+                    //uppdatera usersurl.
+
+                    NavigationManager.Refresh();
+                }
+                else
+                {
+                    // message
+                }
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+
+
+        }
+
+
+        
+
+
+
+
+
+    }
+}

@@ -2,8 +2,6 @@
 
 
 
-
-
 <main class="wrapper">
     <Header />
     @Body
@@ -24,56 +22,58 @@
     <div id="cookie-consent" class="cookie-consent fixed-bottom">
         <div class="container">
             <h6>We´re using cookies! Mummms.</h6>
-            <EditForm Model="Form" FormName="cookie" OnSubmit="HandleSubmit" method="post" novalidate>
-                <InputText hidden @bind-Value="Form.Hidden" />
-                <button class="btn-theme-medium" type="submit">OK</button>
+            <EditForm FormName="cookie" method="post" Model="HiddenForm" novalidate OnValidSubmit="AcceptCookies">
+                <InputText hidden @bind-Value="HiddenForm!.HiddenInput" />
+                <button class="btn-theme-medium" type="submit">Ok</button>
             </EditForm>
         </div>
     </div>
 }
- *@
+
 
 @code {
-    // private bool ShowCookies;
+    private bool ShowCookies;
 
-    // [SupplyParameterFromForm(FormName ="cookie")]
-    // private FormModel Form { get; set; } = new();
-
-    // protected override void OnInitialized()
-    // {
-    //     Form ??= new();
-
-    //     @if (HttpContextAccessor.HttpContext!.Request.Cookies["CookieConsent"] == null)
-    //     {
-    //         ShowCookies = true;
-
-    //     }
-    // }
+    [SupplyParameterFromForm(FormName ="cookie")]
+    private HiddenModel? HiddenForm { get; set; }
 
 
-    // private void HandleSubmit()
-    // {
-    //     var option = new CookieOptions
-    //         {
-    //             Expires = DateTime.Now.AddYears(1),
-    //             HttpOnly = true,
-    //             Secure = true,
-    //         };
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
 
-    //     // Kontrollera om HttpContext är null
-    //     if (HttpContextAccessor.HttpContext != null)
-    //     {
-    //         HttpContextAccessor.HttpContext.Response.Cookies.Append("CookieConsent", "true", option);
-    //     }
+    protected override async Task OnInitializedAsync()
+    {
+        
 
-    //     StateHasChanged();
-    // }
+        @if (HttpContext.Request.Cookies["CookieConsent"] == null)
+        {
+           
+            ShowCookies = true;
+            HiddenForm ??= new();
+        }
+    }
 
-    // private sealed class FormModel
-    // {
-    //     public string? Hidden { get; set; }
-    // }
 
+    private void AcceptCookies(EditContext editContext)
+    {
+        var option = new CookieOptions
+        {
+            Expires = DateTime.Now.AddYears(1),
+            HttpOnly = true,
+            Secure = true,
+        };
+      
+        
+           HttpContext.Response.Cookies.Append("CookieConsent", "true", option);
+        
+
+        StateHasChanged();
+    }
+
+    private sealed class HiddenModel
+    {
+        public string? HiddenInput;
+    }
 
     
-}
+} *@

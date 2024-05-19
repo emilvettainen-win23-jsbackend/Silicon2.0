@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -17,6 +17,14 @@
     <None Include="wwwroot\images\brands\brand2.svg" />
     <None Include="wwwroot\images\brands\brand3.svg" />
     <None Include="wwwroot\images\brands\brand4.svg" />
+    <None Include="wwwroot\images\courses\course-1.svg" />
+    <None Include="wwwroot\images\courses\course-2.svg" />
+    <None Include="wwwroot\images\courses\course-3.svg" />
+    <None Include="wwwroot\images\courses\illustration.svg" />
+    <None Include="wwwroot\images\courses\single-course\course_header.svg" />
+    <None Include="wwwroot\images\courses\single-course\created_by_img.svg" />
+    <None Include="wwwroot\images\courses\single-course\pattern.svg" />
+    <None Include="wwwroot\images\courses\single-course\single_course_author_img.svg" />
     <None Include="wwwroot\images\download-app\appstore-light.svg" />
     <None Include="wwwroot\images\download-app\appstore.svg" />
     <None Include="wwwroot\images\download-app\googleplay-light.svg" />
@@ -66,8 +74,6 @@
 
   <ItemGroup>
     <Folder Include="Components\Pages\Account\Messages\" />
-    <Folder Include="Components\Pages\Contact\" />
-    <Folder Include="Test\" />
   </ItemGroup>
 
 </Project>

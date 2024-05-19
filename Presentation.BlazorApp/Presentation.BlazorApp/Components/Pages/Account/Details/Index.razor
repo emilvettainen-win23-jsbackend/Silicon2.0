@@ -4,10 +4,10 @@
 @using Infrastructure.Helpers.Responses
 @using Presentation.BlazorApp.Models.Account
 
-
 <PageTitle>Account Details</PageTitle>
 
 @inject ILogger<Index> Logger
+@rendermode InteractiveServer
 
 <section class="account-details">
     <div class="container">
@@ -15,10 +15,6 @@
             <h2>Account Details</h2>
             <div class="basic-info">
                 <h5>Basic Info</h5>
-
-
-
-
                 <EditForm method="post" Model="BasicInfoForm" FormName="basic" OnValidSubmit="SaveBasicInfoAsync" Enhance novalidate>
                     <DataAnnotationsValidator />
                     <div class="content">
@@ -52,8 +48,6 @@
                             <label>Email</label>
                             <InputText @bind-Value="BasicInfoForm.Email" class="form-control non-clickable" readonly />
                         </div>
-
-
                         <div id="form-phone" class="input-group">
                             <label>Phone <span>(optional)</span></label>
                             <InputText @bind-Value="BasicInfoForm.Phone" class="form-control" />
@@ -65,21 +59,18 @@
                             <ValidationMessage For="() => BasicInfoForm.Biography" class="text-danger" />
                         </div>
                         <div id="form-buttons">
-                            <button class="btn-gray-small" type="reset"> Cancel</button>
+                            <button @onclick="ResetBasicInfoForm" class="btn-gray-small" type="button"> Cancel</button>
                             <button class="btn-theme-small" type="submit">Save changes</button>
                         </div>
                     </div>
                 </EditForm>
-
-
-
-
             </div>
             <hr />
 
             <div class="address-info">
                 <h5>Address</h5>
                 <EditForm FormName="address" Model="AddressInfoForm" OnValidSubmit="SaveAddressInfoAsync" method="post" Enhance novalidate>
+                    <DataAnnotationsValidator />
                     <div class="content">
                         <div id="form-address-1" class="input-group">
                             <label for="address1">Address line 1</label>
@@ -101,7 +92,7 @@
                             <ValidationMessage For="() => AddressInfoForm.City" class="text-danger" />
                         </div>
                         <div id="form-buttons">
-                            <button class="btn-gray-small" type="reset"> Cancel</button>
+                            <button @onclick="ResetAddressInfoForm" class="btn-gray-small" type="button"> Cancel</button>
                             <button class="btn-theme-small" type="submit">Save changes</button>
                         </div>
                     </div>
@@ -113,74 +104,9 @@
 
 
 
-
-@* <div class="row">
-    <div class="col-md-6">
-        <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
-                <label for="username" class="form-label">Username</label>
-            </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
-                <label for="phone-number" class="form-label">Phone number</label>
-                <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </EditForm>
-    </div>
-</div> *@
-
-
-@* @page "/Account/Manage"
-
-@using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Identity
-@using Presentation.BlazorApp.Data
-
-@inject UserManager<ApplicationUser> UserManager
-@inject SignInManager<ApplicationUser> SignInManager
-@inject IdentityUserAccessor UserAccessor
-@inject IdentityRedirectManager RedirectManager
-
-<PageTitle>Profile</PageTitle>
-
-<h3>Profile</h3>
-<StatusMessage />
-
-<div class="row">
-    <div class="col-md-6">
-        <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
-                <label for="username" class="form-label">Username</label>
-            </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
-                <label for="phone-number" class="form-label">Phone number</label>
-                <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </EditForm>
-    </div>
-</div>
-
-*@
-
 @code {
     private bool IsExternalAccount;
-
-
     private UserDto user = default!;
-
-
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
-
 
     [SupplyParameterFromForm(FormName ="basic")]
     private BasicInfoModel BasicInfoForm { get; set; } = new();
@@ -194,40 +120,23 @@
         user = await UserService.GetCurrentUserAsync();
         IsExternalAccount = user.IsExternalAccount;
 
-        // var basicInfo = await UserService.PopulateBaseInfoAsync(user.Id);
-
-        // BasicInfoForm ??= new BasicInfoModel { FirstName = basicInfo.FirstName , LastName = basicInfo.LastName, Email = basicInfo.Email, Phone = basicInfo.Phone, Biography = basicInfo.Biography};
-
-        BasicInfoForm.FirstName ??= user.FirstName;
-        BasicInfoForm.LastName ??= user.LastName;
-        BasicInfoForm.Email ??= user.Email;
-        BasicInfoForm.Phone ??= user.Phone;
-        BasicInfoForm.Biography ??= user.Biography;
-
-        
+        BasicInfoForm.FirstName = user.FirstName;
+        BasicInfoForm.LastName = user.LastName;
+        BasicInfoForm.Email = user.Email;
+        BasicInfoForm.Phone = user.Phone;
+        BasicInfoForm.Biography = user.Biography;
 
         var addressInfo = await AddressService.GetAddressInfoAsync(user.Id);
-        AddressInfoForm.Addressline_1 ??= addressInfo!.StreetName;
-        AddressInfoForm.Addressline_2 ??= addressInfo!.OptionalAddress;
-        AddressInfoForm.PostalCode ??= addressInfo!.PostalCode;
-        AddressInfoForm.City ??= addressInfo!.City;
+        AddressInfoForm = new AddressInfoModel { Addressline_1 = addressInfo!.StreetName, Addressline_2 = addressInfo.OptionalAddress, PostalCode = addressInfo.PostalCode, City = addressInfo.City};
+
         
+
+        // AddressInfoForm.Addressline_1 ??= addressInfo!.StreetName;
+        // AddressInfoForm.Addressline_2 ??= addressInfo!.OptionalAddress;
+        // AddressInfoForm.PostalCode ??= addressInfo!.PostalCode;
+        // AddressInfoForm.City ??= addressInfo!.City;
     }
 
-    // private async Task OnValidSubmitAsync()
-    // {
-    //     if (Input.PhoneNumber != phoneNumber)
-    //     {
-    //         var setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-    //         if (!setPhoneResult.Succeeded)
-    //         {
-
-    //         }
-    //     }
-
-    //     await SignInManager.RefreshSignInAsync(user);
-
-    // }
 
     private async Task SaveBasicInfoAsync()
     {
@@ -237,8 +146,7 @@
             switch (result.StatusCode)
             {
                 case ResultStatus.OK:
-                    // await SignInManager.RefreshSignInAsync(user);
-
+                    NavigationManager.Refresh();
                     break;
 
                 case ResultStatus.ERROR:
@@ -254,6 +162,7 @@
         }
     }
 
+
     private async Task SaveAddressInfoAsync()
     {
         try
@@ -262,7 +171,7 @@
             switch (result.StatusCode)
             {
                 case ResultStatus.OK:
-                    // await SignInManager.RefreshSignInAsync(user);
+                    NavigationManager.Refresh();
 
                     break;
 
@@ -279,9 +188,25 @@
 
             Logger.LogError($"ERROR : AccountDetails.SaveAddressInfoAsync() :: {ex.Message}");
         }
-        
     }
 
+    private void ResetBasicInfoForm()
+    {
+        BasicInfoForm.FirstName = "";
+        BasicInfoForm.LastName = "";
+        BasicInfoForm.Email = user.Email;
+        BasicInfoForm.Phone = "";
+        BasicInfoForm.Biography = "";
+    }
+
+
+    private void ResetAddressInfoForm()
+    {
+        AddressInfoForm.Addressline_1 = "";
+        AddressInfoForm.Addressline_2 = "";
+        AddressInfoForm.PostalCode = "";
+        AddressInfoForm.City = "";
+    }
 
 
 
