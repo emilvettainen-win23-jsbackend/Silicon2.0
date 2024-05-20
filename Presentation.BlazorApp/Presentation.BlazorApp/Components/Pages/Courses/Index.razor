@@ -1,6 +1,13 @@
 ﻿@page "/courses"
 
+@using GraphQL
+@using GraphQL.Client.Abstractions
+@using GraphQL.Client.Http
 @using Presentation.BlazorApp.Models.Courses
+
+@attribute [StreamRendering]
+
+@inject GraphQLHttpClient graphqlClient
 <section class="courses">
     <div class="container">
         
@@ -11,13 +18,13 @@
                         <div class="selected">All categories</div>
                         <div class="select-options">
                             <div class="option" data-value="all">All categories</div>
-                          @*   @if (courses != null)
+                            @if (categories != null)
                             {
-                                foreach (var category in courses)
+                                foreach (var category in categories)
                                 {
                                     <div class="option" data-value="@category">@category</div>
                                 }
-                            } *@
+                            }
                         </div>
                     </div>
                     <div class="input-search-group">
@@ -91,6 +98,56 @@
 
     private bool IsError;
     private bool IsSearch;
-    private CourseBoxModel[]? courses; 
+    private List<CourseBoxModel>? courses;
 
+
+    private string[]? categories;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var query = new GraphQLRequest { Query = 
+                @" {
+  getAllCourses
+  {id courseImageUrl courseTitle isBestseller category rating {inNumbers inProcent} prices {originalPrice discountPrice} included{hoursOfVideo} authors{fullName} }
+
+}
+"
+            };
+        var response = await graphqlClient.SendQueryAsync<Data>(query);
+        courses = response.Data.Courses;
+
+
+    }
+
+    private class Data
+    {
+        public List<CourseBoxModel>? Courses { get; set; }
+    }
+
+
+    // private async Task<string[]> GetCategoriesAsync()
+    // {
+    //     try
+    //     {
+    //         var query = new GraphQlRequest
+
+    //     query 
+    //     {
+    //         getAllCourses
+    //         {
+    //             id
+    //         }
+
+    //     }
+
+
+    //     }
+    //     catch (Exception)
+    //     {
+            
+    //         throw;
+    //     }
+        
+    }
 }

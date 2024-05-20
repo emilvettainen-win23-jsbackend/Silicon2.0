@@ -1,5 +1,4 @@
-﻿@using Infrastructure.Dtos.User
-<header>
+﻿<header>
     <nav class="navbar navbar-expand-xl container hamburger-menu">
         <div class="container">
             <a class="navbar-brand" href="/"><img id="logo-img" src="/images/logo/@(IsDarkMode ? "logo-dark.svg" : "logo-light.svg")" alt="SiliconDesign"></a>
@@ -68,7 +67,6 @@
     protected override async Task OnInitializedAsync()
     {
         user = await UserService.GetCurrentUserAsync();
-        
         IsDarkMode = await UserService.GetDarkModeSettingAsync();
     }
 

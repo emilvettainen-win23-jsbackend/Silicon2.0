@@ -1,6 +1,6 @@
 ﻿<footer>
     <div class="container">
-        <div class="@(SignIn ? "d-none" : "social-media")">
+        <div class="@(Authentication ? "d-none" : "social-media")">
             <a class="btn-social" href="#"><i class="fa-brands fa-facebook"></i></a>
             <a class="btn-social" href="#"><i class="fa-brands fa-square-x-twitter"></i></a>
             <a class="btn-social" href="#"><i class="fa-brands fa-instagram"></i></a>
@@ -11,13 +11,13 @@
 </footer>
 
 @code {
-    private bool SignIn;
+    private bool Authentication;
 
     protected override void OnInitialized()
     {
         if(NavigationManager.Uri.Contains("signin") || NavigationManager.Uri.Contains("signup"))
         {
-            SignIn = true;
+            Authentication = true;
         }
     }
 }

@@ -62,7 +62,7 @@
     public bool IsSavedCourses { get; set; }
 
     [Parameter]
-    public CourseBoxModel[] courses { get; set; } = null!;
+    public List<CourseBoxModel> courses { get; set; } = null!;
 
 
     private async Task SaveCourseAsync(string courseId)

@@ -1,33 +1,10 @@
-﻿@using Infrastructure.Dtos.User
-@using Microsoft.AspNetCore.Identity
-
-
-
+﻿
 <aside class="account-panel">
     <div class="content">
         <div class="account-user">
             <div class="account-user-img">
                 <img src="@(!string.IsNullOrEmpty(user.ProfileImageUrl) ? user.ProfileImageUrl : "/images/user-profile.png")" alt="Profile Image"/>
-
-
-
-                @* <EditForm FormName="profileimg" Model="ImageForm" Method="post" novalidate enctype="multipart/form-data">
-                    <InputFile OnChange="OnInputFileChange" id="uploadFile" hidden />
-                    <label for="uploadFile" class="fa-regular fa-arrows-rotate-reverse change-user-img"></label>
-                </EditForm> *@
-
                 <UploadProfileImg @rendermode="InteractiveServer" />
-
-@* 
-
-                <form method="post" enctype="multipart/form-data">
-                    <input id="uploadFile" hidden />
-                    <label for="uploadFile" class="fa-regular fa-arrows-rotate-reverse change-user-img"></label>
-                </form>
- *@
-
-
-
             </div>
             <h5>@user.FirstName @user.LastName</h5>
             <p class="text-m">@user.Email</p>
@@ -67,9 +44,6 @@
     }
 
    
-
-
-
     private async Task SignOutAsync()
     {
         await SignInManager.SignOutAsync();

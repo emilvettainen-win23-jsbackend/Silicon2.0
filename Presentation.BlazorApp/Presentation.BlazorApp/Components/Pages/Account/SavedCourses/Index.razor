@@ -49,13 +49,13 @@
 
     private bool IsError;
 
-    private CourseBoxModel[]? courses;
+    private List<CourseBoxModel>? courses;
 
     protected override async Task OnInitializedAsync()
     {
         await Task.Delay(3000);
 
-        courses = new CourseBoxModel[]
+        courses = new List<CourseBoxModel>
         {
             new CourseBoxModel
             {

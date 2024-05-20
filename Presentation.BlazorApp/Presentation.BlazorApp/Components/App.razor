@@ -24,12 +24,9 @@
 @code {
     private bool IsDarkMode { get; set; }
 
-
     protected override async Task OnInitializedAsync()
     {
         IsDarkMode = await UserService.GetDarkModeSettingAsync();
-
-
     }
 
 }
