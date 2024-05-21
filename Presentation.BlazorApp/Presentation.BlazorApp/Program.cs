@@ -82,16 +82,7 @@ internal class Program
 
 
 
-        builder.Services.AddSingleton<GraphQLHttpClient>(s =>
-        {
-            var options = new GraphQLHttpClientOptions
-            {
-                EndPoint = new Uri("http://localhost:7153/api/graphql"),
-                // Add more options as needed
-            };
-            return new GraphQLHttpClient(options, new NewtonsoftJsonSerializer(), s.GetRequiredService<HttpClient>());
-        });
-
+      
 
 
 

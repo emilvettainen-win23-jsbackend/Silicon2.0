@@ -1,11 +1,22 @@
 ﻿@using System.Net.Http.Headers
+@inject IJSRuntime JSRuntime
 
 <InputFile id="uploadFile" OnChange="OnInputFileChange" accept="image/*" hidden />
-<label for="uploadFile" class="fa-regular fa-arrows-rotate-reverse change-user-img"></label>
+<label for="uploadFile" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-title="Change picture" data-bs-custom-class="custom-tooltip" class="fa-regular fa-arrows-rotate-reverse change-user-img"></label>
 
 @code {
 
     private int MaxFileSize = 8000 * 1024;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("initializeTooltips");
+        }
+    }
+
 
 
     private async Task OnInputFileChange(InputFileChangeEventArgs e)

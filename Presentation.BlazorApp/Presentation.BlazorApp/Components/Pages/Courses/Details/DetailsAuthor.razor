@@ -1,0 +1,35 @@
+﻿@using Presentation.BlazorApp.Models.Courses
+@if (course != null)
+{
+    <section class="single-course-author">
+        <div class="container">
+            <img class="author-img" src="@(!string.IsNullOrEmpty(course.Author.ProfileImageUrl) ? course.Author.ProfileImageUrl : "/images/courses/user-profile-default.png")" alt="@course.Author.FullName">
+            <div class="author-info">
+                <div>
+                    <div class="author-information">
+                        <p>Learn form the best</p>
+                        <h1>@course.Author.FullName</h1>
+                        <p>@course.Author.Biography</p>
+                    </div>
+                    @if (course.Author.SocialMedia != null && !string.IsNullOrEmpty(course.Author.SocialMedia.YouTubeUrl) && !string.IsNullOrEmpty(course.Author.SocialMedia.FacebookUrl))
+                    {
+                        <div class="author-followers">
+                            <a class="youtube btn-theme-m" href="@course.Author.SocialMedia.YouTubeUrl">
+                                <i class="fa-brands fa-youtube"></i>
+                                @course.Author.SocialMedia.Subscribers k subscribers
+                            </a>
+                            <a class="facebook btn-theme-m" href="@course.Author.SocialMedia.FacebookUrl">
+                                <i class="fa-brands fa-square-facebook"></i>
+                                @course.Author.SocialMedia.Followers k followes
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+}
+@code {
+    [Parameter]
+    public CourseModel? course { get; set; }
+}

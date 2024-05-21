@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Services;
+using Presentation.BlazorApp.GraphQL;
 
 
 namespace Presentation.BlazorApp.Configurations;
@@ -11,6 +12,8 @@ public static class ServicesConfiguration
         services.AddScoped<AddressService>();
         services.AddScoped<CourseService>();
         services.AddScoped<DarkModeService>();
+
+        services.AddSingleton<GraphQLService>();
 
     }
 }

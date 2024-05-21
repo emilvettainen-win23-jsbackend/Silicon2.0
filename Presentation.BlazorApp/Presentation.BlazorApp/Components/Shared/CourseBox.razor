@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Cors.Infrastructure
 @using Presentation.BlazorApp.Models.Courses
 
-
+@inject IJSRuntime JSRuntime
 
 <div class="courses-grid">
 
@@ -10,7 +10,7 @@
     {
         <article class="course-card">
             <a href="/courses/details?id=@course.Id">
-                <img class="course-img" src="@(!string.IsNullOrEmpty(@course.CourseImageUrl) ? course.CourseImageUrl : "/uploads/courses-img/course_9.png")" alt="@course.CourseTitle">
+                <img loading="lazy" class="course-img" src="@(!string.IsNullOrEmpty(@course.CourseImageUrl) ? course.CourseImageUrl : "/images/courses/course-1.svg")" alt="@course.CourseTitle">
                 @if (course.IsBestseller)
                 {
                     <p class="best-seller text-s">Best Seller</p>
@@ -19,16 +19,16 @@
                     <div class="testar">
                         <h5>@course.CourseTitle</h5>
                         <p class="text-s">By @course.Author.FullName</p>
-                        @if (course.Price.DiscountPrice > 0)
+                        @if (course.Prices.DiscountPrice > 0)
                         {
                             <div class="course-price">
-                                <p class="text-lg discount-price">$@course.Price.DiscountPrice.Value.ToString("F2")</p>
-                                <p class="text-lg original-price">$@course.Price.OriginalPrice.ToString("F2")</p>
+                                <p class="text-lg discount-price">$@course.Prices.DiscountPrice.Value.ToString("F2")</p>
+                                <p class="text-lg original-price">$@course.Prices.OriginalPrice.ToString("F2")</p>
                             </div>
                         }
                         else
                         {
-                            <p class="text-lg">$@course.Price.OriginalPrice.ToString("F2")</p>
+                            <p class="text-lg">$@course.Prices.OriginalPrice.ToString("F2")</p>
                         }
                         <span class="border border-1"></span>
                     </div>
@@ -64,6 +64,14 @@
     [Parameter]
     public List<CourseBoxModel> courses { get; set; } = null!;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("initializeTooltips");
+        }
+    }
+   
 
     private async Task SaveCourseAsync(string courseId)
     {

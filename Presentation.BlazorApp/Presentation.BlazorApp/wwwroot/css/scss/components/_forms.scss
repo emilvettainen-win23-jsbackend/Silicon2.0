@@ -26,14 +26,11 @@ form {
 
                 &:focus {
                     color: var(--clr-text-body);
-                    
                 }
 
                 &::placeholder {
                     color: var(--clr-text-body);
                 }
-
-                
             }
 
             label {
@@ -92,7 +89,6 @@ form {
         }
 
         .select-options {
-            display: none;
             position: absolute;
             top: 100%;
             left: 0;
@@ -127,6 +123,12 @@ form {
             &::placeholder {
                 color: var(--clr-text-body);
             }
+
+            &:focus {
+                color: var(--clr-text-body);
+            }
+
+          
 
             @include lg {
                 min-width: 270px;

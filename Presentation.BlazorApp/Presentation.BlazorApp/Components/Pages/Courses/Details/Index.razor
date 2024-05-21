@@ -1,0 +1,90 @@
+﻿@page "/courses/details"
+@using Presentation.BlazorApp.GraphQL
+@using Presentation.BlazorApp.Models.Courses
+
+@inject GraphQLService GraphQLService
+
+
+@if (isLoading && !isError)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border m-5" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else if (isError)
+{
+    <div>
+        <h6 class="pt-5 text-center">We were unable to fetch the course at this moment due to a technical error. Please try again later. If the problem persists, contact our support at support@example.com.</h6>
+    </div>
+}
+else if (course != null)
+{
+    <DetailsHeader course="course" />
+    <DetailsContent course="course" />
+    <DetailsAuthor course="course" />
+}
+else
+{
+    <div>
+        <h6 class="pt-5 text-center">Currently there are no course.</h6>
+    </div>
+}
+
+
+
+
+
+
+
+
+
+
+@code {
+    private bool isLoading;
+    private bool isError;
+
+    private CourseModel? course;
+
+
+
+    [SupplyParameterFromQuery]
+    public string? Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id == null)
+        {
+            NavigationManager.NavigateTo("/not-found");
+        }
+
+        await LoadCourseDetails(Id!);
+
+
+    }
+
+
+    private async Task LoadCourseDetails(string id)
+    {
+        isLoading = true;
+        try
+        {
+            course = await GraphQLService.GetCourseByIdAsync(id);
+
+        }
+        catch (Exception)
+        {
+
+            isError = true;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+
+    }
+
+    
+
+}

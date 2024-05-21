@@ -2,8 +2,13 @@
 
 
 @using Infrastructure.Helpers.Responses
+@using Presentation.BlazorApp.GraphQL
 @using Presentation.BlazorApp.Models.Courses
+
+@inject GraphQLService GraphQLService
+
 @attribute [StreamRendering]
+@rendermode @(new InteractiveServerRenderMode(false))
 
 <section class="account-saved-courses">
     <div class="container">
@@ -12,11 +17,11 @@
             
                 <div class="saved-items">
                     <h2>Saved Items</h2>
-                <button @onclick="RemoveCoursesAsync" class="btn-danger-medium delete-all"><i class="fa-regular fa-trash"></i>Delete all</button>
+                <button disabled="@isLoading" @onclick="RemoveAllCoursesAsync" class="btn-danger-medium delete-all"><i class="fa-regular fa-trash"></i>Delete all</button>
                 </div>
 
 
-                @if (courses == null && !IsError)
+                @if (isLoading && !isError)
                 {
                     <div class="d-flex justify-content-center">
                         <div class="spinner-border m-5" role="status">
@@ -26,7 +31,7 @@
                    
                 
                 }
-                else if (IsError)
+                else if (isError)
                 {
                     <div>
                         <h6 class="pt-5 text-center">We were unable to fetch the courses at this moment due to a technical error. Please try again later. If the problem persists, contact our support at support@example.com.</h6>
@@ -47,46 +52,42 @@
 </section>
 @code {
 
-    private bool IsError;
+    private bool isLoading;
+    private bool isError;
 
     private List<CourseBoxModel>? courses;
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(3000);
-
-        courses = new List<CourseBoxModel>
+        if (courses == null)
         {
-            new CourseBoxModel
-            {
-            Id = "1",
-            CourseTitle = "Introduction to Blazor",
-            IsBestseller = true,
-            CourseImageUrl = "12345",
+            await LoadSavedCoursesAsync();
+        }
 
-            Author = new AuthorModel
-            {
-                FullName = "testtest"
-            },
-            Price = new PriceModel
-            {
-                OriginalPrice = 12.50M,
-                DiscountPrice = 10.00M
-            },
-            Included = new IncludedModel
-            {
-                HoursOfVideo = 20
-            },
-            Rating = new RatingModel
-            {
-                InNumbers = 200,
-                InProcent = 96
-            }
 
-            
+    }
 
-            }
-        };
+
+
+    private async Task LoadSavedCoursesAsync()
+    {
+        try
+        {
+            isLoading = true;
+            await Task.Delay(5000);
+            var user = await UserService.GetCurrentUserAsync();
+            var savedCourses = await CourseService.GetSavedCourseAsync(user.Id);
+            courses = await GraphQLService.GetCoursesByIdsAsync(savedCourses);
+        }
+        catch (Exception)
+        {
+
+            isError = true;
+        }
+        finally
+        {
+            isLoading = false;
+        }
     }
 
         
@@ -97,7 +98,7 @@
     
 
 
-    private async Task RemoveCoursesAsync()
+    private async Task RemoveAllCoursesAsync()
     {
         try
         {

@@ -1,0 +1,87 @@
+﻿@using Presentation.BlazorApp.Models.Courses
+@if (course != null)
+{
+    <section class="single-course-description">
+        <div class="container grid-12">
+            <div class="course-content">
+                <div class="course-description">
+                    <h1>Course Description</h1>
+                    <p>@course.CourseDescription</p>
+                    <h2>What you´ll learn</h2>
+                    <ul class="list-group">
+                        @for (int i = 0; i < course.Highlights.Count; i++)
+                        {
+                            <li><i class="fa-regular fa-circle-check"></i>@course.Highlights[i].Highlight</li>
+                        }
+                    </ul>
+                </div>
+                <div class="course-details">
+                    <h1>Program Details</h1>
+                    @for (int i = 0; i < course.Content.Count; i++)
+                    {
+                        <div class="details">
+                            <div>
+                                <h4>@(i + 1)</h4>
+                            </div>
+
+                            <div>
+                                <h4>
+                                    @course.Content[i].Title
+                                </h4>
+                                <p class="text-m">
+                                    @course.Content[i].Description
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <aside class="course-include">
+                <h4>This course includes:</h4>
+                <ul>
+                    @if (course.Included.HoursOfVideo > 0)
+                    {
+                        <li><i class="fa-light fa-display"></i>@course.Included.HoursOfVideo hours on-demand video</li>
+                    }
+                    @if (course.Included.Articles > 0)
+                    {
+                        <li><i class="fa-light fa-file-lines"></i>@course.Included.Articles articles</li>
+                    }
+                    @if (course.Included.Resourses > 0)
+                    {
+                        <li><i class="fa-light fa-arrow-down-to-bracket"></i>@course.Included.Resourses downloadable resources</li>
+                    }
+                    @if (course.Included.LifetimeAccess)
+                    {
+                        <li><i class="fa-light fa-infinity"></i>Full lifetime access</li>
+                    }
+                    @if (course.Included.Certificate)
+                    {
+                        <li><i class="fa-light fa-trophy"></i>Certificate of completion</li>
+                    }
+                </ul>
+
+                @if (course.Price.DiscountPrice > 0)
+                {
+                    <div class="course-price pb-2">
+                        <h2>$@course.Price.DiscountPrice</h2>
+                        <p class="text-xl">$@course.Price.OriginalPrice.ToString("F2")</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="course-price pb-2">
+                        <h2>$@course.Price.OriginalPrice.ToString("F2")</h2>
+                    </div>
+                }
+                <a class="btn-theme-large" href="#">Join course</a>
+            </aside>
+        </div>
+    </section>
+}
+
+@code {
+
+    [Parameter]
+    public CourseModel? course { get; set; }
+}
