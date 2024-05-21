@@ -2,10 +2,14 @@
 
 
 @using Infrastructure.Helpers.Responses
+@using Infrastructure.Helpers.SweetAlert
 @using Presentation.BlazorApp.GraphQL
 @using Presentation.BlazorApp.Models.Courses
+@using Presentation.BlazorApp.SweetAlert
 
 @inject GraphQLService GraphQLService
+
+@inject AlertService AlertService
 
 @attribute [StreamRendering]
 @rendermode @(new InteractiveServerRenderMode(false))
@@ -14,6 +18,10 @@
     <div class="container">
         <div class="d-flex flex-column">
 
+            @if (!string.IsNullOrEmpty(message))
+            {
+                <p>@message</p>
+            }
             
                 <div class="saved-items">
                     <h2>Saved Items</h2>
@@ -39,7 +47,52 @@
                 }
                 else if (courses != null && courses.Any())
                 {
-                    <Presentation.BlazorApp.Components.Shared.CourseBox @rendermode="InteractiveServer" IsSavedCourses="true" courses="courses" />
+                <Presentation.BlazorApp.Components.Shared.CourseBox @rendermode="InteractiveServer" OnRemoveCourseClicked="RemoveCourseAsync" IsSavedCourses="true" courses="courses" />
+
+               @*  <div class="courses-grid">
+
+                    @foreach (var course in courses)
+                    {
+                        <article class="course-card">
+                            <a href="/courses/details?id=@course.Id">
+                                <img loading="lazy" class="course-img" src="@(!string.IsNullOrEmpty(@course.CourseImageUrl) ? course.CourseImageUrl : "/images/courses/course-1.svg")" alt="@course.CourseTitle">
+                                @if (course.IsBestseller)
+                                {
+                                    <p class="best-seller text-s">Best Seller</p>
+                                }
+                                <div class="card-text">
+                                    <div class="testar">
+                                        <h5>@course.CourseTitle</h5>
+                                        <p class="text-s">By @course.Author.FullName</p>
+                                        @if (course.Prices.DiscountPrice > 0)
+                                        {
+                                            <div class="course-price">
+                                                <p class="text-lg discount-price">$@course.Prices.DiscountPrice.Value.ToString("F2")</p>
+                                                <p class="text-lg original-price">$@course.Prices.OriginalPrice.ToString("F2")</p>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-lg">$@course.Prices.OriginalPrice.ToString("F2")</p>
+                                        }
+                                        <span class="border border-1"></span>
+                                    </div>
+
+                                    <div class="card-info">
+                                        <i class="fa-regular fa-clock">
+                                            <p class="text-s">@course.Included.HoursOfVideo hours</p>
+                                        </i>
+                                        <i class="fa-regular fa-thumbs-up">
+                                            <p class="text-s">@course.Rating.InProcent% (@(course.Rating.InNumbers / 1000m)K)</p>
+                                        </i>
+                                    </div>
+
+                                </div>
+                            </a>
+                            <button @onclick="@(() => RemoveCourseAsync(course.Id))" class="favorite" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Remove" data-bs-custom-class="custom-tooltip"><i class="fa-solid fa-bookmark"></i></button>
+                        </article>
+                    }
+                </div> *@
                 }
                 else
                 {
@@ -55,6 +108,10 @@
     private bool isLoading;
     private bool isError;
 
+    private string? icon;
+    private string? message;
+
+
     private List<CourseBoxModel>? courses;
 
     protected override async Task OnInitializedAsync()
@@ -69,12 +126,15 @@
 
 
 
+
+
+
     private async Task LoadSavedCoursesAsync()
     {
         try
         {
             isLoading = true;
-            await Task.Delay(5000);
+
             var user = await UserService.GetCurrentUserAsync();
             var savedCourses = await CourseService.GetSavedCourseAsync(user.Id);
             courses = await GraphQLService.GetCoursesByIdsAsync(savedCourses);
@@ -90,8 +150,33 @@
         }
     }
 
-        
 
+    private async Task RemoveCourseAsync(string courseId)
+    {
+        var user = await UserService.GetCurrentUserAsync();
+        var result = await CourseService.DeleteOneCourseAsync(user.Id, courseId);
+        switch (result.StatusCode)
+        {
+            case ResultStatus.OK:
+                var courseToRemove = courses!.FirstOrDefault(c => c.Id == courseId);
+                courses!.Remove(courseToRemove!);
+
+                message = "course has been removed";
+
+                StateHasChanged();
+                NavigationManager.Refresh();
+
+                
+
+
+
+                break;
+
+            default:
+                break;
+        }
+
+    }
     
     
         

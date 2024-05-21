@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Services;
 using Presentation.BlazorApp.GraphQL;
+using Presentation.BlazorApp.SweetAlert;
 
 
 namespace Presentation.BlazorApp.Configurations;
@@ -15,5 +16,6 @@ public static class ServicesConfiguration
 
         services.AddSingleton<GraphQLService>();
 
+        services.AddScoped<AlertService>();
     }
 }

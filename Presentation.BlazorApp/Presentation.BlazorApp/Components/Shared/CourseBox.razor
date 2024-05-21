@@ -50,7 +50,7 @@
             }
             else
             {
-                <button @onclick="@(() => RemoveCourseAsync(course.Id))" class="favorite" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Remove" data-bs-custom-class="custom-tooltip"><i class="fa-solid fa-bookmark"></i></button>
+                <button @onclick="@(() => OnRemoveCourseClicked.InvokeAsync(course.Id))" class="favorite" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Remove" data-bs-custom-class="custom-tooltip"><i class="fa-solid fa-bookmark"></i></button>
             }
         </article>
     }
@@ -64,6 +64,11 @@
     [Parameter]
     public List<CourseBoxModel> courses { get; set; } = null!;
 
+
+    [Parameter]
+    public EventCallback<string> OnRemoveCourseClicked { get; set; }
+
+   
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -71,7 +76,8 @@
             await JSRuntime.InvokeVoidAsync("initializeTooltips");
         }
     }
-   
+
+
 
     private async Task SaveCourseAsync(string courseId)
     {
@@ -98,19 +104,43 @@
 
     }
 
-    private async Task RemoveCourseAsync(string courseId)
-    {
-        var user = await UserService.GetCurrentUserAsync();
-        var result = await CourseService.DeleteOneCourseAsync(user.Id, courseId);
-        switch (result.StatusCode)
-        {
-            case ResultStatus.OK:
-                break;
+    // private async Task RemoveCourseAsync(string courseId)
+    // {
+    //     var user = await UserService.GetCurrentUserAsync();
+    //     var result = await CourseService.DeleteOneCourseAsync(user.Id, courseId);
+    //     switch (result.StatusCode)
+    //     {
+    //         case ResultStatus.OK:
+    //             var courseToRemove = courses!.FirstOrDefault(c => c.Id == courseId);
+    //             courses!.Remove(courseToRemove!);
 
-            default:
-                break;
-        }
 
-    }
+    //             StateHasChanged();
+
+
+
+    //             break;
+
+    //         default:
+    //             break;
+    //     }
+
+    // }
+
+    // private async Task ReloadCourses(string userId)
+    // {
+    //     try
+    //     {
+    //         var savedCourses = await CourseService.GetSavedCourseAsync(user.Id);
+    //         courses = await GraphQLService.GetCoursesByIdsAsync(savedCourses);
+
+    //     }
+    //     catch (Exception)
+    //     {
+            
+    //         throw;
+    //     }
+        
+    // }
 
 }
