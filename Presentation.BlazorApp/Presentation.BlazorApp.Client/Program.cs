@@ -1,4 +1,4 @@
-using CurrieTechnologies.Razor.SweetAlert2;
+
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Presentation.BlazorApp.Client;
@@ -11,6 +11,6 @@ builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticat
 
 
 
-builder.Services.AddSweetAlert2();
+
 
 await builder.Build().RunAsync();

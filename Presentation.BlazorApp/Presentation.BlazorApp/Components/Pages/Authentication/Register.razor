@@ -1,7 +1,11 @@
 ﻿@page "/account/signup"
 @using Infrastructure.Helpers.Responses
 @using System.ComponentModel.DataAnnotations
+@using Newtonsoft.Json
+@using Presentation.BlazorApp.Helper
 
+
+@inject MessageService MessageService
 @inject ILogger<Register> Logger
 @rendermode InteractiveServer
 
@@ -86,7 +90,13 @@
                 case ResultStatus.OK:
 
                     await UserService.VerificationRequest(SignUpForm.Email);
-                    NavigationManager.NavigateTo($"account/registerconfirmation?email={SignUpForm.Email}&returnUrl={ReturnUrl}");
+
+                  
+
+                    // var jsonMessage = Uri.EscapeDataString(JsonConvert.SerializeObject(message));
+
+
+                    NavigationManager.NavigateTo($"account/registerconfirmation?email={SignUpForm.Email}&returnUrl={ReturnUrl}&message={"test"}");
                     break;
 
                 case ResultStatus.EXISTS:

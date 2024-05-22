@@ -14,14 +14,15 @@
 @using Presentation.BlazorApp.Client
 @using Presentation.BlazorApp.Components
 
-@using Presentation.BlazorApp.Client.Componenets
+
 
 @using Presentation.BlazorApp.Components.Shared
 
-@using BlazorBootstrap;
-@using CurrieTechnologies.Razor.SweetAlert2
+@using System.ComponentModel.DataAnnotations
+@using Presentation.BlazorApp.Models
 
-@inject SweetAlertService Swal
+@using CurrieTechnologies.Razor.SweetAlert2
+@using Microsoft.AspNetCore.Authentication
 
 @inject AddressService AddressService
 @inject SignInManager<ApplicationUser> SignInManager
@@ -37,6 +38,6 @@
 
 @inject IHttpContextAccessor HttpContextAccessor
 
-@using System.ComponentModel.DataAnnotations
+
 
 @using Infrastructure.Dtos.User

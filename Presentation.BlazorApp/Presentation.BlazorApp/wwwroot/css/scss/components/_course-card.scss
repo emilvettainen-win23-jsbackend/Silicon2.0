@@ -83,6 +83,7 @@
                     }
                 }
             }
+
             .card-info {
                 display: flex;
                 gap: 20px;
@@ -96,6 +97,7 @@
                 }
             }
         }
+
         &:hover {
 
             h5 {
@@ -112,10 +114,14 @@
         grid-column: span 4;
     }
 
+
+
+
+
     .favorite {
         position: absolute;
         top: 15px;
-        right: 18px;
+        right: 15px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -131,5 +137,38 @@
         &:hover {
             color: var(--clr-theme);
         }
+    }
+
+    .tooltiptext {
+        visibility: hidden;
+        width: 90px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        padding: 5px 0;
+        border-radius: 6px;
+        position: absolute;
+        z-index: 99;
+        top: 0px;
+        right: 45px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        margin-top: -5px;
+        transform: rotate(-90deg);
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+    }
+
+    .favorite:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
     }
 }

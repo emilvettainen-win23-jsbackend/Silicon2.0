@@ -1,5 +1,5 @@
 using Azure.Messaging.ServiceBus;
-using CurrieTechnologies.Razor.SweetAlert2;
+
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
 using Infrastructure.Data.Contexts;
@@ -80,16 +80,14 @@ internal class Program
         builder.Services.AddHttpClient();
         builder.Services.AddSingleton(new ServiceBusClient(builder.Configuration.GetConnectionString("ServiceBusConnection")));
 
-
+      
 
       
 
 
 
-        builder.Services.AddBlazorBootstrap();
         //builder.Services.AddScoped<DarkModeService>();
 
-        builder.Services.AddSweetAlert2();
 
 
         var app = builder.Build();

@@ -335,8 +335,8 @@ h6, .h6 {
 }
 
 .alert {
-  border-end-end-radius: 0;
-  border-end-start-radius: 0;
+  border-end-end-radius: 6px;
+  border-end-start-radius: 6px;
 }
 
 .fixed-bottom {
@@ -360,23 +360,22 @@ select:-webkit-autofill:focus {
   transition: background-color 5000s ease-in-out 0s;
 }
 
-.swal2-confirm {
-  background-color: var(--clr-theme) !important;
-  box-shadow: none !important;
+/*.swal2-confirm {
+    background-color: var(--clr-theme)!important;
+    box-shadow: none!important;
 }
 
 .swal2-popup {
-  background-color: var(--clr-bg-section) !important;
+    background-color: var(--clr-bg-section)!important;
 }
 
 .swal2-title {
-  color: var(--clr-text-header) !important;
+    color: var(--clr-text-header)!important;
 }
 
 .swal2-html-container {
-  color: var(--clr-text-header) !important;
-}
-
+    color: var(--clr-text-header) !important;
+}*/
 .non-clickable {
   cursor: not-allowed;
 }
@@ -1018,7 +1017,7 @@ form .input-search-group .fa-search {
 .course-card .favorite {
   position: absolute;
   top: 15px;
-  right: 18px;
+  right: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1033,6 +1032,36 @@ form .input-search-group .fa-search {
 }
 .course-card .favorite:hover {
   color: var(--clr-theme);
+}
+.course-card .tooltiptext {
+  visibility: hidden;
+  width: 90px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 99;
+  top: 0px;
+  right: 45px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.course-card .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  transform: rotate(-90deg);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+.course-card .favorite:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
 }
 
 .breadcrumbs {

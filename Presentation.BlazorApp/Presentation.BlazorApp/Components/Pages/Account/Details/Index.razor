@@ -55,7 +55,7 @@
                         </div>
                         <div id="form-bio" class="input-group">
                             <label>Bio <span>(optional)</span></label>
-                            <InputText @bind-Value="BasicInfoForm.Biography" class="form-control" rows="3"></InputText>
+                            <InputTextArea @bind-Value="BasicInfoForm.Biography" class="form-control" rows="3"></InputTextArea>
                             <ValidationMessage For="() => BasicInfoForm.Biography" class="text-danger" />
                         </div>
                         <div id="form-buttons">

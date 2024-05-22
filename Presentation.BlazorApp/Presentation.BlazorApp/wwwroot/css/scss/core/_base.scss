@@ -170,8 +170,8 @@ h6, .h6 {
 }
 
 .alert {
-    border-end-end-radius: 0;
-    border-end-start-radius: 0;
+    border-end-end-radius: 6px;
+    border-end-start-radius: 6px;
 }
 
 
@@ -200,7 +200,7 @@ select:-webkit-autofill:focus {
 }
 
 
-.swal2-confirm {
+/*.swal2-confirm {
     background-color: var(--clr-theme)!important;
     box-shadow: none!important;
 }
@@ -215,7 +215,7 @@ select:-webkit-autofill:focus {
 
 .swal2-html-container {
     color: var(--clr-text-header) !important;
-}
+}*/
 
 .non-clickable {
     cursor: not-allowed;

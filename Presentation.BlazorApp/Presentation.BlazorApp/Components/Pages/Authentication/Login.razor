@@ -1,18 +1,22 @@
 ﻿@page "/account/signin"
-@using Microsoft.AspNetCore.Authentication
-@using Microsoft.AspNetCore.Identity
-@using System.ComponentModel.DataAnnotations
-
+<PageTitle>Sign In</PageTitle>
 
 @inject ILogger<Login> Logger
 
 
-<PageTitle>Sign In</PageTitle>
+
+
 
 <section id="signin">
     <div class="container">
         <EditForm Model="SignInForm" method="post" FormName="signin" OnValidSubmit="SignInAsync" Enhance novalidate>
             <DataAnnotationsValidator />
+            @if (Message != null)
+            {
+                <div class="alert alert-@Message.Icon" role="alert">
+                    @Message.Message
+                </div>
+            }
             <h1>Welcome Back</h1>
             <p>Don´t have an account yet? <a href="account/signup">Sign up here.</a></p>
             <div class="content">
@@ -30,12 +34,8 @@
                     <InputCheckbox id="remember" @bind-Value="SignInForm.RememberMe" class="form-check-input" />
                     <label for="remember">Remember me</label>
                 </div>
-
-
-
-
-                <button disabled="@IsBusy" id="form-submit" class="btn-theme-large" type="submit">
-                    @if (IsBusy)
+                <button disabled="@isBusy" id="form-submit" class="btn-theme-large" type="submit">
+                    @if (isBusy)
                     {
                         <div class="spinner-border spinner-border-sm" role="status">
                             <span class="visually-hidden">Loading...</span>
@@ -43,7 +43,6 @@
                     }
                     <span>Sign In</span>
                 </button>
-
                 <a href="account/forgotpassword" id="form-forgot-password" class="text-m">Forgot your password?</a>
                 <hr id="form-hr" />
                 <div id="external-signin">
@@ -58,16 +57,14 @@
 
 
 @code {
-    private bool IsBusy;
-
+    private bool isBusy;
+    private MessageModel? Message { get; set; }
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
-
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
-
 
     [SupplyParameterFromForm]
     private SignInModel SignInForm { get; set; } = new();
@@ -77,21 +74,19 @@
     {
         if (HttpMethods.IsGet(HttpContext.Request.Method))
         {
-            // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
         }
-
+        
     }
 
 
     private async Task SignInAsync()
     {
+        isBusy = true;
         var result = await SignInManager.PasswordSignInAsync(SignInForm.Email, SignInForm.Password, SignInForm.RememberMe, false);
         if (result.Succeeded)
         {
-            
             NavigationManager.NavigateTo(ReturnUrl ?? "/account/details");
-           
         }
         else if (result.IsNotAllowed)
         {
@@ -100,10 +95,17 @@
         }
         else
         {
-
-            // incorret email or password
+            SignInForm = new();
+            Message = new MessageModel
+            {
+                Message = "Incorrect email or password",
+                Icon = "danger"
+            };
+            isBusy = false;
         }
+
     }
+
 
     private sealed class SignInModel
     {
@@ -117,5 +119,7 @@
 
         public bool RememberMe { get; set; }
     }
+
+   
 
 }

@@ -22,7 +22,7 @@
                 <form class="filters">
                     <div class="select">
                         <div class="selected" @onclick="ToggleDropdown">@selectedCategory</div>
-                    <div class="select-options" style="@(isDropdownOpen ? "display: block;" : "display: none;")">
+                        <div class="select-options" style="@(isDropdownOpen ? "display: block;" : "display: none;")">
                         <div class="option" @onclick="GetAllCoursesAsync" data-value="all">All categories</div>
                             @if (categories != null)
                             {

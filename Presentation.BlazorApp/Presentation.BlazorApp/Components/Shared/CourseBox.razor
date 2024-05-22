@@ -46,11 +46,11 @@
             </a>
             @if (!IsSavedCourses)
             {
-                <button @onclick="@(() => SaveCourseAsync(course.Id))" class="favorite" data-bs-trigger="hover" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Favorite" data-bs-custom-class="custom-tooltip"><i class="fa-solid fa-bookmark"></i></button>
+                <button @onclick="@(() => SaveCourseAsync(course.Id))" class="favorite" data-bs-trigger="hover" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Favorite" data-bs-custom-class="custom-tooltip"><i class="fa-solid fa-bookmark"></i><span class="tooltiptext">Favorite</span></button>
             }
             else
             {
-                <button @onclick="@(() => OnRemoveCourseClicked.InvokeAsync(course.Id))" class="favorite" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Remove" data-bs-custom-class="custom-tooltip"><i class="fa-solid fa-bookmark"></i></button>
+                <button @onclick="@(() => OnRemoveCourseClicked.InvokeAsync(course.Id))" class="favorite" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Remove" data-bs-custom-class="custom-tooltip"><i class="fa-solid fa-bookmark"></i><span class="tooltiptext">Remove</span></button>
             }
         </article>
     }

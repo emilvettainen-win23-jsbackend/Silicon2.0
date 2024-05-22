@@ -57,6 +57,12 @@ public class GraphQLService
         var document = JsonDocument.Parse(responseContent);
         var root = document.RootElement;
 
+        // readfromjson <dynamicgrapqlresponse> 
+        // JsonPropertyName("data") JsonElement Data get: set;
+        // result.data.getproperty 
+
+
+
         var courses = new List<CourseBoxModel>();
 
         if (root.GetProperty("data").TryGetProperty("getAllCourses", out var courseArray))

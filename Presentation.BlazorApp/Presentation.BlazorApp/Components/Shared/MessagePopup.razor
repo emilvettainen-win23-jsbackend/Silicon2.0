@@ -1,1 +1,34 @@
 ﻿
+
+@if (hasMessage)
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            Swal.fire({
+                icon: @icon,
+                text: @message,
+            });
+        });
+    </script>
+}
+
+
+
+
+
+@code{
+
+    [Parameter]
+    public bool hasMessage { get; set; }
+
+    [Parameter]
+    public string? icon { get; set; }
+
+    [Parameter]
+    public string? message { get; set; }
+
+
+
+
+}

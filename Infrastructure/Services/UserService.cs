@@ -1,4 +1,5 @@
 ﻿using Azure.Messaging.ServiceBus;
+using Azure.Messaging.ServiceBus.Administration;
 using Infrastructure.Data.Contexts;
 using Infrastructure.Data.Entities;
 using Infrastructure.Dtos.User;
@@ -253,6 +254,28 @@ public class UserService
 
             throw;
         }
+
+    }
+
+    public async Task<bool> UpdateProfileImageAsync(string filePath)
+    {
+        try
+        {
+            var user = await GetCurrentUserAsync();
+            var userEntity = await _userManager.FindByIdAsync(user.Id);
+            if (userEntity != null)
+            {
+                userEntity.ProfileImageUrl = filePath;
+                var updateResult = await _userManager.UpdateAsync(userEntity);
+                return updateResult.Succeeded;
+            }
+        }
+        catch (Exception)
+        {
+
+            
+        }
+        return false;
 
     }
 

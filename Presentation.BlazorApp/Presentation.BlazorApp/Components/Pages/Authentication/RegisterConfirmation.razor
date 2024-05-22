@@ -1,8 +1,20 @@
 ﻿@page "/account/registerconfirmation"
+@using Microsoft.AspNetCore.WebUtilities
+@using Newtonsoft.Json
 @using Presentation.BlazorApp.Components.Shared
 @using System.ComponentModel.DataAnnotations
+@using Presentation.BlazorApp.Helper
+
+
 
 <PageTitle>Register confirmation</PageTitle>
+
+@if (Message != null)
+{
+    <div class="alert alert-success" role="alert">
+        @Message
+    </div>
+}
 
 
 <section id="confirmation">
@@ -48,6 +60,10 @@
     private string? ReturnUrl { get; set; }
 
 
+    [SupplyParameterFromQuery]
+    private string? Message { get; set; }
+
+
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
@@ -70,8 +86,19 @@
             user = currentUser;
 
         }
+
+        // var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        // if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("message", out var jsonMessage))
+        // {
+        //     // Deserialisera JSON-strängen till en MessageModel
+        //     Message = JsonConvert.DeserializeObject<MessageModel>(jsonMessage!);
+        // }
+
     }
 
+
+ 
+    // private MessageModel? Message { get; set; }
 
     private async Task VerifyAsync()
     {
