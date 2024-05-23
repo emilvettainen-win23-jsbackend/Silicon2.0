@@ -4,19 +4,16 @@
 @inject ILogger<Login> Logger
 
 
-
-
-
 <section id="signin">
     <div class="container">
+        @if (Alert != null)
+        {
+            <div class="alert alert-@Alert.Icon" role="alert">
+                @Alert.Message
+            </div>
+        }
         <EditForm Model="SignInForm" method="post" FormName="signin" OnValidSubmit="SignInAsync" Enhance novalidate>
             <DataAnnotationsValidator />
-            @if (Message != null)
-            {
-                <div class="alert alert-@Message.Icon" role="alert">
-                    @Message.Message
-                </div>
-            }
             <h1>Welcome Back</h1>
             <p>Don´t have an account yet? <a href="account/signup">Sign up here.</a></p>
             <div class="content">
@@ -45,20 +42,19 @@
                 </button>
                 <a href="account/forgotpassword" id="form-forgot-password" class="text-m">Forgot your password?</a>
                 <hr id="form-hr" />
-                <div id="external-signin">
-                    <h6>Or sign in with your social network</h6>
-                    <a class="btn-gray-medium"><i class="fa-brands fa-google"></i>Google</a>
-                    <a class="btn-gray-medium"><i class="fa-brands fa-facebook-f"></i>Facebook</a>
-                </div>
             </div>
         </EditForm>
+        <div id="external-signin">
+            <h6>Or sign in with your social network</h6>
+            <ExternalLoginPicker />
+        </div>
     </div>
 </section>
 
 
 @code {
     private bool isBusy;
-    private MessageModel? Message { get; set; }
+    private AlertModel? Alert { get; set; }
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
@@ -76,7 +72,6 @@
         {
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
         }
-
     }
 
 
@@ -96,16 +91,13 @@
         else
         {
             SignInForm = new();
-            Message = new MessageModel
+            Alert = new AlertModel
             {
                 Message = "Incorrect email or password",
                 Icon = "danger"
             };
             isBusy = false;
-
-           
         }
-
     }
 
 
@@ -121,7 +113,4 @@
 
         public bool RememberMe { get; set; }
     }
-
-   
-
 }

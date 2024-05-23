@@ -1,6 +1,6 @@
 ﻿namespace Presentation.BlazorApp.Models
 {
-    public class MessageModel
+    public class AlertModel
     {
         public string? Message { get; set; }
         public string? Icon { get; set; }

@@ -30,13 +30,27 @@ internal class Program
             .AddInteractiveWebAssemblyComponents();
 
         builder.Services.AddCascadingAuthenticationState();
+        builder.Services.AddScoped<IdentityRedirectManager>();
         builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
         builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            })
-            .AddIdentityCookies();
+            }).AddIdentityCookies();
+
+
+        builder.Services.AddAuthentication()
+        .AddGoogle(GoogleOptions =>
+        {
+            GoogleOptions.ClientId = "893316874513-a6a0bnpavt6tj1262db69jp4rpkasq4l.apps.googleusercontent.com";
+            GoogleOptions.ClientSecret = "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";
+        })
+        .AddFacebook(FacebookOptions =>
+        {
+            FacebookOptions.AppId = "276230208847426";
+            FacebookOptions.AppSecret = "fa8c8957ec6c242f81323a3453e31455";
+
+        });
 
 
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AzureDb")), ServiceLifetime.Singleton);
@@ -55,7 +69,7 @@ internal class Program
 
         builder.Services.ConfigureApplicationCookie(options =>
         {
-            options.LoginPath = "/signin";
+            options.LoginPath = "/account/signin";
             options.LogoutPath = "/signout";
             options.AccessDeniedPath = "/denied";
 
@@ -63,7 +77,13 @@ internal class Program
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
             options.SlidingExpiration = true;
+
         });
+
+
+
+
+
 
         builder.Services.RegisterServices();
         builder.Services.RegisterRepositories();
@@ -110,6 +130,7 @@ internal class Program
         app.UseHttpsRedirection();
 
         app.UseStaticFiles();
+
         app.UseAntiforgery();
 
         app.MapRazorComponents<App>()
@@ -117,6 +138,8 @@ internal class Program
             .AddInteractiveWebAssemblyRenderMode()
             .AddAdditionalAssemblies(typeof(Presentation.BlazorApp.Client._Imports).Assembly);
         await app.Services.RegisterRoles();
+
+        app.MapAdditionalIdentityEndpoints();
 
         app.Run();
     }

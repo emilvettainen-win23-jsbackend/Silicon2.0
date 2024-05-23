@@ -5,6 +5,8 @@
         display: grid;
         grid-template-columns: repeat(12, 1fr);
         gap: 1rem;
+       
+
 
         h1 {
             padding-bottom: .5rem;
@@ -12,6 +14,7 @@
 
         form {
             grid-column: 1/13;
+           
 
             @include lg {
                 grid-column: 3/11;
@@ -29,13 +32,17 @@
                 display: grid;
                 gap: 1rem;
                 grid-template-columns: 1fr;
-                grid-template-areas: "code" "button";
+                grid-template-areas: "info" "code" "button";
 
-                @include md {
-                    grid-template-columns: repeat(2, 1fr);
-                    grid-template-areas: "code code" "button button";
+
+                #form-info {
+                    grid-area: info;
+
+                    p{
+                        margin: 6px;
+                    }
+                    
                 }
-
 
                 #form-code {
                     grid-area: code;
