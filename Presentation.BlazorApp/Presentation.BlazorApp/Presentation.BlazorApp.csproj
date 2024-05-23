@@ -58,6 +58,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Presentation.BlazorApp.Client\Presentation.BlazorApp.Client.csproj" />
+    <PackageReference Include="Blazored.Toast" Version="4.2.1" />
     <PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.6.0" />
     <PackageReference Include="GraphQL.Client" Version="6.0.5" />
     <PackageReference Include="GraphQL.Client.Serializer.Newtonsoft" Version="6.0.5" />

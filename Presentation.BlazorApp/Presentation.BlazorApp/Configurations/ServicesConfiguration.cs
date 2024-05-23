@@ -1,4 +1,5 @@
-﻿using CurrieTechnologies.Razor.SweetAlert2;
+﻿using Blazored.Toast;
+using CurrieTechnologies.Razor.SweetAlert2;
 
 using Infrastructure.Services;
 using Presentation.BlazorApp.GraphQL;
@@ -20,6 +21,7 @@ public static class ServicesConfiguration
         services.AddSingleton<MessageService>();
 
         services.AddSweetAlert2();
+       
 
 
     }

@@ -1,12 +1,12 @@
 ﻿@page "/courses"
-
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
 
 @using Presentation.BlazorApp.GraphQL
 @using Presentation.BlazorApp.Models.Courses
 @attribute [StreamRendering]
 @rendermode @(new InteractiveServerRenderMode(false))
 
-@inject IJSRuntime JSRuntime
+
 
 
 @inject GraphQLService GraphQLService
@@ -147,15 +147,6 @@
         }
     }
 
-
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JSRuntime.InvokeVoidAsync("initializeTooltips");
-        }
-    }
 
 
 

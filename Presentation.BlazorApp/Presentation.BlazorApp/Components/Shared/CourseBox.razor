@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Cors.Infrastructure
 @using Presentation.BlazorApp.Models.Courses
 
-@inject IJSRuntime JSRuntime
+
 
 <div class="courses-grid">
 
@@ -68,14 +68,6 @@
     [Parameter]
     public EventCallback<string> OnRemoveCourseClicked { get; set; }
 
-   
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await JSRuntime.InvokeVoidAsync("initializeTooltips");
-        }
-    }
 
 
 

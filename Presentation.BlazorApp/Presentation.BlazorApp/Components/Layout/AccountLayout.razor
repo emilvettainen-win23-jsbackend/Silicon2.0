@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
-@layout Presentation.BlazorApp.Components.Layout.MainLayout
+
+
 
 
 @if (HttpContext is null)
@@ -8,7 +9,21 @@
 }
 else
 {
-    @Body
+    <div class="wrapper">
+        <Header />
+        <section class="account">
+            <div class="container">
+                <div class="grid-12">
+                    <ManageNavMenu />
+                    <main class="account-content">
+                        @Body
+                    </main>
+                </div>
+            </div>
+        </section>
+        <Footer />
+    </div>
+
 }
 
 @code {
@@ -26,3 +41,16 @@ else
         }
     }
 }
+
+
+
+@* <section class="account">
+    <div class="container">
+        <div class="grid-12">
+            <ManageNavMenu />
+            <main class="account-content">
+                @Body
+            </main>
+        </div>
+    </div>
+</section> *@

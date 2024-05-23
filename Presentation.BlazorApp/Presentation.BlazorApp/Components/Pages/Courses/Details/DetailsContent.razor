@@ -74,7 +74,7 @@
                         <h2>$@course.Price.OriginalPrice.ToString("F2")</h2>
                     </div>
                 }
-                <a class="btn-theme-large" href="#">Join course</a>
+                <button @onclick="@(() => OnJoinCourse.InvokeAsync())" class="btn-theme-large" href="#">Join course</button>
             </aside>
         </div>
     </section>
@@ -84,4 +84,7 @@
 
     [Parameter]
     public CourseModel? course { get; set; }
+
+    [Parameter]
+    public EventCallback OnJoinCourse { get; set; }
 }
