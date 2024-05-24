@@ -1,24 +1,21 @@
 ﻿@page "/account/signup"
-@using Infrastructure.Helpers.Responses
-@using System.ComponentModel.DataAnnotations
-@using Newtonsoft.Json
-
-
-
+<PageTitle>Register</PageTitle>
 
 @inject ILogger<Register> Logger
 @rendermode InteractiveServer
 
-<PageTitle>Register</PageTitle>
-
-
 <section id="signup">
     <div class="container">
+        @if (Alert != null)
+        {
+            <div class="alert alert-@Alert.Icon" role="alert">
+                @Alert.Message
+            </div>
+        }
         <EditForm Model="SignUpForm" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="SignUpAsync" FormName="register" novalidate>
             <DataAnnotationsValidator />
             <h1>Create Account</h1>
             <p>Already have an account? <a href="/account/signin">Sign in here.</a></p>
-
             <div class="content">
                 <div id="form-firstname" class="input-group">
                     <label for="first-name">First name</label>
@@ -50,8 +47,6 @@
                     <label for="terms">I agree to the <NavLink href="/terms">Terms</NavLink> & <NavLink href="/conditions">Conditions</NavLink> </label>
                     <ValidationMessage For="() => SignUpForm.TermsAndConditions" class="text-danger" />
                 </div>
-              
-
                 <button disabled="@IsBusy" id="form-submit" type="submit" class="btn-theme-large">
                     @if (IsBusy)
                     {
@@ -68,6 +63,7 @@
 
 @code {
     private bool IsBusy;
+    private AlertModel? Alert { get; set; }
 
 
     [SupplyParameterFromQuery]
@@ -90,91 +86,33 @@
                 case ResultStatus.OK:
 
                     await UserService.VerificationRequest(SignUpForm.Email);
-
-                  
-
-                    // var jsonMessage = Uri.EscapeDataString(JsonConvert.SerializeObject(message));
-
-
-                    NavigationManager.NavigateTo($"account/registerconfirmation?email={SignUpForm.Email}&returnUrl={ReturnUrl}&message={"test"}");
+                    NavigationManager.NavigateTo($"account/registerconfirmation?email={SignUpForm.Email}&returnUrl={ReturnUrl}");
                     break;
 
                 case ResultStatus.EXISTS:
+                    Alert = new AlertModel { Message = "The email you entered is already associated with an account. Please use a different email or reset your password if you forgot it.", Icon = "warning" };
                     break;
 
                 default:
+                    Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
                     break;
             }
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
-            throw;
+            Logger.LogError($"ERROR : Register.SignUpAsync() :: {ex.Message}");
+            Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
         }
         finally
         {
             IsBusy = false;
         }
-       
     }
-
-
-
-    // public async Task RegisterUser(EditContext editContext)
-    // {
-    //     var user = CreateUser();
-
-    //     await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-    //     var emailStore = GetEmailStore();
-    //     await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-    //     var result = await UserManager.CreateAsync(user, Input.Password);
-
-    //     if (!result.Succeeded)
-    //     {
-    //         identityErrors = result.Errors;
-    //         return;
-    //     }
-
-    //     Logger.LogInformation("User created a new account with password.");
-
-    //     var userId = await UserManager.GetUserIdAsync(user);
-    //     var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-    //     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-    //     var callbackUrl = NavigationManager.GetUriWithQueryParameters(
-    //         NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
-    //         new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code, ["returnUrl"] = ReturnUrl });
-
-    //     await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
-
-    //     if (UserManager.Options.SignIn.RequireConfirmedAccount)
-    //     {
-    //         RedirectManager.RedirectTo(
-    //             "Account/RegisterConfirmation",
-    //             new() { ["email"] = Input.Email, ["returnUrl"] = ReturnUrl });
-    //     }
-
-    //     await SignInManager.SignInAsync(user, isPersistent: false);
-    //     RedirectManager.RedirectTo(ReturnUrl);
-    // }
-
-    // private ApplicationUser CreateUser()
-    // {
-    //     try
-    //     {
-    //         return Activator.CreateInstance<ApplicationUser>();
-    //     }
-    //     catch
-    //     {
-    //         throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-    //             $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor.");
-    //     }
-    // }
 
 
     private sealed class SignUpModel
     {
-
         [Required(ErrorMessage = "First name is required")]
         public string FirstName { get; set; } = null!;
 

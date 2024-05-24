@@ -1,5 +1,4 @@
 ﻿@page "/not-found"
-
 <PageTitle>Not Found</PageTitle>
 
 <section class="not-found">
@@ -20,11 +19,8 @@
 
     private bool IsDarkMode { get; set; }
 
-
     protected override async Task OnInitializedAsync()
     {
         IsDarkMode = await UserService.GetDarkModeSettingAsync();
-
     }
-
 }

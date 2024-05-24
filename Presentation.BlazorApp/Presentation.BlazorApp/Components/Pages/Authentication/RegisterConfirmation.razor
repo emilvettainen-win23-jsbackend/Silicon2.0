@@ -1,31 +1,19 @@
 ﻿@page "/account/registerconfirmation"
-@using BlazorBootstrap
-@using Microsoft.AspNetCore.WebUtilities
-@using Newtonsoft.Json
-@using Presentation.BlazorApp.Components.Shared
-@using System.ComponentModel.DataAnnotations
-
-
-
 <PageTitle>Register confirmation</PageTitle>
 
-
-
+@inject ILogger<RegisterConfirmation> Logger
 
 
 <section id="confirmation">
     <div class="container">
         <EditForm Model="VerifyForm" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="VerifyAsync" FormName="RegisterConfirmation" Enhance novalidate>
             <DataAnnotationsValidator />
-
-            @if (Notification != null)
+            @if (Alert != null)
             {
-            <div class="alert alert-@Notification.Icon" role="alert">
-            @Notification.Message
-            </div>
+                <div class="alert alert-@Alert.Icon" role="alert">
+                    @Alert.Message
+                </div>
             }
-
-
             <div class="content">
                 <div id="form-info">
                     <h1>Verify your account</h1>
@@ -56,8 +44,9 @@
 @code {
 
     private bool IsBusy;
-
     private ApplicationUser user = default!;
+    private AlertModel? Alert { get; set; }
+    private ExternalLoginInfo externalLoginInfo = default!;
 
 
     [SupplyParameterFromQuery]
@@ -75,9 +64,6 @@
     [SupplyParameterFromForm]
     private VerifyRegistrationModel VerifyForm { get; set; } = new();
 
-    private ExternalLoginInfo externalLoginInfo = default!;
-
-    private AlertModel? Notification { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -91,82 +77,59 @@
         if (currentUser is not null)
         {
             user = currentUser;
-
-        }
-        // var info = await SignInManager.GetExternalLoginInfoAsync();
-        // if (info is null)
-        // {
-        //     // RedirectManager.RedirectToWithStatus("Account/Login", "Error loading external login information.", HttpContext);
-        // }
-        // externalLoginInfo = info;
-
-        // var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        // if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("message", out var jsonMessage))
-        // {
-        //     // Deserialisera JSON-strängen till en MessageModel
-        //     Message = JsonConvert.DeserializeObject<MessageModel>(jsonMessage!);
-        // }
-
-
-       
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await Swal.FireAsync("helloworld");
         }
     }
 
 
-
-
-    // private MessageModel? Message { get; set; }
 
     private async Task VerifyAsync()
     {
-        var result = await Http.PostAsJsonAsync($"{Config["URI:ValidateCode"]}", new { Email = Email, Code = VerifyForm.Code });
-        if (result.IsSuccessStatusCode)
-        {
-            user.EmailConfirmed = true;
-            var updateResult = await UserManager.UpdateAsync(user);
-            if (updateResult.Succeeded)
-            {
-
-                Notification = new AlertModel
-                {
-                    Message = "Account verified successfully. You may now proceed to log in.",
-                    Icon = "success"
-                };
-
-
-            }
-        }
-    }
-
-
-    private async Task ResendCodeAsync()
-    {
         try
         {
-            var result = await Http.PostAsJsonAsync($"{Config["URI:GenerateCode"]}", new { Email = Email });
+            var result = await Http.PostAsJsonAsync($"{Config["URI:ValidateCode"]}", new { Email = Email, Code = VerifyForm.Code });
             if (result.IsSuccessStatusCode)
             {
-                //code resent
+                user.EmailConfirmed = true;
+                var updateResult = await UserManager.UpdateAsync(user);
+                if (updateResult.Succeeded)
+                {
+                    Alert = new AlertModel { Message = "Account verified successfully. You may now proceed to sign in.", Icon = "success" };
+                }
             }
             else
             {
-                //try again
+                Alert = new AlertModel { Message = "Hmm, that code didn’t do the trick. Let's give it another shot. Resend the code!", Icon = "warning" };
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            //contact support
-            throw;
+            Logger.LogError($"ERROR : Register.SignUpAsync() :: {ex.Message}");
         }
-
+        Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
     }
+
+
+    // private async Task ResendCodeAsync()
+    // {
+    //     try
+    //     {
+    //         var result = await Http.PostAsJsonAsync($"{Config["URI:GenerateCode"]}", new { Email = Email });
+    //         if (result.IsSuccessStatusCode)
+    //         {
+    //             //code resent
+    //         }
+    //         else
+    //         {
+    //             //try again
+    //         }
+    //     }
+    //     catch (Exception)
+    //     {
+    //         //contact support
+    //         throw;
+    //     }
+
+    // }
 
     private sealed class VerifyRegistrationModel
     {

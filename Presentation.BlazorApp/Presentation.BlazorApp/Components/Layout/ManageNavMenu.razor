@@ -1,5 +1,4 @@
-﻿
-<aside class="account-panel">
+﻿<aside class="account-panel">
     <div class="content">
         <div class="account-user">
             <div class="account-user-img">
@@ -24,23 +23,19 @@
 </aside>
 
 
-
-
 @code {
 
     private UserDto user = default!;
 
+
     [SupplyParameterFromForm(FormName ="signout")]
     private HiddenModel? HiddenForm { get; set; }
 
-    [SupplyParameterFromForm(FormName = "profileimg")]
-    private ProfileImageModel ImageForm { get; set; } = new();
-
+  
     protected override async Task OnInitializedAsync()
     {
         user = await UserService.GetCurrentUserAsync();
         HiddenForm ??= new();
-
     }
 
    
@@ -55,9 +50,5 @@
         public string? HiddenInput;
     }
 
-    private sealed class ProfileImageModel
-    {
-        public IBrowserFile? File { get; set; }
-        public string? ProfileImageUrl { get; set; }
-    }
+  
 }

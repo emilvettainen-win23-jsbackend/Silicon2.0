@@ -1,8 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
 
-
-
 @if (HttpContext is null)
 {
     <p>Loading...</p>
@@ -23,7 +21,6 @@ else
         </section>
         <Footer />
     </div>
-
 }
 
 @code {
@@ -34,23 +31,7 @@ else
     {
         if (HttpContext is null)
         {
-            // If this code runs, we're currently rendering in interactive mode, so there is no HttpContext.
-            // The identity pages need to set cookies, so they require an HttpContext. To achieve this we
-            // must transition back from interactive mode to a server-rendered page.
             NavigationManager.Refresh(forceReload: true);
         }
     }
 }
-
-
-
-@* <section class="account">
-    <div class="container">
-        <div class="grid-12">
-            <ManageNavMenu />
-            <main class="account-content">
-                @Body
-            </main>
-        </div>
-    </div>
-</section> *@

@@ -1,9 +1,4 @@
 ﻿@page "/account/details"
-@using Infrastructure.Dtos.User
-@using Infrastructure.Factories
-@using Infrastructure.Helpers.Responses
-@using Presentation.BlazorApp.Models.Account
-
 <PageTitle>Account Details</PageTitle>
 
 @inject ILogger<Index> Logger
@@ -18,7 +13,6 @@
                 <EditForm method="post" Model="BasicInfoForm" FormName="basic" OnValidSubmit="SaveBasicInfoAsync" Enhance novalidate>
                     <DataAnnotationsValidator />
                     <div class="content">
-
                         <div id="form-firstname" class="input-group">
                             <label>First name</label>
                             @if (IsExternalAccount)
@@ -31,7 +25,6 @@
                                 <ValidationMessage For="() => BasicInfoForm.FirstName" class="text-danger" />
                             }
                         </div>
-
                         <div id="form-lastname" class="input-group">
                             <label>Lastname</label>
                             @if (IsExternalAccount)
@@ -60,13 +53,20 @@
                         </div>
                         <div id="form-buttons">
                             <button @onclick="ResetBasicInfoForm" class="btn-gray-small" type="button"> Cancel</button>
-                            <button class="btn-theme-small" type="submit">Save changes</button>
+                            <button disabled="@IsBusy" id="form-submit" class="btn-theme-small" type="submit">
+                                @if (IsBusy)
+                                {
+                                    <div class="spinner-border spinner-border-sm" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                }
+                                <span>Save changes</span>
+                            </button>
                         </div>
                     </div>
                 </EditForm>
             </div>
             <hr />
-
             <div class="address-info">
                 <h5>Address</h5>
                 <EditForm FormName="address" Model="AddressInfoForm" OnValidSubmit="SaveAddressInfoAsync" method="post" Enhance novalidate>
@@ -93,7 +93,15 @@
                         </div>
                         <div id="form-buttons">
                             <button @onclick="ResetAddressInfoForm" class="btn-gray-small" type="button"> Cancel</button>
-                            <button class="btn-theme-small" type="submit">Save changes</button>
+                            <button disabled="@IsBusy" id="form-submit" class="btn-theme-small" type="submit">
+                                @if (IsBusy)
+                                {
+                                    <div class="spinner-border spinner-border-sm" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                }
+                                <span>Save changes</span>
+                            </button>
                         </div>
                     </div>
                 </EditForm>
@@ -106,10 +114,14 @@
 
 @code {
     private bool IsExternalAccount;
+    private bool IsBusy;
     private UserDto user = default!;
+
+
 
     [SupplyParameterFromForm(FormName ="basic")]
     private BasicInfoModel BasicInfoForm { get; set; } = new();
+
 
     [SupplyParameterFromForm(FormName ="address")]
     private AddressInfoModel AddressInfoForm { get; set; } = new();
@@ -119,7 +131,6 @@
     {
         user = await UserService.GetCurrentUserAsync();
         IsExternalAccount = user.IsExternalAccount;
-
         BasicInfoForm.FirstName = user.FirstName;
         BasicInfoForm.LastName = user.LastName;
         BasicInfoForm.Email = user.Email;
@@ -129,12 +140,6 @@
         var addressInfo = await AddressService.GetAddressInfoAsync(user.Id);
         AddressInfoForm = new AddressInfoModel { Addressline_1 = addressInfo!.StreetName, Addressline_2 = addressInfo.OptionalAddress, PostalCode = addressInfo.PostalCode, City = addressInfo.City};
 
-        
-
-        // AddressInfoForm.Addressline_1 ??= addressInfo!.StreetName;
-        // AddressInfoForm.Addressline_2 ??= addressInfo!.OptionalAddress;
-        // AddressInfoForm.PostalCode ??= addressInfo!.PostalCode;
-        // AddressInfoForm.City ??= addressInfo!.City;
     }
 
 
@@ -142,10 +147,12 @@
     {
         try
         {
+            IsBusy = true;
             var result = await UserService.UpdateBasicInfoAsync(user.Id, UserFactory.UpdateUserDto(BasicInfoForm.FirstName, BasicInfoForm.LastName, BasicInfoForm.Phone!, BasicInfoForm.Biography!));
             switch (result.StatusCode)
             {
                 case ResultStatus.OK:
+                    await Swal.FireAsync("Info", "Was updated successfully", SweetAlertIcon.Success);
                     NavigationManager.Refresh();
                     break;
 
@@ -160,6 +167,10 @@
         {
             Logger.LogError($"ERROR : AccountDetails.SaveBasicInfoAsync() :: {ex.Message}");
         }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
 
@@ -167,6 +178,7 @@
     {
         try
         {
+            IsBusy = true;
             var result = await AddressService.CreateOrUpdateAddressInfoAsync(user.Id, AddressFactory.CreateAddressDto(AddressInfoForm.Addressline_1, AddressInfoForm.Addressline_2, AddressInfoForm.PostalCode, AddressInfoForm.City));
             switch (result.StatusCode)
             {
@@ -180,13 +192,16 @@
 
                 default:
                     break;
-                
+
             }
         }
         catch (Exception ex)
         {
-
             Logger.LogError($"ERROR : AccountDetails.SaveAddressInfoAsync() :: {ex.Message}");
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 
