@@ -206,7 +206,7 @@
                 StateHasChanged();
 
                 await Swal.FireAsync("Removed", "Course has been removed", SweetAlertIcon.Success);
-                
+
 
 
                 // await Alert.ShowAlert("success", "Course has been removed!");
@@ -226,18 +226,18 @@
             default:
                 break;
         }
-        
-
-        
 
 
-        
+
+
+
+
 
     }
-    
-    
-        
-    
+
+
+
+
 
 
     private async Task RemoveAllCoursesAsync()
@@ -249,10 +249,11 @@
             switch (result.StatusCode)
             {
                 case ResultStatus.OK:
+                    StateHasChanged();
                     break;
 
                 case ResultStatus.NOT_FOUND:
-                    //no courses to remove
+                    await Swal.FireAsync("Error", "No saved courses to remove", SweetAlertIcon.Error);
                     break;
 
                 default:

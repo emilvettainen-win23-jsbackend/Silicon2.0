@@ -6,14 +6,15 @@
 
 <section id="signup">
     <div class="container">
-        @if (Alert != null)
-        {
-            <div class="alert alert-@Alert.Icon" role="alert">
-                @Alert.Message
-            </div>
-        }
+        
         <EditForm Model="SignUpForm" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="SignUpAsync" FormName="register" novalidate>
             <DataAnnotationsValidator />
+    @*         @if (Alert != null)
+            {
+                <div class="alert alert-@Alert.Icon" role="alert">
+                    @Alert.Message
+                </div>
+            } *@
             <h1>Create Account</h1>
             <p>Already have an account? <a href="/account/signin">Sign in here.</a></p>
             <div class="content">
@@ -74,6 +75,9 @@
     private SignUpModel SignUpForm { get; set; } = new();
 
 
+
+
+
     public async Task SignUpAsync(EditContext editContext)
     {
         IsBusy = true;
@@ -90,11 +94,13 @@
                     break;
 
                 case ResultStatus.EXISTS:
-                    Alert = new AlertModel { Message = "The email you entered is already associated with an account. Please use a different email or reset your password if you forgot it.", Icon = "warning" };
+                    // Alert = new AlertModel { Message = "The email you entered is already associated with an account. Please use a different email or reset your password if you forgot it.", Icon = "warning" };
+                    await Swal.FireAsync("", "The email you entered is already associated with an account. Please use a different email or reset your password if you forgot it.", SweetAlertIcon.Warning);
                     break;
 
                 default:
-                    Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
+                    // Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
+                    await Swal.FireAsync("", "Our server is having a bad day. We're on it! Please try again later!", SweetAlertIcon.Error);
                     break;
             }
 
@@ -102,7 +108,8 @@
         catch (Exception ex)
         {
             Logger.LogError($"ERROR : Register.SignUpAsync() :: {ex.Message}");
-            Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
+            // Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
+            await Swal.FireAsync("", "Our server is having a bad day. We're on it! Please try again later!", SweetAlertIcon.Error);
         }
         finally
         {
