@@ -1,0 +1,46 @@
+.externallogin-section {
+    .container {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 1rem;
+        padding-top: 2rem;
+
+        .content {
+            grid-template-areas: "alert" "info" "form";
+            grid-column: 1/13;
+
+            @include lg {
+                grid-column: 3/11;
+            }
+
+            @include xl {
+                grid-column: 4/10;
+            }
+
+            @include xxl {
+                padding: 0 3rem;
+            }
+
+
+            #content-alert {
+                grid-area: alert;
+            }
+
+
+            #content-info {
+                grid-area: info;
+                margin-bottom: .5rem;
+            }
+
+
+            #content-form {
+                grid-area: form;
+                
+                form {
+                    gap: .5rem;
+                }
+                
+            }
+        }
+    }
+}

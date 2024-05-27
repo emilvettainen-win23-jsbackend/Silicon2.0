@@ -1,57 +1,58 @@
 ﻿@page "/Account/ExternalLogin"
-
+<PageTitle>Register</PageTitle>
 
 @using System.Security.Claims
 @using System.Text
 @using System.Text.Encodings.Web
-
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
-
-
 
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
-
-
-
 @inject NavigationManager NavigationManager
-@* @inject IdentityRedirectManager RedirectManager *@
 @inject ILogger<ExternalLogin> Logger
 
-<PageTitle>Register</PageTitle>
 
-<StatusMessage Message="@message" />
-<h1>Register</h1>
-<h2>Associate your @ProviderDisplayName account.</h2>
-<hr />
 
-<div  class="alert alert-info">
-    You've successfully authenticated with <strong>@ProviderDisplayName</strong>.
-    Please enter an email address for this site below and click the Register button to finish
-    logging in.
-</div>
-
-<div class="row">
-    <div class="col-md-4">
-        <EditForm Model="Input" OnValidSubmit="OnValidSubmitAsync" FormName="confirmation" method="post">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="email" placeholder="Please enter your email." />
-                <label for="email" class="form-label">Email</label>
-                <ValidationMessage For="() => Input.Email" />
+<section class="externallogin-section">
+    <div class="container">
+        <div class="content">
+            <div id="content-alert">
+                @if (Alert != null)
+                {
+                    <div class="alert alert-@Alert.Icon" role="alert">
+                        @Alert.Message
+                    </div>
+                }
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </EditForm>
+            <div id="content-info">
+                <div class="alert alert-info">
+                    You've successfully authenticated with <strong>@ProviderDisplayName</strong>.
+                    Please enter an email address for this site below and click the Register button to finish
+                    logging in.
+                </div>
+                <h2>Associate your @ProviderDisplayName account.</h2>
+            </div>
+            <div id="content-form">
+                <EditForm Model="Input" OnValidSubmit="OnValidSubmitAsync" FormName="confirmation" method="post">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="text-danger" role="alert" />
+                    <div class="form-floating mb-3">
+                        <InputText @bind-Value="Input.Email" class="form-control" autocomplete="email" placeholder="Please enter your email." />
+                        <label for="email" class="form-label">Email</label>
+                    </div>
+                    <button type="submit" class="btn-theme-medium">Register</button>
+                </EditForm>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
 @code {
     public const string LoginCallbackAction = "LoginCallback";
-
+    private AlertModel? Alert { get; set; }
     private string? message;
     private ExternalLoginInfo externalLoginInfo = default!;
 
@@ -76,16 +77,16 @@
     {
         if (RemoteError is not null)
         {
-            // RedirectManager.RedirectToWithStatus("Account/Login", $"Error from external provider: {RemoteError}", HttpContext);
+            NavigationManager.NavigateTo("/account/signin");
         }
 
         var info = await SignInManager.GetExternalLoginInfoAsync();
         if (info is null)
         {
-            // RedirectManager.RedirectToWithStatus("Account/Login", "Error loading external login information.", HttpContext);
+            NavigationManager.NavigateTo("/account/signin");
         }
 
-        externalLoginInfo = info;
+        externalLoginInfo = info!;
 
         if (HttpMethods.IsGet(HttpContext.Request.Method))
         {
@@ -94,70 +95,32 @@
                 await OnLoginCallbackAsync();
                 return;
             }
-
-            // We should only reach this page via the login callback, so redirect back to
-            // the login page if we get here some other way.
-
-            // RedirectManager.RedirectTo("Account/Login");
+            NavigationManager.NavigateTo("/account/signin");
         }
-
-
-        //sender till emailrequest
-
     }
 
     private async Task OnLoginCallbackAsync()
     {
-        // Sign in the user with this external login provider if the user already has a login.
-        var result = await SignInManager.ExternalLoginSignInAsync(
-            externalLoginInfo.LoginProvider,
-            externalLoginInfo.ProviderKey,
-            isPersistent: false,
-            bypassTwoFactor: true);
-
+        var result = await SignInManager.ExternalLoginSignInAsync( externalLoginInfo.LoginProvider, externalLoginInfo.ProviderKey, isPersistent: false, bypassTwoFactor: true);
         if (result.Succeeded)
         {
-            Logger.LogInformation(
-                "{Name} logged in with {LoginProvider} provider.",
-                externalLoginInfo.Principal.Identity?.Name,
-                externalLoginInfo.LoginProvider);
-            // RedirectManager.RedirectTo(ReturnUrl);
-
             NavigationManager.NavigateTo(!string.IsNullOrEmpty(ReturnUrl) ? ReturnUrl : "/account/details");
         }
         else if (result.IsNotAllowed)
         {
-        
+            await UserService.VerificationRequest(externalLoginInfo.Principal.FindFirstValue(ClaimTypes.Email)!);
             NavigationManager.NavigateTo($"account/registerconfirmation?email={externalLoginInfo.Principal.FindFirstValue(ClaimTypes.Email)}&returnUrl={ReturnUrl}");
         }
-        // else if (result.IsLockedOut)
-        // {
-        //     RedirectManager.RedirectTo("Account/Lockout");
-        // }
-
-        // If the user does not have an account, then ask the user to create an account.
-        // if (externalLoginInfo.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
-        // {
-        //     Input.Email = externalLoginInfo.Principal.FindFirstValue(ClaimTypes.Email) ?? "";
-        // }
     }
 
-   
+
 
     private async Task OnValidSubmitAsync()
     {
-        
-
-
-
         var emailStore = GetEmailStore();
         var user = CreateUser();
-
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-        // await UserStore.Se
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-        // user.Email = Input.Email;
-
         user.FirstName = externalLoginInfo.Principal.FindFirstValue(ClaimTypes.GivenName)!;
         user.LastName = externalLoginInfo.Principal.FindFirstValue(ClaimTypes.Surname)!;
         user.IsExternalAccount = true;
@@ -168,32 +131,15 @@
             result = await UserManager.AddLoginAsync(user, externalLoginInfo);
             if (result.Succeeded)
             {
-
+                await UserService.VerificationRequest(Input.Email);
                 NavigationManager.NavigateTo($"account/registerconfirmation?email={Input.Email}&returnUrl={ReturnUrl}");
-
-                // Logger.LogInformation("User created an account using {Name} provider.", externalLoginInfo.LoginProvider);
-
-                // var userId = await UserManager.GetUserIdAsync(user);
-                // var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-                // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-                // var callbackUrl = NavigationManager.GetUriWithQueryParameters(
-                //     NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
-                //     new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code });
-                // await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
-
-                // If account confirmation is required, we need to show the link if we don't have a real email sender
-                // if (UserManager.Options.SignIn.RequireConfirmedAccount)
-                // {
-                //     // NavigationManager.NavigateTo($"account/registerconfirmation?email={Input.Email}&returnUrl={ReturnUrl}");
-                // }
-
-                // await SignInManager.SignInAsync(user, isPersistent: false, externalLoginInfo.LoginProvider);
-                // RedirectManager.RedirectTo(ReturnUrl);
             }
         }
-        
-        message = $"Error: {string.Join(",", result.Errors.Select(error => error.Description))}";
+        Alert = new AlertModel
+        {
+            Message = string.Join(",", result.Errors.Select(error => error.Description)),
+            Icon = "danger"
+        };
     }
 
     private ApplicationUser CreateUser()

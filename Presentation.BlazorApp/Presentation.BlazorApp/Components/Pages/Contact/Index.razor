@@ -1,5 +1,156 @@
-﻿<h3>Index</h3>
+﻿@page "/contact"
+<PageTitle>Contact</PageTitle>
+
+@rendermode InteractiveServer
+
+<section class="contact">
+    <div class="container grid-12">
+        <div class="breadcrumbs">
+            <nav>
+                <ol>
+                    <li> <a href="/"><i class="fa-regular fa-house me-2"></i>Home</a></li>
+                    <li><i class="fa-regular fa-angles-right"></i></li>
+                    <li class="active"><a href="/contact" class="active">Contact</a></li>
+                </ol>
+            </nav>
+        </div>
+        <div class="contact-details">
+            <h1>Contact Us</h1>
+            <div class="contact-content">
+                <i class="fa-regular fa-envelope icon"></i>
+                <div>
+                    <h4>Email us</h4>
+                    <p class="text-m">Please feel free to drop us a line. We will respond as soon as possible.</p>
+                    <NavLink href="#">Leave a message<i class="fa-regular fa-arrow-right"></i></NavLink>
+                </div>
+            </div>
+            <div class="contact-content">
+                <i class="fa-regular fa-user-plus careers icon"></i>
+                <div>
+                    <h4>Careers</h4>
+                    <p class="text-m">Sit ac ipsum leo lorem magna nunc mattis maecenas non vestibulum.</p>
+                    <NavLink href="#">Send an application<i class="fa-regular fa-arrow-right"></i></NavLink>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-form">
+            @if (Alert != null)
+            {
+                <div class="alert alert-@Alert.Icon" role="alert">
+                    @Alert.Message
+                </div>
+            }
+
+            <h2>Get In Contact With Us</h2>
+            <EditForm Model="_contact" id="contactForm" method="post" OnValidSubmit="ContactRequestAsync" FormName="contact" Enhance novalidate >
+                <DataAnnotationsValidator />
+                <div class="content">
+                    <div id="form-fullname" class="input-group">
+                        <label for="fullName">Full name</label>
+                        <InputText @bind-Value="_contact.FullName" id="fullName" type="text" class="form-control" placeholder="Enter your full name" />
+                        <ValidationMessage For="() => _contact.FullName" class="text-danger" />
+                    </div>
+
+                    <div id="form-email" class="input-group">
+                        <label for="email">Email address</label>
+                        <InputText @bind-Value="_contact.Email" id="email" type="email" class="form-control" placeholder="Enter your email address" />
+                        <ValidationMessage For="() => _contact.Email" class="text-danger" />
+                    </div>
+
+                    <div id="form-service" class="input-group">
+                        <label for="service">Service <span>(optional)</span></label>
+                        <InputSelect @bind-Value="_contact.Service" class="form-select">
+                            <option selected value="">Choose the service you are interested in</option>
+                            <option value="Service1">Service 1</option>
+                            <option value="Service2">Service 2</option>
+                            <option value="Service3">Service 3</option>
+                            <option value="Service4">Service 4</option>
+                        </InputSelect>
+                        <ValidationMessage For="() => _contact.Service" class="invalid-feedback" />
+                    </div>
+
+                    <div id="form-message" class="input-group">
+                        <label for="message">Message</label>
+                        <InputTextArea @bind-Value="_contact.Message" id="message" class="form-control" rows="5" placeholder="Enter your message here..." />
+                        <ValidationMessage For="() => _contact.Message" class="text-danger" />
+                    </div>
+
+                    <div id="form-buttons">
+                        <button class="btn-theme-small" type="submit">Send Contact Request</button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</section>
+
+<section class="map">
+    @* <img src="/images/contact/map.svg" alt="Map of Silver Terrace"> *@
+    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d25238.765582909677!2d-122.42279503723903!3d37.746764032837596!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ssv!2sse!4v1709162677627!5m2!1ssv!2sse"
+            width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+</section>
 
 @code {
+    [SupplyParameterFromForm]
+    private ContactModel _contact { get; set; } = new();
 
+    private AlertModel? Alert { get; set; }
+    private bool isBusy { get; set; } = false;
+
+    private async Task ContactRequestAsync()
+    {
+        isBusy = true;
+        try
+        {
+            var response = await Http.PostAsJsonAsync<ContactModel>($"{Config["CONTACT_PROVIDER"]}", _contact);
+            switch (response.StatusCode)
+            {
+                case System.Net.HttpStatusCode.Created:
+                    Alert = new AlertModel { Message = "Contact request was sent", Icon = "success" };
+                    _contact = new();
+                    break;
+
+                default:
+                    Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
+        }
+        finally
+        {
+            isBusy = false;
+        }
+    }
+
+
+    private sealed class ContactModel
+    {
+        [DataType(DataType.Text)]
+        [Display(Name = "Full name", Prompt = "Enter your full name")]
+        [Required(ErrorMessage = "Full name is required")]
+        [MinLength(2, ErrorMessage = "Full name is required")]
+        public string FullName { get; set; } = null!;
+
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "Email Address", Prompt = "Enter your email address")]
+        [Required(ErrorMessage = "Email address is required")]
+        [RegularExpression(@"^(([^<>()\]\\.,;:\s@\""]+(\.[^<>()\]\\.,;:\s@\""]+)*)|("".+""))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$", ErrorMessage = "Invalid email address")]
+        public string Email { get; set; } = null!;
+        public string? Service { get; set; }
+
+        [DataType(DataType.MultilineText)]
+        [Display(Name = "Message", Prompt = "Message")]
+        [Required(ErrorMessage = "Message is required")]
+        [MinLength(2, ErrorMessage = "Message is required")]
+        public string? Message { get; set; } = null!;
+
+        public DateTime? Created { get; set; } = DateTime.Now;
+        public DateTime? LastUpdated { get; set; } = DateTime.Now;
+    }
 }

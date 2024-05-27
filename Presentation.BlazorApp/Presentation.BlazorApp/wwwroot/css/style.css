@@ -2328,6 +2328,19 @@ footer .container .social-media a {
   grid-template-columns: repeat(12, 1fr);
   gap: 1rem;
 }
+#forgot .container .alert {
+  grid-column: 1/13;
+}
+@media (min-width: 992px) {
+  #forgot .container .alert {
+    grid-column: 3/11;
+  }
+}
+@media (min-width: 1200px) {
+  #forgot .container .alert {
+    grid-column: 4/10;
+  }
+}
 #forgot .container h1 {
   padding-bottom: 0.5rem;
 }
@@ -2422,6 +2435,45 @@ footer .container .social-media a {
   #forgot .container .reset-password .reset-form .content #form-reset-buttons {
     flex-direction: row;
   }
+}
+
+.externallogin-section .container {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1rem;
+  padding-top: 2rem;
+}
+.externallogin-section .container .content {
+  grid-template-areas: "alert" "info" "form";
+  grid-column: 1/13;
+}
+@media (min-width: 992px) {
+  .externallogin-section .container .content {
+    grid-column: 3/11;
+  }
+}
+@media (min-width: 1200px) {
+  .externallogin-section .container .content {
+    grid-column: 4/10;
+  }
+}
+@media (min-width: 1400px) {
+  .externallogin-section .container .content {
+    padding: 0 3rem;
+  }
+}
+.externallogin-section .container .content #content-alert {
+  grid-area: alert;
+}
+.externallogin-section .container .content #content-info {
+  grid-area: info;
+  margin-bottom: 0.5rem;
+}
+.externallogin-section .container .content #content-form {
+  grid-area: form;
+}
+.externallogin-section .container .content #content-form form {
+  gap: 0.5rem;
 }
 
 .account {

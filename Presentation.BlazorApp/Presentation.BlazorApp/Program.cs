@@ -1,17 +1,8 @@
-using Azure.Messaging.ServiceBus;
-
-using GraphQL.Client.Http;
-using GraphQL.Client.Serializer.Newtonsoft;
 using Infrastructure.Data.Contexts;
 using Infrastructure.Data.Entities;
-using Infrastructure.Repositories.Address;
-using Infrastructure.Repositories.Course;
-using Infrastructure.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.DependencyInjection;
 using Presentation.BlazorApp;
 using Presentation.BlazorApp.Components;
 using Presentation.BlazorApp.Configurations;
@@ -29,6 +20,12 @@ internal class Program
             .AddInteractiveServerComponents()
             .AddInteractiveWebAssemblyComponents();
 
+
+        builder.Services.RegisterServices(builder.Configuration);
+        builder.Services.RegisterRepositories();
+
+
+
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddScoped<IdentityRedirectManager>();
         builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
@@ -37,20 +34,6 @@ internal class Program
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             }).AddIdentityCookies();
-
-
-        builder.Services.AddAuthentication()
-        .AddGoogle(GoogleOptions =>
-        {
-            GoogleOptions.ClientId = "893316874513-a6a0bnpavt6tj1262db69jp4rpkasq4l.apps.googleusercontent.com";
-            GoogleOptions.ClientSecret = "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";
-        })
-        .AddFacebook(FacebookOptions =>
-        {
-            FacebookOptions.AppId = "276230208847426";
-            FacebookOptions.AppSecret = "fa8c8957ec6c242f81323a3453e31455";
-
-        });
 
 
         builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AzureDb")), ServiceLifetime.Singleton);
@@ -86,29 +69,9 @@ internal class Program
 
 
 
-        builder.Services.RegisterServices();
-        builder.Services.RegisterRepositories();
+       
 
-        //builder.Services.AddScoped<UserService>();
-        //builder.Services.AddScoped<AddressService>();
-        //builder.Services.AddScoped<AddressRepository>();
-        //builder.Services.AddScoped<UserAddressRepository>();
-        //builder.Services.AddScoped<OptionalAddressRepository>();
-
-        //builder.Services.AddScoped<CourseService>();
-        //builder.Services.AddScoped<SavedCourseRepository>();
-
-        builder.Services.AddHttpClient();
-        builder.Services.AddSingleton(new ServiceBusClient(builder.Configuration.GetConnectionString("ServiceBusConnection")));
-
-
-
-
-
-
-
-        //builder.Services.AddScoped<DarkModeService>();
-
+ 
 
 
         var app = builder.Build();
