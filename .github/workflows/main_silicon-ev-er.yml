@@ -54,4 +54,4 @@ jobs:
           app-name: 'silicon-ev-er'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DC6A0989414E4F539F5A1CEF918C3FC3 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FC9D252C4EE846C38E49D89A2649BC3E }}
