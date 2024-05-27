@@ -1,0 +1,130 @@
+.our-tool {
+    background-color: var(--clr-gray-100);
+    padding: 3rem 0px;
+
+    @include md {
+        padding: 6rem 0px;
+    }
+
+    .container {
+        h1 {
+            @include h3;
+            text-align: center;
+
+            @include sm {
+                @include h1;
+            }
+        }
+
+        p {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .toolboxes-grid {
+            display: grid;
+            padding: 1rem 0;
+
+            @include md {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            @include lg {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .box {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: .5rem;
+                padding: 40px;
+                border: 1px solid var(--clr-gray-300);
+                transition: all .2s ease-in-out;
+
+                img {
+                    padding-bottom: 1.5rem;
+                }
+
+                p {
+                    @include text-m;
+                    text-align: center;
+                    flex: 1;
+                }
+
+                @include md {
+                    &:nth-child(1) {
+                        border-top: 0px;
+                        border-left: 0px;
+                    }
+
+                    &:nth-child(2) {
+                        border-top: 0px;
+                        border-right: 0px;
+                    }
+
+                    &:nth-child(3) {
+                        border-left: 0px;
+                    }
+
+                    &:nth-child(4) {
+                        border-right: 0px;
+                    }
+
+                    &:nth-child(5) {
+                        border-left: 0px;
+                        border-bottom: 0px;
+                    }
+
+                    &:nth-child(6) {
+                        border-bottom: 0px;
+                        border-right: 0px;
+                    }
+                }
+
+                @include lg {
+                    &:nth-child(1) {
+                        border-top: 0px;
+                        border-left: 0px;
+                    }
+
+                    &:nth-child(2) {
+                        border-top: 0px;
+                        border-right: 1px solid var(--clr-gray-300);
+                    }
+
+                    &:nth-child(3) {
+                        border-top: 0px;
+                        border-left: 1px solid var(--clr-gray-300);
+                        border-right: 0px;
+                    }
+
+                    &:nth-child(4) {
+                        border-left: 0px;
+                        border-right: 1px solid var(--clr-gray-300);
+                        border-bottom: 0px;
+                    }
+
+                    &:nth-child(5) {
+                        border-left: 1px solid var(--clr-gray-300);
+                        border-right: 1px solid var(--clr-gray-300);
+                        border-bottom: 0px;
+                    }
+
+                    &:nth-child(6) {
+                        border-bottom: 0px;
+                        border-right: 0px;
+                    }
+                }
+
+                &:hover {
+                    transition: all 0.2s ease-in-out;
+                    cursor: pointer;
+                    background-color: var(--clr-toolbox);
+                    @include shadow-m;
+                }
+            }
+        }
+    }
+}

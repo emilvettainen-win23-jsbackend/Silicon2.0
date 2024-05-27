@@ -1,5 +1,6 @@
 ﻿@page "/account/security"
 @using System.ComponentModel.DataAnnotations
+@using Infrastructure.Dtos.User
 
 
 <section class="account-security">
@@ -52,7 +53,7 @@
 
 @code {
 
-    private ApplicationUser user = default!;
+    private UserDto user = default!;
     private bool IsExternalAccount;
 
 
@@ -64,19 +65,19 @@
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+        user = await UserService.GetCurrentUserAsync();
         IsExternalAccount = user.IsExternalAccount;
     }
 
     private async Task DeleteAccountAsync()
     {
-        user.EmailConfirmed = false;
-        var result = await UserManager.UpdateAsync(user);
-        if (result.Succeeded)
-        {
-            await SignInManager.SignOutAsync();
-            NavigationManager.NavigateTo("/");
-        }
+        // user.EmailConfirmed = false;
+        // var result = await UserManager.UpdateAsync(user.Id);
+        // if (result.Succeeded)
+        // {
+        //     await SignInManager.SignOutAsync();
+        //     NavigationManager.NavigateTo("/");
+        // }
         //message
 
     }

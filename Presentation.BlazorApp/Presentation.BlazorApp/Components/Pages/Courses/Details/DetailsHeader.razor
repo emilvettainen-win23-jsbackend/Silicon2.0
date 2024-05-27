@@ -1,0 +1,71 @@
+﻿@using Presentation.BlazorApp.Models.Courses
+
+
+@if (course != null)
+{
+    <section class="single-course-header" style="background-image: url('@(!string.IsNullOrEmpty(course.CourseImageUrl) ? course.CourseImageUrl : "/images/courses/user-profile.png")")');">
+        <div class="container">
+            <div class="breadcrumbs">
+                <nav>
+                    <ol>
+                        <li> <a href="/"><i class="fa-regular fa-house me-2"></i>Home</a></li>
+                        <li><i class="fa-regular fa-angles-right"></i></li>
+                        <li><a href="/courses">Courses</a></li>
+                        <li><i class="fa-regular fa-angles-right"></i></li>
+                        <li class="active"><a href="/courses/detals?id=@course.Id" class="active">@course.CourseTitle</a></li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="badges">
+                @if (course.IsBestseller)
+                {
+                    <p class="text-s">
+                        Best Seller
+                    </p>
+                    <p class="text-s">
+                        Digital
+                    </p>
+                }
+                else
+                {
+                    <p class="text-s">
+                        Digital
+                    </p>
+                }
+            </div>
+            <h1 class="course-title">@course.CourseTitle</h1>
+            <p class="text-lg">@course.CourseIngress</p>
+            <div class="course-specs">
+                <div class="star-rating">
+                    <i class="star fas fa-star"></i>
+                    <i class="star fas fa-star"></i>
+                    <i class="star fas fa-star"></i>
+                    <i class="star fas fa-star"></i>
+                    <i class="star far fa-star"></i>
+                </div>
+
+                <p>(1.2K reviews)</p>
+                <p><i class="fa-regular fa-thumbs-up"></i>@(course.Rating.InNumbers / 1000) K likes</p>
+
+                <p><i class="fa-regular fa-clock"></i>@course.Included.HoursOfVideo hours</p>
+            </div>
+
+            <div class="course-created">
+                <img src="@(!string.IsNullOrEmpty(course.Author.ProfileImageUrl) ? course.Author.ProfileImageUrl : "/images/courses/single-course/created_by_img.svg")" alt="@course.Author.FullName">
+                <div>
+                    <h6>Created by</h6>
+                    <p class="text-m">@course.Author.FullName</p>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+
+
+@code {
+
+    [Parameter]
+    public CourseModel? course { get; set; }
+
+}

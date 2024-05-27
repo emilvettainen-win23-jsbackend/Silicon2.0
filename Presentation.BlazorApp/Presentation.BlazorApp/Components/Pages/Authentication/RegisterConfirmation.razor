@@ -1,17 +1,25 @@
 ﻿@page "/account/registerconfirmation"
-@using Presentation.BlazorApp.Components.Shared
-@using System.ComponentModel.DataAnnotations
-
 <PageTitle>Register confirmation</PageTitle>
+
+@inject ILogger<RegisterConfirmation> Logger
 
 
 <section id="confirmation">
     <div class="container">
-       <h1>Verify your account</h1>
-       <ResendButton Email="@Email" @rendermode="InteractiveServer" />
         <EditForm Model="VerifyForm" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="VerifyAsync" FormName="RegisterConfirmation" Enhance novalidate>
             <DataAnnotationsValidator />
+            @if (Alert != null)
+            {
+                <div class="alert alert-@Alert.Icon" role="alert">
+                    @Alert.Message
+                </div>
+            }
             <div class="content">
+                <div id="form-info">
+                    <h1>Verify your account</h1>
+                    <p>Check your email for a verification code to complete your registration.</p>
+                    <ResendButton Email="@Email" @rendermode="InteractiveServer" />
+                </div>
                 <div id="form-code" class="input-group">
                     <label for="code">Code</label>
                     <InputText id="code" @bind-Value="VerifyForm.Code" class="form-control" autocomplete="off" placeholder="Enter your verification code" />
@@ -36,8 +44,9 @@
 @code {
 
     private bool IsBusy;
-
     private ApplicationUser user = default!;
+    private AlertModel? Alert { get; set; }
+    private ExternalLoginInfo externalLoginInfo = default!;
 
 
     [SupplyParameterFromQuery]
@@ -68,26 +77,62 @@
         if (currentUser is not null)
         {
             user = currentUser;
-
         }
     }
+
 
 
     private async Task VerifyAsync()
     {
-        var result = await Http.PostAsJsonAsync($"{Config["URI:ValidateCode"]}", new { Email = Email, Code = VerifyForm.Code });
-        if (result.IsSuccessStatusCode)
+        try
         {
-            user.EmailConfirmed = true;
-            var updateResult = await UserManager.UpdateAsync(user);
-            if (updateResult.Succeeded)
+            var result = await Http.PostAsJsonAsync($"{Config["URI:ValidateCode"]}", new { Email = Email, Code = VerifyForm.Code });
+            if (result.IsSuccessStatusCode)
             {
-                NavigationManager.NavigateTo($"account/signin?returnUrl={ReturnUrl}");
+                user.EmailConfirmed = true;
+                var updateResult = await UserManager.UpdateAsync(user);
+                if (updateResult.Succeeded)
+                {
+                    Alert = new AlertModel { Message = "Account verified successfully. You may now proceed to sign in.", Icon = "success" };
+                    return;
+                }
+            }
+            else
+            {
+                Alert = new AlertModel { Message = "Hmm, that code didn’t do the trick. Let's give it another shot. Resend the code!", Icon = "warning" };
+                return;
             }
         }
+        catch (Exception ex)
+        {
+            Logger.LogError($"ERROR : Register.SignUpAsync() :: {ex.Message}");
+        }
+        Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
     }
 
- 
+
+    // private async Task ResendCodeAsync()
+    // {
+    //     try
+    //     {
+    //         var result = await Http.PostAsJsonAsync($"{Config["URI:GenerateCode"]}", new { Email = Email });
+    //         if (result.IsSuccessStatusCode)
+    //         {
+    //             //code resent
+    //         }
+    //         else
+    //         {
+    //             //try again
+    //         }
+    //     }
+    //     catch (Exception)
+    //     {
+    //         //contact support
+    //         throw;
+    //     }
+
+    // }
+
     private sealed class VerifyRegistrationModel
     {
         [Required(ErrorMessage = "Verification code is required!")]

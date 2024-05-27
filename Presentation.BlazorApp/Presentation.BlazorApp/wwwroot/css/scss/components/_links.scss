@@ -1,0 +1,55 @@
+a {
+    @include standard-text;
+    color: var(--clr-theme);
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.btn-link {
+    @include standard-text;
+    color: var(--clr-theme);
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    background-color: transparent;
+    border: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+
+.btn-resend {
+    @include standard-text;
+    color: var(--clr-theme);
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+    background-color: transparent;
+    border: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.menu-link {
+    @include text-nav;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+
+    &:hover,
+    &:active,
+    &:focus,
+    .active {
+        color: var(--clr-theme);
+        text-decoration: none;
+    }
+}
+

@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation.BlazorApp", "Presentation.BlazorApp\Presentation.BlazorApp\Presentation.BlazorApp.csproj", "{117B6666-82CE-4A8F-95FD-19920EEFA111}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.BlazorApp", "Presentation.BlazorApp\Presentation.BlazorApp\Presentation.BlazorApp.csproj", "{117B6666-82CE-4A8F-95FD-19920EEFA111}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation.BlazorApp.Client", "Presentation.BlazorApp\Presentation.BlazorApp.Client\Presentation.BlazorApp.Client.csproj", "{6BCBD354-1AEA-44C0-B1C7-463F23F2F49E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Presentation.BlazorApp.Client", "Presentation.BlazorApp\Presentation.BlazorApp.Client\Presentation.BlazorApp.Client.csproj", "{6BCBD354-1AEA-44C0-B1C7-463F23F2F49E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{38277DC4-3AD1-4BC9-97C4-223B3580296A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{38277DC4-3AD1-4BC9-97C4-223B3580296A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

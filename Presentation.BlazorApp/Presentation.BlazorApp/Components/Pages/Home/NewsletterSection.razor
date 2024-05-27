@@ -1,0 +1,123 @@
+﻿@inject ILogger<NewsletterSection> Logger
+
+
+<section id="subscribe" class="newsletter">
+    <div class="container grid-12">
+        <div class="content">
+            <h1>Don't Want to Miss Anything?</h1>
+            <img src="/images/newsletter/arrows.svg" alt="Arrows">
+            <EditForm Model="SubscribeForm" id="newsletterForm" method="post" OnValidSubmit="SubscribeRequestAsync" FormName="newsletter" Enhance novalidate>
+                <DataAnnotationsValidator/>
+                <h5>Sign up for Newsletters</h5>
+                <div class="checkboxes">
+                    <div class="form-check">
+                        <label for="daily">Daily Newsletter</label>
+                        <InputCheckbox id="daily" @bind-Value="SubscribeForm.DailyNewsletter" class="form-check-input" />
+                    </div>
+                    <div class="form-check">
+                        <label for="advertisingUpdates">AdvertisingUpdates</label>
+                        <InputCheckbox id="advertisingUpdates" @bind-Value="SubscribeForm.AdvertisingUpdates" class="form-check-input" />
+                    </div>
+                    <div class="form-check">
+                        <label for="weenInReview">WeenInReview</label>
+                        <InputCheckbox id="weekInReview" @bind-Value="SubscribeForm.WeenInReview" class="form-check-input" />
+                    </div>
+                    <div class="form-check">
+                        <label for="eventUpdates">EventUpdates</label>
+                        <InputCheckbox id="EventUpdates" @bind-Value="SubscribeForm.EventUpdates" class="form-check-input" />
+                    </div>
+                    <div class="form-check">
+                        <label for="startupsWeekly">StartupsWeekly</label>
+                        <InputCheckbox id="startupsWeekly" @bind-Value="SubscribeForm.StartupsWeekly" class="form-check-input" />
+                    </div>
+                    <div class="form-check">
+                        <label for="podcasts">Podcasts</label>
+                        <InputCheckbox id="podcasts" @bind-Value="SubscribeForm.Podcasts" class="form-check-input" />
+                    </div>
+                </div>
+                <div class="input-group">
+                    <InputText @bind-Value="SubscribeForm.Email" type="email" class="form-control ps-5" placeholder="Your email"/>
+                        <i class="fa-regular fa-envelope"></i>
+                    <button disabled="@IsBusy" type="submit" class="btn-theme-medium">
+                        @if (IsBusy)
+                        {
+                            <div class="spinner-border spinner-border-sm" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        }
+                        <span>Subscribe *</span>
+                    </button>
+                    <ValidationMessage For="() => SubscribeForm.Email" class="text-danger" />
+                    <label> * Yes, I agree to the <a href="#">terms</a> and <a href="#">privacy policy</a>.</label>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</section>
+
+
+
+@code {
+
+    [SupplyParameterFromForm]
+    private SubscribeModel SubscribeForm { get; set; } = new();
+
+
+    private bool IsBusy { get; set; } = false;
+
+
+    private async Task SubscribeRequestAsync()
+    {
+        IsBusy = true;
+        try
+        {
+            var response = await Http.PostAsJsonAsync<SubscribeModel>($"{Config["URI:Subscribe"]}", SubscribeForm);
+            switch (response.StatusCode)
+            {
+                case System.Net.HttpStatusCode.OK:
+                    await Swal.FireAsync("Subscribe", "You have been subscribed!", SweetAlertIcon.Success);
+                    break;
+
+                case System.Net.HttpStatusCode.Conflict:
+                    await Swal.FireAsync("Subscribe", "You have already been subscribed!", SweetAlertIcon.Warning);
+                    break;
+
+                default:
+                    await Swal.FireAsync("Subscribe", "An unexpected error occurred, Please contact support!", SweetAlertIcon.Error);
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"ERROR : NewsletterSection.SubscribeRequestAsync() :: {ex.Message}");
+            await Swal.FireAsync("Subscribe", "An unexpected error occurred, Please contact support!", SweetAlertIcon.Error);
+        }
+        finally
+        {
+            SubscribeForm = new();
+            IsBusy = false;
+        }
+    }
+
+
+    private sealed class SubscribeModel
+    {
+        [DataType(DataType.EmailAddress)]
+        [Required(ErrorMessage = "Email address is required")]
+        [RegularExpression(@"^(([^<>()\]\\.,;:\s@\""]+(\.[^<>()\]\\.,;:\s@\""]+)*)|("".+""))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$", ErrorMessage = "Invalid email address")]
+        public string Email { get; set; } = null!;
+
+        public bool DailyNewsletter { get; set; } = false;
+
+        public bool AdvertisingUpdates { get; set; } = false;
+
+        public bool WeenInReview { get; set; } = false;
+
+        public bool EventUpdates { get; set; } = false;
+
+        public bool StartupsWeekly { get; set; } = false;
+
+        public bool Podcasts { get; set; } = false;
+    }
+
+}

@@ -1,0 +1,43 @@
+.account-notifications {
+
+    .manage-notifications {
+
+        h5 {
+            color: var(--clr-theme);
+            padding-bottom: 20px;
+        }
+
+        form {
+
+            .content {
+                display: grid;
+                gap: 1rem;
+                grid-template-columns: 1fr 1fr;
+                grid-template-areas: "notify" "newsletter" "darkmode" "button";
+
+                
+
+                #form-notify {
+                    grid-area: notify;
+                }
+
+                #form-newsletter {
+                    grid-area: newsletter;
+                    margin-top: 1rem;
+                }
+
+                #form-darkmode {
+                    grid-area: darkmode;
+                }
+
+                #form-buttons {
+                    grid-area: button;
+                    padding-top: 1rem;
+                    display: flex;
+                    flex-direction: row;
+                    gap: 1rem;
+                }
+            }
+        }
+    }
+}

@@ -10,10 +10,16 @@ public class DarkModeService
 
     public async Task SetDarkMode(bool isDarkMode)
     {
+        Console.WriteLine($"Attempting to set IsDarkMode from {IsDarkMode} to {isDarkMode}");
         if (IsDarkMode != isDarkMode)
         {
             IsDarkMode = isDarkMode;
+            Console.WriteLine("IsDarkMode value changed. Notifying change.");
             await NotifyStateChangedAsync();
+        }
+        else
+        {
+            Console.WriteLine("No change in IsDarkMode value. No notification sent.");
         }
     }
 

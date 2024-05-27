@@ -1,0 +1,272 @@
+﻿@page "/account/savedcourses"
+
+
+@using CurrieTechnologies.Razor.SweetAlert2
+@using Infrastructure.Helpers.Responses
+
+@using Presentation.BlazorApp.GraphQL
+@using Presentation.BlazorApp.Models.Courses
+
+
+@inject GraphQLService GraphQLService
+
+
+
+@inject SweetAlertService Swal
+
+
+@attribute [StreamRendering]
+@rendermode @(new InteractiveServerRenderMode(false))
+
+<section class="account-saved-courses">
+    <div class="container">
+        <div class="d-flex flex-column">
+
+          
+            
+                <div class="saved-items">
+                    <h2>Saved Items</h2>
+                <button disabled="@isLoading" @onclick="RemoveAllCoursesAsync" class="btn-danger-medium delete-all"><i class="fa-regular fa-trash"></i>Delete all</button>
+                </div>
+
+
+                @if (isLoading && !isError)
+                {
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border m-5" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                   
+                
+                }
+                else if (isError)
+                {
+                    <div>
+                        <h6 class="pt-5 text-center">We were unable to fetch the courses at this moment due to a technical error. Please try again later. If the problem persists, contact our support at support@example.com.</h6>
+                    </div>
+                }
+                else if (courses != null && courses.Any())
+                {
+               @*  <Presentation.BlazorApp.Components.Shared.CourseBox @rendermode="InteractiveServer" OnRemoveCourseClicked="RemoveCourseAsync" IsSavedCourses="true" courses="courses" /> *@
+
+                <div class="courses-grid">
+
+                    @foreach (var course in courses)
+                    {
+                        <article class="course-card">
+                            <a href="/courses/details?id=@course.Id" >
+                                <img loading="lazy" class="course-img" src="@(!string.IsNullOrEmpty(@course.CourseImageUrl) ? course.CourseImageUrl : "/images/courses/course-1.svg")" alt="@course.CourseTitle">
+                                @if (course.IsBestseller)
+                                {
+                                    <p class="best-seller text-s">Best Seller</p>
+                                }
+                                <div class="card-text">
+                                    <div class="testar">
+                                        <h5>@course.CourseTitle</h5>
+                                        <p class="text-s">By @course.Author.FullName</p>
+                                        @if (course.Prices.DiscountPrice > 0)
+                                        {
+                                            <div class="course-price">
+                                                <p class="text-lg discount-price">$@course.Prices.DiscountPrice.Value.ToString("F2")</p>
+                                                <p class="text-lg original-price">$@course.Prices.OriginalPrice.ToString("F2")</p>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-lg">$@course.Prices.OriginalPrice.ToString("F2")</p>
+                                        }
+                                        <span class="border border-1"></span>
+                                    </div>
+
+                                    <div class="card-info">
+                                        <i class="fa-regular fa-clock">
+                                            <p class="text-s">@course.Included.HoursOfVideo hours</p>
+                                        </i>
+                                        <i class="fa-regular fa-thumbs-up">
+                                            <p class="text-s">@course.Rating.InProcent% (@(course.Rating.InNumbers / 1000m)K)</p>
+                                        </i>
+                                    </div>
+
+                                </div>
+                            </a>
+
+                            <button @onclick="@(() => RemoveCourseAsync(course.Id))" class="favorite" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Remove" data-bs-custom-class="custom-tooltip"><i class="fa-solid fa-bookmark"></i><span class="tooltiptext">Remove</span></button>
+                                    
+                                
+                                
+                        </article>
+                    }
+                </div>
+                }
+                else
+                {
+                    <div><h5 class="pt-4">No saved courses</h5></div>
+                }
+                
+              
+        </div>
+    </div>
+</section>
+@code {
+
+    private bool isLoading;
+    private bool isError;
+
+    private string? icon;
+    private string? message;
+
+
+    private List<CourseBoxModel>? courses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (courses == null)
+        {
+            await LoadSavedCoursesAsync();
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+    private async Task LoadSavedCoursesAsync()
+    {
+        try
+        {
+            isLoading = true;
+
+            var user = await UserService.GetCurrentUserAsync();
+            var savedCourses = await CourseService.GetSavedCourseAsync(user.Id);
+            courses = await GraphQLService.GetCoursesByIdsAsync(savedCourses);
+        }
+        catch (Exception)
+        {
+
+            isError = true;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    // private async Task ShowAlert()
+    // {
+    //     var result = await Swal.FireAsync(new SweetAlertOptions
+    //         {
+    //             Title = "Course has been removed",
+    //             Icon = SweetAlertIcon.Success,
+
+    //         });
+
+    // }
+
+    // private async Task Refresh()
+    // {
+    //     NavigationManager.Refresh();
+    // }
+
+
+    private async Task ConfirmRemovalAsync(string courseId)
+    {
+        SweetAlertResult result = await Swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Are you sure?",
+                Icon = SweetAlertIcon.Warning,
+                ConfirmButtonText = "Yes, remove it",
+                ShowCancelButton = true,
+            });
+        if (!string.IsNullOrEmpty(result.Value))
+        {
+            await RemoveCourseAsync(courseId);
+        }
+    }
+
+
+    private async Task RemoveCourseAsync(string courseId)
+    {
+
+        var user = await UserService.GetCurrentUserAsync();
+        var deletedResult = await CourseService.DeleteOneCourseAsync(user.Id, courseId);
+        switch (deletedResult.StatusCode)
+        {
+            case ResultStatus.OK:
+
+
+
+                var courseToRemove = courses!.FirstOrDefault(c => c.Id == courseId);
+                courses!.Remove(courseToRemove!);
+                StateHasChanged();
+
+                await Swal.FireAsync("Removed", "Course has been removed", SweetAlertIcon.Success);
+                
+
+
+                // await Alert.ShowAlert("success", "Course has been removed!");
+
+
+
+                // message = "course has been removed";
+                // icon = "success";
+
+
+
+
+
+
+                break;
+
+            default:
+                break;
+        }
+        
+
+        
+
+
+        
+
+    }
+    
+    
+        
+    
+
+
+    private async Task RemoveAllCoursesAsync()
+    {
+        try
+        {
+            var user = await UserService.GetCurrentUserAsync();
+            var result = await CourseService.DeleteAllCoursesAsync(user.Id);
+            switch (result.StatusCode)
+            {
+                case ResultStatus.OK:
+                    break;
+
+                case ResultStatus.SERVER_ERROR:
+                    
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        catch (Exception)
+        {
+
+           
+        }
+
+
+        
+    }
+
+}

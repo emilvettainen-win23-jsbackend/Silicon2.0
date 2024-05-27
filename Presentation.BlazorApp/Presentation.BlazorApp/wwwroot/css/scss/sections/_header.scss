@@ -1,0 +1,134 @@
+header {
+
+    .navbar {
+        padding: 0;
+        background-color: var(--clr-bg-section);
+
+        .navbar-profileimg {
+            img {
+                border-radius: 50%;
+                max-height: 44px;
+                max-width: 44px;
+                aspect-ratio: 1/1;
+                object-fit: fill;
+            }
+        }
+
+
+        .container {
+            padding: .5rem 20px .5rem 20px;
+
+            @include xl {
+                padding: 0;
+            }
+
+            .navbar-toggler {
+                border: none;
+                padding: 0;
+
+
+                .navbar-toggler-icon {
+                    background-image: var(--clr-bg-section);
+                }
+
+                &:focus {
+                    box-shadow: none;
+                }
+
+                i {
+                    font-size: 1.5rem;
+                    color: var(--clr-gray-900);
+                }
+            }
+
+            .offcanvas {
+
+                .offcanvas-header {
+                    background-color: var(--clr-bg-section);
+                    justify-content: space-between;
+                    padding: 20px;
+
+                    .navbar-toggler {
+
+                        i {
+                            font-size: 1.75rem;
+                            color: var(--clr-gray-900);
+                        }
+                    }
+                }
+
+                .offcanvas-body {
+                    padding: 20px;
+                    background-color: var(--clr-bg-section);
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: start;
+
+                    @include xl {
+                        flex-direction: row;
+                        justify-content: center;
+                    }
+
+                    .navbar-nav {
+                        align-items: center;
+                        gap: 10px;
+                        padding-bottom: 2rem;
+                        flex-grow: 0;
+
+                        @include xl {
+                            flex-grow: 1;
+                            padding-bottom: 0;
+                        }
+                    }
+
+                    .offcanvas-btn {
+                        display: flex;
+                        flex-direction: column-reverse;
+                        align-items: center;
+                        gap: 2rem;
+
+                        @include xl {
+                            flex-direction: row;
+                            gap: 0;
+                        }
+
+                        .btn-switch {
+                            justify-content: center;
+                            align-items: center;
+
+                            @include xl {
+                                margin-right: 2rem;
+                            }
+                        }
+
+                        div:nth-child(1) {
+                            display: flex;
+                            flex-direction: row;
+                            justify-content: center;
+                            align-items: center;
+                            gap: 1rem;
+
+                            @include lg {
+                                flex-direction: row;
+                            }
+
+                            .btn-gray-small {
+
+                                i {
+                                    color: var(--clr-gray-900);
+                                    transition: all 0.2s ease-in-out;
+                                }
+
+                                &:hover {
+                                    i {
+                                        color: var(--clr-white);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

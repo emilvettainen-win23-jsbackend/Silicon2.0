@@ -1,0 +1,73 @@
+﻿<header>
+    <nav class="navbar navbar-expand-xl container hamburger-menu">
+        <div class="container">
+            <a class="navbar-brand" href="/"><img id="logo-img" src="/images/logo/@(IsDarkMode ? "logo-dark.svg" : "logo-light.svg")" alt="SiliconDesign"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                <i class="fa-sharp fa-regular fa-bars"></i>
+            </button>
+            <div class="offcanvas offcanvas-end " tabindex="-1" id="offcanvasNavbar"
+                 aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header ">
+                    <button type="button" class="navbar-toggler" data-bs-dismiss="offcanvas" aria-label="Close">
+                        <i class="fa-sharp fa-light fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav gap-3">
+                        <li class="nav-item">
+                            <NavLink class="menu-link" href="/#showcase">Overview</NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="menu-link" href="/#features">Features</NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="menu-link" href="/contact">Contact</NavLink>
+                        </li>
+
+                        <AuthorizeView>
+                            <Authorized>
+                                <li class="nav-item">
+                                    <NavLink class="menu-link" href="/courses">Courses</NavLink>
+                                </li>
+                            </Authorized>
+                        </AuthorizeView>
+
+                       
+
+                    </ul>
+                    <div class="offcanvas-btn">
+                       
+                        <AuthorizeView>
+                            <Authorized>
+                                <div class="navbar-profileimg">
+                                    <a href="account/details"><img src="@(!string.IsNullOrEmpty(user!.ProfileImageUrl) ? user.ProfileImageUrl : "/images/user-profile.png")" alt="Profile Image"></a>
+
+                                </div>
+                            </Authorized>
+                            <NotAuthorized>
+                                <div>
+                                    <a href="/account/signin" class="btn-gray-small"><i class="fa-regular fa-arrow-right-to-bracket"></i>Sign in</a>
+                                    <a href="/account/signup" class="btn-theme-small"><i class="fa-regular fa-user"></i>Sign Up</a>
+                                </div>
+                            </NotAuthorized>
+                        </AuthorizeView>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
+@code {
+    private UserDto user = default!;
+    private bool IsDarkMode { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserService.GetCurrentUserAsync();
+        IsDarkMode = await UserService.GetDarkModeSettingAsync();
+    }
+
+}

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -13,12 +13,59 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
+    <None Include="wwwroot\images\brands\brand1.svg" />
+    <None Include="wwwroot\images\brands\brand2.svg" />
+    <None Include="wwwroot\images\brands\brand3.svg" />
+    <None Include="wwwroot\images\brands\brand4.svg" />
+    <None Include="wwwroot\images\courses\course-1.svg" />
+    <None Include="wwwroot\images\courses\course-2.svg" />
+    <None Include="wwwroot\images\courses\course-3.svg" />
+    <None Include="wwwroot\images\courses\illustration.svg" />
+    <None Include="wwwroot\images\courses\single-course\course_header.svg" />
+    <None Include="wwwroot\images\courses\single-course\created_by_img.svg" />
+    <None Include="wwwroot\images\courses\single-course\pattern.svg" />
+    <None Include="wwwroot\images\courses\single-course\single_course_author_img.svg" />
+    <None Include="wwwroot\images\download-app\appstore-light.svg" />
+    <None Include="wwwroot\images\download-app\appstore.svg" />
+    <None Include="wwwroot\images\download-app\googleplay-light.svg" />
+    <None Include="wwwroot\images\download-app\googleplay.svg" />
+    <None Include="wwwroot\images\download-app\phones.svg" />
+    <None Include="wwwroot\images\download-app\rating.svg" />
+    <None Include="wwwroot\images\logo\logo-dark.svg" />
+    <None Include="wwwroot\images\logo\logo-light.svg" />
+    <None Include="wwwroot\images\manage-your-work\manage_work.svg" />
+    <None Include="wwwroot\images\newsletter\arrows.svg" />
+    <None Include="wwwroot\images\not-found\404-dark.svg" />
+    <None Include="wwwroot\images\not-found\404-light.svg" />
+    <None Include="wwwroot\images\showcase\showcase_img.svg" />
+    <None Include="wwwroot\images\switch-between\mockup.svg" />
+    <None Include="wwwroot\images\tools\add-group.svg" />
+    <None Include="wwwroot\images\tools\bell.svg" />
+    <None Include="wwwroot\images\tools\chat.svg" />
+    <None Include="wwwroot\images\tools\presentation.svg" />
+    <None Include="wwwroot\images\tools\shield.svg" />
+    <None Include="wwwroot\images\tools\subtasks.svg" />
+    <None Include="wwwroot\images\work-tools\dropbox.svg" />
+    <None Include="wwwroot\images\work-tools\evernote.svg" />
+    <None Include="wwwroot\images\work-tools\gmail.svg" />
+    <None Include="wwwroot\images\work-tools\google.svg" />
+    <None Include="wwwroot\images\work-tools\mailchimp.svg" />
+    <None Include="wwwroot\images\work-tools\trello.svg" />
+    <None Include="wwwroot\images\work-tools\zlack.svg" />
+    <None Include="wwwroot\images\work-tools\zoom.svg" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Presentation.BlazorApp.Client\Presentation.BlazorApp.Client.csproj" />
     <PackageReference Include="Blazor.Bootstrap" Version="2.2.0" />
+    <PackageReference Include="Blazored.Toast" Version="4.2.1" />
+    <PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.6.0" />
+    <PackageReference Include="GraphQL.Client" Version="6.0.5" />
+    <PackageReference Include="GraphQL.Client.Serializer.Newtonsoft" Version="6.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.5" />
+  
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.5" />
@@ -32,10 +79,7 @@
 
   <ItemGroup>
     <Folder Include="Components\Pages\Account\Messages\" />
-    <Folder Include="Components\Pages\Account\SavedCourses\" />
-    <Folder Include="Components\Pages\Home\" />
-    <Folder Include="Components\Pages\Contact\" />
-    <Folder Include="Components\Pages\Courses\" />
+    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 
 </Project>

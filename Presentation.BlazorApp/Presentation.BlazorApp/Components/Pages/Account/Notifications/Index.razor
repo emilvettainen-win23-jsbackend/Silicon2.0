@@ -1,21 +1,28 @@
 ﻿@page "/account/notifications"
-@using System.ComponentModel.DataAnnotations
-@using Infrastructure.Helpers.Responses
+<PageTitle>Account Notifications</PageTitle>
+
+
+@rendermode InteractiveServer
 
 <section class="account-notifications">
     <div class="container">
         <div class="d-flex flex-column gap-4">
+            @if (Alert != null)
+            {
+                <div class="alert alert-@Alert.Icon" role="alert">
+                    @Alert.Message
+                </div>
+            }
             <h2>Notifications</h2>
             <div class="manage-notifications">
-
                 <EditForm FormName="notify" Model="NotifyForm" method="post" OnValidSubmit="HandleSubmitAsync" Enhance novalidate>
-
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
                     <div class="content">
-                       
                         <div id="form-notify" class="input-group">
                             <label for="email-notify">Preferd email for notifications</label>
                             <InputText id="email-notify" @bind-Value="NotifyForm.Email" class="form-control" placeholder="example@gmail.com" />
-                            <ValidationMessage For="() => NotifyForm.Email" class="text-danger" />
+                           @*  <ValidationMessage For="() => NotifyForm.Email" class="text-danger" /> *@
                         </div>
 
                         <div id="form-newsletter" class="input-group">
@@ -39,7 +46,7 @@
                         </div>
 
                         <div id="form-buttons">
-                            <button disabled="@IsBusy" class="btn-gray-small" type="reset">Cancel</button>
+                            <button @onclick="ResetForm" disabled="@IsBusy" class="btn-gray-small" type="button">Cancel</button>
                             <button disabled="@IsBusy" class="btn-theme-small" type="submit">
                                 @if (IsBusy)
                                 {
@@ -51,13 +58,8 @@
                             </button>
                         </div>
                     </div>
-
                 </EditForm>
-
-
             </div>
-        
-
         </div>
     </div>
 </section>
@@ -66,19 +68,19 @@
 
 
     private bool IsBusy;
-    private ApplicationUser user = default!;
+    private UserDto user = default!;
+    private AlertModel? Alert { get; set; }
 
     [SupplyParameterFromForm(FormName ="notify")]
     private NotifyModel NotifyForm { get; set; } = new();
 
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
+
 
     protected override async Task OnInitializedAsync()
     {
         user = await UserService.GetCurrentUserAsync();
 
-        NotifyForm.Email ??= user.NewsletterEmail ?? string.Empty;
+        NotifyForm.Email ??= user.NewsletterEmail;
         NotifyForm.Newsletter = user.Newsletter;
         NotifyForm.DarkMode = user.DarkMode;
 
@@ -86,44 +88,68 @@
 
     private async Task HandleSubmitAsync()
     {
-
         try
         {
-            var result = await UserService.HandleNotificationsFormAsync(user.Id, NotifyForm.Email, NotifyForm.Newsletter, NotifyForm.DarkMode);
+            IsBusy = true;
+            var result = await UserService.HandleNotificationsFormAsync(user.Id!, NotifyForm.Email!, NotifyForm.Newsletter, NotifyForm.DarkMode);
             switch (result.StatusCode)
             {
                 case ResultStatus.OK:
-
-                    break;
-
-                case ResultStatus.ERROR:
+                    Alert = new AlertModel { Message = result.Message, Icon = "success" };
+                    NavigationManager.Refresh();
                     break;
 
                 default:
+                    Alert = new AlertModel { Message = result.Message, Icon = "danger" };
                     break;
             }
         }
         catch (Exception)
         {
-            
-            throw;
+            Alert = new AlertModel { Message = "An error occurred. Your changes could not be saved. Please contact support!", Icon = "danger" };
         }
-
-
-
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
 
     private sealed class NotifyModel
     {
+        public bool Newsletter { get; set; } = false;
+        public bool DarkMode { get; set; } = false;
+
+        [RequiredIfNewsletterChecked]
         [DataType(DataType.EmailAddress)]
+        public string? Email { get; set; }
 
-        [RegularExpression(@"^(([^<>()\]\\.,;:\s@\""]+(\.[^<>()\]\\.,;:\s@\""]+)*)|("".+""))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$", ErrorMessage = "Invalid email address")]
-        public string Email { get; set; } = null!;
-
-        public bool Newsletter { get; set; }
-
-        public bool DarkMode { get; set; }
     }
 
+
+    public class RequiredIfNewsletterCheckedAttribute : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
+        {
+            var notifyModel = (NotifyModel)validationContext.ObjectInstance;
+            var email = value as string;
+            var emailPattern = @"^(([^<>()\]\\.,;:\s@\""]+(\.[^<>()\]\\.,;:\s@\""]+)*)|("".+""))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$";
+
+            if (notifyModel.Newsletter)
+            {
+                if (string.IsNullOrEmpty(email) || !Regex.IsMatch(email, emailPattern))
+                {
+                    return new ValidationResult("A valid email is required when subscribed to the newsletter.");
+                }
+            }
+            return ValidationResult.Success!;
+        }
+    }
+
+    private void ResetForm()
+    {
+        NotifyForm.Email = "";
+        NotifyForm.DarkMode = false;
+        NotifyForm.Newsletter = false;
+    }
 }

@@ -1,0 +1,230 @@
+﻿@page "/courses"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
+@using Presentation.BlazorApp.GraphQL
+@using Presentation.BlazorApp.Models.Courses
+@attribute [StreamRendering]
+@rendermode @(new InteractiveServerRenderMode(false))
+
+
+
+
+@inject GraphQLService GraphQLService
+<section class="courses">
+    <div class="container">
+        
+            <div class="courses-options">
+                <h1 class="pb-3">Courses</h1>
+               
+                
+                
+
+                <form class="filters">
+                    <div class="select">
+                        <div class="selected" @onclick="ToggleDropdown">@selectedCategory</div>
+                        <div class="select-options" style="@(isDropdownOpen ? "display: block;" : "display: none;")">
+                        <div class="option" @onclick="GetAllCoursesAsync" data-value="all">All categories</div>
+                            @if (categories != null)
+                            {
+                                foreach (var category in categories)
+                                {
+                                    <div class="option" @onclick="() => GetCoursesByCategory(category)" data-value="@category">@category</div>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="input-search-group">
+                    <InputText id="searchQuery" @bind-Value="SearchForm.SearchQuery" name="searchQuery" placeholder="Search courses"  @oninput="HandleSearchInputAsync"/><i class="fa-regular fa-search"></i>
+                    </div>
+                </form>
+
+
+
+            </div>
+
+
+            @if (isLoading && !isError)
+            {
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border m-5" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            }
+
+           
+            else if (isError)
+            {
+                <div>
+                    <h6 class="pt-5 text-center">We were unable to fetch the courses at this moment due to a technical error. Please try again later. If the problem persists, contact our support at support@example.com.</h6>
+                </div>
+            }
+            else if (courses != null && courses.Any())
+            {
+                <div id="boxes">
+
+                    <Presentation.BlazorApp.Components.Shared.CourseBox @rendermode="InteractiveServer" IsSavedCourses="false" courses="courses" />
+
+
+                   @*  @if (Model.Pagination != null && Model.Pagination.TotalPages > 1)
+                    {
+                        <div class="pagination">
+                            @for (int i = 1; i <= Model.Pagination.TotalPages; i++)
+                            {
+                                if (i == Model.Pagination.CurrentPage)
+                                {
+                                    <span class="btn-theme-small active-pag">@i</span>
+                                }
+                                else
+                                {
+                                    <a class="btn-theme-small next-pag" href="@Url.Action("Courses", new { pageNumber = i, pageSize = Model.Pagination.PageSize})">@i</a>
+                                }
+                            }
+                        </div>
+                    } *@
+                </div>
+                
+
+                
+            }
+            else if (courses != null && !courses.Any() && isSearch)
+            {
+                <div>
+                    <h6 class="pt-5 text-center">Unfortunately, we found no courses matching your search.</h6>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <h6 class="pt-5 text-center">Currently there are no courses.</h6>
+                </div>
+            }
+
+
+
+     
+    </div>
+</section>
+
+<WorkWithUs />
+
+@code {
+    private bool isLoading;
+    private bool isError;
+    private bool isSearch;
+    private bool isDropdownOpen = false;
+    private string selectedCategory = "All categories";
+    private List<CourseBoxModel>? courses;
+    private List<string>? categories;
+
+
+
+
+    // private bool IsPreventKey;
+
+    // public bool HandleKeyDown(KeyboardEventArgs e)
+    // {
+    //     if (e.Key == "Enter")
+    //     {
+    //         return true;
+
+    //     }
+    //     return false;
+
+    // }
+
+
+
+    [SupplyParameterFromForm]
+    private CourseSearchModel SearchForm { get; set; } = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (courses == null)
+        {
+            await LoadInitialDataAsync();
+        }
+    }
+
+
+
+
+    private async Task LoadInitialDataAsync()
+    {
+        try
+        {
+            isLoading = true;
+            categories = await GraphQLService.GetAllCategoriesAsync();
+            courses = await GraphQLService.GetAllCoursesAsync();
+           
+
+        }
+        catch (Exception)
+        {
+            isError = true;
+        }
+        finally
+        {
+            isLoading = false;
+            
+        }
+    }
+
+    private async Task GetAllCoursesAsync()
+    {
+        selectedCategory = "All categories";
+        await FetchCoursesAsync(() => GraphQLService.GetAllCoursesAsync());
+    }
+
+    private async Task GetCoursesByCategory(string category)
+    {
+        selectedCategory = category;
+        await FetchCoursesAsync(() => GraphQLService.GetAllCoursesByCategoryAsync(category));
+    }
+
+    private async Task HandleSearchInputAsync(ChangeEventArgs e)
+    {
+       
+
+        isSearch = true;
+        await FetchCoursesAsync(() => GraphQLService.SearchCoursesAsync(e.Value!.ToString()!));
+    }
+
+    private async Task FetchCoursesAsync(Func<Task<List<CourseBoxModel>>> fetchCourses)
+    {
+        
+        try
+        {
+            courses = await fetchCourses();
+        }
+        catch (Exception)
+        {
+            isError = true;
+        }
+        finally
+        {
+            isDropdownOpen = false;
+         
+        }
+    }
+
+    private void ToggleDropdown()
+    {
+        isDropdownOpen = !isDropdownOpen;
+    }
+
+
+
+    private sealed class CourseSearchModel
+    {
+        public string SelectedCategory { get; set; } = "all";
+        public string SearchQuery { get; set; } = string.Empty;
+        
+    }
+
+  
+
+
+    }
+}

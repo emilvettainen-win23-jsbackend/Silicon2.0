@@ -1,0 +1,76 @@
+.work-tools {
+    padding: 5rem 0;
+
+    .container {
+
+        h1 {
+
+            @include h2;
+
+            @include md {
+                @include h1;
+            }
+        }
+
+        .text-l {
+            text-wrap: pretty;
+
+
+            @include md {
+                text-wrap: balance;
+            }
+        }
+
+        .tools {
+            padding: 2rem 0;
+
+            .box {
+                grid-column: span 12;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 40px 20px;
+                border-radius: 6px;
+
+                .text-m {
+                    padding-top: 20px;
+                    text-align: center;
+                }
+
+                @include xl {
+                    .text-m {
+                        text-align: start;
+                    }
+                }
+
+                &:hover {
+                    transition: all 0.2s ease-in-out;
+                    cursor: pointer;
+                    background-color: var(--clr-toolbox);
+                    @include shadow-s;
+                }
+            }
+
+            @include sm {
+                .box {
+                    grid-column: span 6;
+                }
+            }
+
+            @include lg {
+                .box {
+                    grid-column: span 4;
+                }
+            }
+
+            @include xl {
+                .box {
+                    align-items: flex-start;
+                    justify-content: flex-start;
+                    grid-column: span 3;
+                }
+            }
+        }
+    }
+}

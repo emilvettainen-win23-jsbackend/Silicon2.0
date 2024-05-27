@@ -1,4 +1,5 @@
-﻿using Infrastructure.Dtos.User;
+﻿using Infrastructure.Data.Entities;
+using Infrastructure.Dtos.User;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,6 +27,33 @@ public class UserFactory
         {
             Debug.WriteLine(ex.Message);
             return null!;
+        }
+    }
+
+
+    public static UserDto GetUser(ApplicationUser user)
+    {
+        try
+        {
+            return new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email!,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Phone = user.PhoneNumber,
+                Biography = user.Biography,
+                ProfileImageUrl = user.ProfileImageUrl,
+                IsExternalAccount = user.IsExternalAccount,
+                DarkMode = user.DarkMode,
+                Newsletter = user.Newsletter,
+                NewsletterEmail = user.NewsletterEmail,
+            };
+        }
+        catch (Exception)
+        {
+
+            return new UserDto();
         }
     }
 }
