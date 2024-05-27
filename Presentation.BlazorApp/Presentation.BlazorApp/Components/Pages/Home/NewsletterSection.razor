@@ -71,7 +71,7 @@
         IsBusy = true;
         try
         {
-            var response = await Http.PostAsJsonAsync<SubscribeModel>($"{Config["URI:Subscribe"]}", SubscribeForm);
+            var response = await Http.PostAsJsonAsync<SubscribeModel>($"{Config["CREATE_SUBSCRIPTION"]}", SubscribeForm);
             switch (response.StatusCode)
             {
                 case System.Net.HttpStatusCode.OK:

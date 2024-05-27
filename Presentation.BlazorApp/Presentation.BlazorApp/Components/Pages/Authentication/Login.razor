@@ -81,7 +81,7 @@
         var result = await SignInManager.PasswordSignInAsync(SignInForm.Email, SignInForm.Password, SignInForm.RememberMe, false);
         if (result.Succeeded)
         {
-            NavigationManager.NavigateTo(ReturnUrl ?? "/account/details");
+            NavigationManager.NavigateTo(ReturnUrl ?? "/account/details", forceLoad: true);
         }
         else if (result.IsNotAllowed)
         {

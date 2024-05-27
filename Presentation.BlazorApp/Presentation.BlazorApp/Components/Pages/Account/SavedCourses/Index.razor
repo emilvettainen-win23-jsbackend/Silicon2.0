@@ -26,7 +26,7 @@
             
                 <div class="saved-items">
                     <h2>Saved Items</h2>
-                <button disabled="@isLoading" @onclick="RemoveAllCoursesAsync" class="btn-danger-medium delete-all"><i class="fa-regular fa-trash"></i>Delete all</button>
+                <button disabled="isLoading" @onclick="RemoveAllCoursesAsync" class="btn-danger-medium delete-all"><i class="fa-regular fa-trash"></i>Delete all</button>
                 </div>
 
 
@@ -251,8 +251,8 @@
                 case ResultStatus.OK:
                     break;
 
-                case ResultStatus.SERVER_ERROR:
-                    
+                case ResultStatus.NOT_FOUND:
+                    //no courses to remove
                     break;
 
                 default:

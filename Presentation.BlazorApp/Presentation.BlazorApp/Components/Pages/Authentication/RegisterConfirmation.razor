@@ -94,12 +94,14 @@
                 if (updateResult.Succeeded)
                 {
                     Alert = new AlertModel { Message = "Account verified successfully. You may now proceed to sign in.", Icon = "success" };
+                    VerifyForm = new();
                     return;
                 }
             }
             else
             {
                 Alert = new AlertModel { Message = "Hmm, that code didn’t do the trick. Let's give it another shot. Resend the code!", Icon = "warning" };
+                VerifyForm = new();
                 return;
             }
         }
@@ -108,6 +110,7 @@
             Logger.LogError($"ERROR : Register.SignUpAsync() :: {ex.Message}");
         }
         Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
+        VerifyForm = new();
     }
 
 

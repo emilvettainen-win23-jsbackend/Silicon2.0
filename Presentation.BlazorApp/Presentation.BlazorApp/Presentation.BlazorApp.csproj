@@ -58,9 +58,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Presentation.BlazorApp.Client\Presentation.BlazorApp.Client.csproj" />
-    <PackageReference Include="Blazor.Bootstrap" Version="2.2.0" />
-    <PackageReference Include="Blazored.Toast" Version="4.2.1" />
-    <PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.6.0" />
     <PackageReference Include="GraphQL.Client" Version="6.0.5" />
     <PackageReference Include="GraphQL.Client.Serializer.Newtonsoft" Version="6.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="8.0.5" />
@@ -75,6 +72,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.5" />
+    <PackageReference Include="MudBlazor" Version="6.19.1" />
   </ItemGroup>
 
   <ItemGroup>

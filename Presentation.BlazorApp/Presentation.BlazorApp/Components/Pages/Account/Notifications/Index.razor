@@ -2,7 +2,8 @@
 <PageTitle>Account Notifications</PageTitle>
 
 
-@rendermode InteractiveServer
+
+@rendermode @(new InteractiveServerRenderMode(false))
 
 <section class="account-notifications">
     <div class="container">
@@ -76,6 +77,8 @@
 
 
 
+
+
     protected override async Task OnInitializedAsync()
     {
         user = await UserService.GetCurrentUserAsync();
@@ -83,6 +86,7 @@
         NotifyForm.Email ??= user.NewsletterEmail;
         NotifyForm.Newsletter = user.Newsletter;
         NotifyForm.DarkMode = user.DarkMode;
+
 
     }
 
@@ -96,7 +100,16 @@
             {
                 case ResultStatus.OK:
                     Alert = new AlertModel { Message = result.Message, Icon = "success" };
-                    NavigationManager.Refresh();
+
+                    await Swal.FireAsync("Success", result.Message, SweetAlertIcon.Success);
+
+                    
+
+
+
+       
+
+
                     break;
 
                 default:
@@ -111,6 +124,12 @@
         finally
         {
             IsBusy = false;
+            NavigationManager.Refresh();
+            
+           
+         
+
+            
         }
     }
 

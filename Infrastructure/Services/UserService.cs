@@ -194,76 +194,58 @@ public class UserService
 
     public async Task<ResponseResult> HandleNotificationsFormAsync(string userId, string email, bool newsletter, bool darkMode)
     {
-        try
+        
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user != null)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user != null)
+            if (!string.IsNullOrEmpty(email))
             {
-                if (!string.IsNullOrEmpty(email))
+                var newsResult = await HandleNewsletterAsync(user, newsletter, email);
+                switch (newsResult.StatusCode)
                 {
-                    var newsResult = await HandleNewsletterAsync(user, newsletter, email);
-                    switch (newsResult.StatusCode)
-                    {
-                        case ResultStatus.OK:
-                            break;
+                    case ResultStatus.OK:
+                        break;
 
-                        case ResultStatus.EXISTS:
-                            return ResponseFactory.Exists("An subscription is already exists with the given email");
+                    case ResultStatus.EXISTS:
+                        return ResponseFactory.Exists("An subscription is already exists with the given email");
 
-                        default:
-                            return ResponseFactory.Error("An error occurred. Your changes could not be saved. Please contact support!");
-                    }
+                    default:
+                        return ResponseFactory.Error("An error occurred. Your changes could not be saved. Please contact support!");
                 }
-
-                user.DarkMode = darkMode;
-                user.Newsletter = newsletter;
-                user.NewsletterEmail = email ?? "";
-                var updateResult = await _userManager.UpdateAsync(user);
-                return updateResult.Succeeded ? ResponseFactory.Ok("Changes have been saved!") : ResponseFactory.Error("Failed to update changes. Please try again!");
             }
-        }
-        catch (Exception)
-        {
-            return ResponseFactory.ServerError("An error occurred. Your changes could not be saved. Please contact support!");
+
+            user.DarkMode = darkMode;
+            user.Newsletter = newsletter;
+            user.NewsletterEmail = email ?? "";
+            var updateResult = await _userManager.UpdateAsync(user);
+            return updateResult.Succeeded ? ResponseFactory.Ok("Changes have been saved!") : ResponseFactory.Error("Failed to update changes. Please try again!");
         }
         return ResponseFactory.Error("Failed to update changes. Please try again!");
-        
     }
 
     public async Task<ResponseResult> HandleNewsletterAsync(ApplicationUser user, bool newsletter, string email)
     {
-        try
+        if (!user.Newsletter && newsletter)
         {
-            if (!user.Newsletter && newsletter)
+            var result = await _httpClient.PostAsJsonAsync($"{_config["CREATE_SUBSCRIPTION"]}", new { Email = email });
+            return result.StatusCode switch
             {
-                var result = await _httpClient.PostAsJsonAsync($"{_config["CREATE_SUBSCRIPTION"]}", new { Email = email });
-                return result.StatusCode switch
-                {
-                    System.Net.HttpStatusCode.OK => ResponseFactory.Ok(),
-                    System.Net.HttpStatusCode.Conflict => ResponseFactory.Exists(),
-                    _ => ResponseFactory.Error()
-                };
-            }
-
-            if (user.Newsletter && !newsletter)
-            {
-                var result = await _httpClient.PostAsJsonAsync($"{_config["DELETE_SUBSCRIPTION"]}", new { Email = email });
-                return result.StatusCode switch 
-                { 
-                    System.Net.HttpStatusCode.OK => ResponseFactory.Ok(),
-                    _ => ResponseFactory.Error()
-                };
-                
-            }
-
+                System.Net.HttpStatusCode.OK => ResponseFactory.Ok(),
+                System.Net.HttpStatusCode.Conflict => ResponseFactory.Exists(),
+                _ => ResponseFactory.Error()
+            };
         }
-        catch (Exception)
+
+        if (user.Newsletter && !newsletter)
         {
-
+            var result = await _httpClient.PostAsJsonAsync($"{_config["DELETE_SUBSCRIPTION"]}", new { Email = email });
+            return result.StatusCode switch 
+            { 
+                System.Net.HttpStatusCode.OK => ResponseFactory.Ok(),
+                _ => ResponseFactory.Error()
+            };
         }
-        return ResponseFactory.Error();
-
-
+        return ResponseFactory.Ok();
     }
 
 
