@@ -75,6 +75,9 @@
     {
         try
         {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var currentUser = authState.User;
+
             var user = await UserService.GetCurrentUserAsync();
             var result = await CourseService.SaveCourseAsync(user.Id, courseId);
             switch (result.StatusCode)

@@ -1,13 +1,43 @@
 ﻿
 
-<div id="cookie-consent" class="cookie-consent fixed-bottom">
-    <div class="container">
-        <h6>We´re using cookies! Mummms.</h6>
-        <button class="btn-theme-medium" @onclick="AcceptCookies">OK</button>
+@if (ShowCookies)
+{
+    <div id="cookie-consent" class="cookie-consent fixed-bottom">
+        <div class="container">
+            <h6>We´re using cookies! Mummms.</h6>
+            <EditForm FormName="cookie" Model="HiddenForm" method="post" OnValidSubmit="AcceptCookies">
+                <InputText hidden @bind-Value="HiddenForm.HiddenInput" />
+                <button class="btn-theme-medium" type="submit">Ok</button>
+            </EditForm>
+        </div>
     </div>
-</div>
+}
+
 
 @code {
+    private bool ShowCookies;
+
+
+
+    [SupplyParameterFromForm(FormName = "cookie")]
+    private HiddenModel HiddenForm { get; set; } = new();
+
+
+    [CascadingParameter]
+    public HttpContext HttpContext { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        if (HttpContext.Request.Cookies["CookieConsent"] == null)
+        {
+
+            ShowCookies = true;
+
+        }
+
+        
+    }
+
 
     private void AcceptCookies()
     {
@@ -18,13 +48,18 @@
                 Secure = true,
             };
 
-        // Kontrollera om HttpContext är null
-        if (HttpContextAccessor.HttpContext != null)
-        {
-            HttpContextAccessor.HttpContext.Response.Cookies.Append("CookieConsent", "true", option);
-        }
 
+        HttpContext.Response.Cookies.Append("CookieConsent", "true", option);
+
+        ShowCookies = false;
         StateHasChanged();
+
     }
+
+    private sealed class HiddenModel
+    {
+        public string HiddenInput { get; set; } = string.Empty;
+    }
+
 
 }

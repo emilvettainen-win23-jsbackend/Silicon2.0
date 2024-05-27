@@ -6,14 +6,14 @@
 
 <section id="signin">
     <div class="container">
-        @if (Alert != null)
-        {
-            <div class="alert alert-@Alert.Icon" role="alert">
-                @Alert.Message
-            </div>
-        }
         <EditForm Model="SignInForm" method="post" FormName="signin" OnValidSubmit="SignInAsync" Enhance novalidate>
             <DataAnnotationsValidator />
+            @if (Alert != null)
+            {
+                <div class="alert alert-@Alert.Icon" role="alert">
+                    @Alert.Message
+                </div>
+            }
             <h1>Welcome Back</h1>
             <p>Don´t have an account yet? <a href="account/signup">Sign up here.</a></p>
             <div class="content">

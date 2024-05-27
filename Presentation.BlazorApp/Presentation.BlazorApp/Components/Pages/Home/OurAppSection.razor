@@ -48,7 +48,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        IsDarkMode = await UserService.GetDarkModeSettingAsync();
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var currentUser = authState.User;
+        var user = await UserService.GetCurrentUserAsync();
+
+        IsDarkMode = user.DarkMode;
 
     }
 

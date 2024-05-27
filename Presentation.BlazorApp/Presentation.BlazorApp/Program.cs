@@ -18,7 +18,7 @@ using Presentation.BlazorApp.Configurations;
 
 internal class Program
 {
-    private static async Task Main(string[] args)
+    private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -59,9 +59,10 @@ internal class Program
         builder.Services.AddIdentityCore<ApplicationUser>(options =>
         {
             options.SignIn.RequireConfirmedAccount = true;
+            options.Password.RequiredLength = 8;
+            options.User.RequireUniqueEmail = true;
 
         })
-        .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddSignInManager()
         .AddDefaultTokenProviders();
@@ -100,9 +101,9 @@ internal class Program
         builder.Services.AddHttpClient();
         builder.Services.AddSingleton(new ServiceBusClient(builder.Configuration.GetConnectionString("ServiceBusConnection")));
 
-      
 
-      
+
+
 
 
 
@@ -137,7 +138,6 @@ internal class Program
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
             .AddAdditionalAssemblies(typeof(Presentation.BlazorApp.Client._Imports).Assembly);
-        await app.Services.RegisterRoles();
 
         app.MapAdditionalIdentityEndpoints();
 

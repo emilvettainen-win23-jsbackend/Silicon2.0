@@ -38,7 +38,7 @@ public class UserFactory
             return new UserDto
             {
                 Id = user.Id,
-                Email = user.Email,
+                Email = user.Email!,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Phone = user.PhoneNumber,

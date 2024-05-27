@@ -38,6 +38,9 @@
 
                     if (!string.IsNullOrEmpty(filePath))
                     {
+                        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                        var currentUser = authState.User;
+
                         var updateResult = await UserService.UpdateProfileImageAsync(filePath);
                         if (updateResult)
                         {
