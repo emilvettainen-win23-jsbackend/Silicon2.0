@@ -1,24 +1,13 @@
 ﻿using System.Text.Json;
-using System.Text;
 using Presentation.BlazorApp.Models.Courses;
-using GraphQL;
-using Microsoft.Azure.Amqp.Framing;
 
 namespace Presentation.BlazorApp.GraphQL;
 
 
-
-public class GraphQLService
+public class GraphQLService(HttpClient httpClient, IConfiguration configuration)
 {
-    private readonly HttpClient _httpClient;
-    private readonly string _graphqlEndpoint;
-   
-
-    public GraphQLService(HttpClient httpClient, IConfiguration configuration)
-    {
-        _httpClient = httpClient;
-        _graphqlEndpoint = configuration["URI:COURSE_PROVIDER"]!; // Should ideally be taken from configuration
-    }
+    private readonly HttpClient _httpClient = httpClient;
+    private readonly string _graphqlEndpoint = configuration["COURSE_PROVIDER"]!;
 
     public async Task<List<CourseBoxModel>> GetAllCoursesAsync()
     {

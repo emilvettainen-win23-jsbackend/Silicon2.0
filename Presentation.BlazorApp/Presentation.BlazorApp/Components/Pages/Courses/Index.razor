@@ -1,15 +1,22 @@
 ﻿@page "/courses"
 @attribute [Microsoft.AspNetCore.Authorization.Authorize]
 
+<PageTitle>Courses</PageTitle>
+
 @using Presentation.BlazorApp.GraphQL
 @using Presentation.BlazorApp.Models.Courses
 @attribute [StreamRendering]
 @rendermode @(new InteractiveServerRenderMode(false))
 
 
+@inject ILogger<Index> Logger
+ 
 
 
-@inject GraphQLService GraphQLService
+
+<Toast />
+
+
 <section class="courses">
     <div class="container">
         
@@ -63,7 +70,53 @@
             {
                 <div id="boxes">
 
-                    <Presentation.BlazorApp.Components.Shared.CourseBox @rendermode="InteractiveServer" IsSavedCourses="false" courses="courses" />
+                <div class="courses-grid">
+
+                    @foreach (var course in courses)
+                    {
+                        <article class="course-card">
+                            <a href="/courses/details?id=@course.Id">
+                                <img loading="lazy" class="course-img" src="@(!string.IsNullOrEmpty(@course.CourseImageUrl) ? course.CourseImageUrl : "/images/courses/course-1.svg")" alt="@course.CourseTitle">
+                                @if (course.IsBestseller)
+                                {
+                                    <p class="best-seller text-s">Best Seller</p>
+                                }
+                                <div class="card-text">
+                                    <div class="testar">
+                                        <h5>@course.CourseTitle</h5>
+                                        <p class="text-s">By @course.Author.FullName</p>
+                                        @if (course.Prices.DiscountPrice > 0)
+                                        {
+                                            <div class="course-price">
+                                                <p class="text-lg discount-price">$@course.Prices.DiscountPrice.Value.ToString("F2")</p>
+                                                <p class="text-lg original-price">$@course.Prices.OriginalPrice.ToString("F2")</p>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-lg">$@course.Prices.OriginalPrice.ToString("F2")</p>
+                                        }
+                                        <span class="border border-1"></span>
+                                    </div>
+
+                                    <div class="card-info">
+                                        <i class="fa-regular fa-clock">
+                                            <p class="text-s">@course.Included.HoursOfVideo hours</p>
+                                        </i>
+                                        <i class="fa-regular fa-thumbs-up">
+                                            <p class="text-s">@course.Rating.InProcent% (@(course.Rating.InNumbers / 1000m)K)</p>
+                                        </i>
+                                    </div>
+
+                                </div>
+                            </a>
+                            <button @onclick="@(() => SaveCourseAsync(course.Id))" class="favorite"><i class="fa-solid fa-bookmark"></i><span class="tooltiptext">Favorite</span></button>
+                        </article>
+                    }
+                </div>
+
+
+                   @*  <Presentation.BlazorApp.Components.Shared.CourseBox @rendermode="InteractiveServer" IsSavedCourses="false" courses="courses" /> *@
 
 
                    @*  @if (Model.Pagination != null && Model.Pagination.TotalPages > 1)
@@ -157,19 +210,54 @@
             isLoading = true;
             categories = await GraphQLService.GetAllCategoriesAsync();
             courses = await GraphQLService.GetAllCoursesAsync();
-           
+
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             isError = true;
+            Logger.LogError($"ERROR : CoursesIndex.LoadInitialDataAsync() :: {ex.Message}");
         }
         finally
         {
             isLoading = false;
-            
+
         }
     }
+
+
+    private async Task SaveCourseAsync(string courseId)
+    {
+        try
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var currentUser = authState.User;
+
+            var user = await UserService.GetCurrentUserAsync();
+            var result = await CourseService.SaveCourseAsync(user.Id, courseId);
+            switch (result.StatusCode)
+            {
+                case ResultStatus.OK:
+                    ToastService.ShowToast("Course saved", ToastLevel.Success);
+                    break;
+
+                case ResultStatus.EXISTS:
+                    ToastService.ShowToast("Course is already saved", ToastLevel.Warning);
+                    break;
+
+                default:
+                    ToastService.ShowToast("Our server is having a bad day. We're on it! Please try again later!", ToastLevel.Error);
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"ERROR : CoursesIndex.SaveCourseAsync() :: {ex.Message}");
+            ToastService.ShowToast("Our server is having a bad day. We're on it! Please try again later!", ToastLevel.Error);
+        }
+
+    }
+
 
     private async Task GetAllCoursesAsync()
     {
@@ -198,9 +286,10 @@
         {
             courses = await fetchCourses();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             isError = true;
+            Logger.LogError($"ERROR : CoursesIndex.FetchCoursesAsync() :: {ex.Message}");
         }
         finally
         {
@@ -215,7 +304,6 @@
     }
 
 
-
     private sealed class CourseSearchModel
     {
         public string SelectedCategory { get; set; } = "all";
@@ -226,5 +314,5 @@
   
 
 
-    }
+    
 }

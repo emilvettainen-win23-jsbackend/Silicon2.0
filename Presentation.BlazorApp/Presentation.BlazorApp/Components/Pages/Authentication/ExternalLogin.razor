@@ -52,7 +52,7 @@
 
 @code {
     public const string LoginCallbackAction = "LoginCallback";
-    private AlertModel? Alert { get; set; }
+    private AlertModel1? Alert { get; set; }
     private string? message;
     private ExternalLoginInfo externalLoginInfo = default!;
 
@@ -135,7 +135,7 @@
                 NavigationManager.NavigateTo($"account/registerconfirmation?email={Input.Email}&returnUrl={ReturnUrl}");
             }
         }
-        Alert = new AlertModel
+        Alert = new AlertModel1
         {
             Message = string.Join(",", result.Errors.Select(error => error.Description)),
             Icon = "danger"

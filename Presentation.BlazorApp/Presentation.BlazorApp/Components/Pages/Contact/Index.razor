@@ -95,7 +95,7 @@
     [SupplyParameterFromForm]
     private ContactModel _contact { get; set; } = new();
 
-    private AlertModel? Alert { get; set; }
+    private AlertModel1? Alert { get; set; }
     private bool isBusy { get; set; } = false;
 
     private async Task ContactRequestAsync()
@@ -107,19 +107,19 @@
             switch (response.StatusCode)
             {
                 case System.Net.HttpStatusCode.Created:
-                    Alert = new AlertModel { Message = "Contact request was sent", Icon = "success" };
+                    Alert = new AlertModel1 { Message = "Contact request was sent", Icon = "success" };
                     _contact = new();
                     break;
 
                 default:
-                    Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
+                    Alert = new AlertModel1 { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
                     break;
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
+            Alert = new AlertModel1 { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
         }
         finally
         {

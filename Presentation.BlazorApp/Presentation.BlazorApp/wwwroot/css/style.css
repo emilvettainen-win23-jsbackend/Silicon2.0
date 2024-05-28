@@ -433,6 +433,54 @@ h1:focus {
   top: 0.5rem;
 }
 
+.cs-toast {
+  display: none;
+  padding: 1.5rem;
+  color: #fff;
+  z-index: 999;
+  position: fixed;
+  width: 25rem;
+  top: 1rem;
+  border-radius: 1rem;
+  right: 2rem;
+}
+
+.cs-toast-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 1rem;
+  font-size: 2.5rem;
+}
+
+.cs-toast-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-left: 1rem;
+}
+.cs-toast-body h5 {
+  color: #FFFFFF;
+}
+
+.cs-toast-body p {
+  margin-bottom: 0;
+}
+
+.cs-toast-visible {
+  display: flex;
+  flex-direction: row;
+  animation: fadein 0.5s;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 .btn-theme-small {
   background-color: var(--clr-theme);
   border-radius: 6px;
@@ -2758,6 +2806,22 @@ footer .container .social-media a {
   flex-direction: row;
   gap: 1rem;
 }
+.account-security .change-password .verify-newpassword {
+  display: flex;
+  flex-direction: column;
+}
+.account-security .change-password .verify-newpassword .content {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-areas: "form" "button";
+}
+.account-security .change-password .verify-newpassword .content form {
+  grid-area: form;
+}
+.account-security .change-password .verify-newpassword .content button {
+  grid-area: button;
+}
 .account-security .delete-account h5 {
   color: var(--clr-theme);
   padding-bottom: 20px;
@@ -2849,8 +2913,15 @@ footer .container .social-media a {
 .account-notifications .manage-notifications form .content {
   display: grid;
   gap: 1rem;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-template-areas: "notify" "newsletter" "darkmode" "button";
+}
+@media (min-width: 992px) {
+  .account-notifications .manage-notifications form .content {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 1.5rem;
+    grid-template-areas: "notify null" "newsletter newsletter" "darkmode darkmode" "button button";
+  }
 }
 .account-notifications .manage-notifications form .content #form-notify {
   grid-area: notify;

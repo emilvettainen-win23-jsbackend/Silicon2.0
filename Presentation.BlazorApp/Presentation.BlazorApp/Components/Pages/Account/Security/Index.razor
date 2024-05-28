@@ -1,6 +1,5 @@
 ﻿@page "/account/security"
-@using System.ComponentModel.DataAnnotations
-@using Infrastructure.Dtos.User
+<PageTitle>Account Security</PageTitle>
 
 
 <section class="account-security">
@@ -60,8 +59,11 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
+
     [SupplyParameterFromForm(FormName = "delete")]
     private DeleteAccountModel DeleteAccountForm { get; set; } = new();
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,18 +71,20 @@
         IsExternalAccount = user.IsExternalAccount;
     }
 
+
     private async Task DeleteAccountAsync()
     {
-        // user.EmailConfirmed = false;
-        // var result = await UserManager.UpdateAsync(user.Id);
-        // if (result.Succeeded)
-        // {
-        //     await SignInManager.SignOutAsync();
-        //     NavigationManager.NavigateTo("/");
-        // }
-        //message
+        var currentUser = await UserManager.FindByIdAsync(user.Id);
+        currentUser!.EmailConfirmed = false;
+        var result = await UserManager.UpdateAsync(currentUser!);
+        if (result.Succeeded)
+        {
+            await SignInManager.SignOutAsync();
+            NavigationManager.NavigateTo("/");
+        }
 
     }
+
 
     private sealed class DeleteAccountModel
     {

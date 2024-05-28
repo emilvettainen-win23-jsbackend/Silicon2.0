@@ -97,6 +97,10 @@ internal class Program
 
         app.UseAntiforgery();
 
+
+   
+
+
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()

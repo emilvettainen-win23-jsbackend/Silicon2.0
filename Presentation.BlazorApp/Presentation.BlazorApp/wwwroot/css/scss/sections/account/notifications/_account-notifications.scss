@@ -9,13 +9,20 @@
 
         form {
 
+
             .content {
                 display: grid;
                 gap: 1rem;
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr;
                 grid-template-areas: "notify" "newsletter" "darkmode" "button";
 
-                
+
+                @include lg {
+                    grid-template-columns: repeat(2, 1fr);
+                    column-gap: 1.5rem;
+                    grid-template-areas: "notify null" "newsletter newsletter" "darkmode darkmode" "button button";
+                }
+
 
                 #form-notify {
                     grid-area: notify;

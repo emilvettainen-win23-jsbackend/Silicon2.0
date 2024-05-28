@@ -1,8 +1,7 @@
 ﻿using Azure.Messaging.ServiceBus;
-using CurrieTechnologies.Razor.SweetAlert2;
 using Infrastructure.Services;
-using MudBlazor.Services;
 using Presentation.BlazorApp.GraphQL;
+using Presentation.BlazorApp.Helper;
 
 
 
@@ -15,11 +14,8 @@ public static class ServicesConfiguration
         services.AddScoped<UserService>();
         services.AddScoped<AddressService>();
         services.AddScoped<CourseService>();
-
+        services.AddScoped<ToastService>();
         services.AddSingleton<GraphQLService>();
-        services.AddMudServices();
-
-        services.AddSweetAlert2();
 
 
         services.AddSingleton(new ServiceBusClient(configuration.GetConnectionString("ServiceBusConnection")));

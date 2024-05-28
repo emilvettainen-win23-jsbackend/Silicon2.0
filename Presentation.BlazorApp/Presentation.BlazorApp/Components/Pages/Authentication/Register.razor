@@ -4,17 +4,14 @@
 @inject ILogger<Register> Logger
 @rendermode InteractiveServer
 
+<Toast />
+
 <section id="signup">
     <div class="container">
         
         <EditForm Model="SignUpForm" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="SignUpAsync" FormName="register" novalidate>
             <DataAnnotationsValidator />
-    @*         @if (Alert != null)
-            {
-                <div class="alert alert-@Alert.Icon" role="alert">
-                    @Alert.Message
-                </div>
-            } *@
+
             <h1>Create Account</h1>
             <p>Already have an account? <a href="/account/signin">Sign in here.</a></p>
             <div class="content">
@@ -64,7 +61,6 @@
 
 @code {
     private bool IsBusy;
-    private AlertModel? Alert { get; set; }
 
 
     [SupplyParameterFromQuery]
@@ -73,9 +69,6 @@
 
     [SupplyParameterFromForm]
     private SignUpModel SignUpForm { get; set; } = new();
-
-
-
 
 
     public async Task SignUpAsync(EditContext editContext)
@@ -88,19 +81,16 @@
             switch (createdResult.StatusCode)
             {
                 case ResultStatus.OK:
-
                     await UserService.VerificationRequest(SignUpForm.Email);
                     NavigationManager.NavigateTo($"account/registerconfirmation?email={SignUpForm.Email}&returnUrl={ReturnUrl}");
                     break;
 
                 case ResultStatus.EXISTS:
-                    // Alert = new AlertModel { Message = "The email you entered is already associated with an account. Please use a different email or reset your password if you forgot it.", Icon = "warning" };
-                    await Swal.FireAsync("", "The email you entered is already associated with an account. Please use a different email or reset your password if you forgot it.", SweetAlertIcon.Warning);
+                    ToastService.ShowToast("The email you entered is already associated with an account. Please use a different email or reset your password if you forgot it.", ToastLevel.Error);
                     break;
 
                 default:
-                    // Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
-                    await Swal.FireAsync("", "Our server is having a bad day. We're on it! Please try again later!", SweetAlertIcon.Error);
+                    ToastService.ShowToast("Our server is having a bad day. We're on it! Please try again later!", ToastLevel.Error);
                     break;
             }
 
@@ -108,8 +98,7 @@
         catch (Exception ex)
         {
             Logger.LogError($"ERROR : Register.SignUpAsync() :: {ex.Message}");
-            // Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
-            await Swal.FireAsync("", "Our server is having a bad day. We're on it! Please try again later!", SweetAlertIcon.Error);
+            ToastService.ShowToast("Our server is having a bad day. We're on it! Please try again later!", ToastLevel.Error);
         }
         finally
         {

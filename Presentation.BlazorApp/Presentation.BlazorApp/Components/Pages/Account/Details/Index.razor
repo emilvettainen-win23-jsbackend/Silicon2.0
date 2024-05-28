@@ -1,8 +1,9 @@
 ﻿@page "/account/details"
 <PageTitle>Account Details</PageTitle>
-
 @inject ILogger<Index> Logger
 @rendermode InteractiveServer
+
+<Toast />
 
 <section class="account-details">
     <div class="container">
@@ -93,8 +94,8 @@
                         </div>
                         <div id="form-buttons">
                             <button @onclick="ResetAddressInfoForm" class="btn-gray-small" type="button"> Cancel</button>
-                            <button disabled="@IsBusy" id="form-submit" class="btn-theme-small" type="submit">
-                                @if (IsBusy)
+                            <button disabled="@IsBusy2" id="form-submit" class="btn-theme-small" type="submit">
+                                @if (IsBusy2)
                                 {
                                     <div class="spinner-border spinner-border-sm" role="status">
                                         <span class="visually-hidden">Loading...</span>
@@ -115,8 +116,8 @@
 @code {
     private bool IsExternalAccount;
     private bool IsBusy;
+    private bool IsBusy2;
     private UserDto user = default!;
-
 
 
     [SupplyParameterFromForm(FormName ="basic")]
@@ -152,24 +153,23 @@
             switch (result.StatusCode)
             {
                 case ResultStatus.OK:
-                    await Swal.FireAsync("Info", "Was updated successfully", SweetAlertIcon.Success);
-                    NavigationManager.Refresh();
-                    break;
-
-                case ResultStatus.ERROR:
+                    ToastService.ShowToast("Changes has been saved", ToastLevel.Success);
                     break;
 
                 default:
+                    ToastService.ShowToast("Failed to save changes, Please try again later!", ToastLevel.Error);
                     break;
             }
         }
         catch (Exception ex)
         {
             Logger.LogError($"ERROR : AccountDetails.SaveBasicInfoAsync() :: {ex.Message}");
+            ToastService.ShowToast("Your changes could not be saved. Please contact support!", ToastLevel.Error);
         }
         finally
         {
             IsBusy = false;
+            NavigationManager.Refresh();
         }
     }
 
@@ -178,32 +178,31 @@
     {
         try
         {
-            IsBusy = true;
+            IsBusy2 = true;
             var result = await AddressService.CreateOrUpdateAddressInfoAsync(user.Id, AddressFactory.CreateAddressDto(AddressInfoForm.Addressline_1, AddressInfoForm.Addressline_2, AddressInfoForm.PostalCode, AddressInfoForm.City));
             switch (result.StatusCode)
             {
                 case ResultStatus.OK:
-                    NavigationManager.Refresh();
-
-                    break;
-
-                case ResultStatus.ERROR:
+                    ToastService.ShowToast("Changes has been saved", ToastLevel.Success);
                     break;
 
                 default:
+                    ToastService.ShowToast("Failed to save changes, Please try again later!", ToastLevel.Error);
                     break;
-
             }
         }
         catch (Exception ex)
         {
             Logger.LogError($"ERROR : AccountDetails.SaveAddressInfoAsync() :: {ex.Message}");
+            ToastService.ShowToast("Your changes could not be saved. Please contact support!", ToastLevel.Error);
         }
         finally
         {
-            IsBusy = false;
+            IsBusy2 = false;
+            NavigationManager.Refresh();
         }
     }
+
 
     private void ResetBasicInfoForm()
     {

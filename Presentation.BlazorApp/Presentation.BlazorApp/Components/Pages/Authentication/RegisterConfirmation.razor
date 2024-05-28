@@ -5,16 +5,12 @@
 
 @inject IServiceScopeFactory ScopeFactory
 
+<Toast />
+
 <section id="confirmation">
     <div class="container">
         <EditForm Model="VerifyForm" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="VerifyAsync" FormName="RegisterConfirmation" Enhance novalidate>
             <DataAnnotationsValidator />
-            @if (Alert != null)
-            {
-                <div class="alert alert-@Alert.Icon" role="alert">
-                    @Alert.Message
-                </div>
-            }
             <div class="content">
                 <div id="form-info">
                     <h1>Verify your account</h1>
@@ -46,7 +42,6 @@
 
     private bool IsBusy;
     private ApplicationUser user = default!;
-    private AlertModel? Alert { get; set; }
     private ExternalLoginInfo externalLoginInfo = default!;
 
 
@@ -87,7 +82,7 @@
     {
         // try
         // {
-        var result = await Http.PostAsJsonAsync($"{Config["URI:ValidateCode"]}", new { Email = Email, Code = VerifyForm.Code });
+        var result = await Http.PostAsJsonAsync($"{Config["VALIDATE_CODE"]}", new { Email = Email, Code = VerifyForm.Code });
         if (result.IsSuccessStatusCode)
         {
             user.EmailConfirmed = true;
@@ -95,9 +90,10 @@
             if (updateResult.Succeeded)
             {
 
-                await SignInManager.SignInAsync(user, false );
+                await SignInManager.SignInAsync(user, false);
+                StateHasChanged();
 
-                    NavigationManager.NavigateTo("/account/details", forceLoad: true);
+                NavigationManager.NavigateTo("/account/details");
                     // Alert = new AlertModel { Message = "Account verified successfully. You may now proceed to sign in.", Icon = "success" };
                     // VerifyForm = new();
                     return;
@@ -105,7 +101,7 @@
             }
             else
             {
-                Alert = new AlertModel { Message = "Hmm, that code didn’t do the trick. Let's give it another shot. Resend the code!", Icon = "warning" };
+                ToastService.ShowToast("That code didn’t do the trick. Let's give it another shot.", ToastLevel.Error); 
                 VerifyForm = new();
                 return;
             }
@@ -114,7 +110,7 @@
         // {
         //     Logger.LogError($"ERROR : Register.SignUpAsync() :: {ex.Message}");
         // }
-        Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
+        ToastService.ShowToast("Our server is having a bad day. We're on it! Please try again later!", ToastLevel.Error);
         VerifyForm = new();
     }
 

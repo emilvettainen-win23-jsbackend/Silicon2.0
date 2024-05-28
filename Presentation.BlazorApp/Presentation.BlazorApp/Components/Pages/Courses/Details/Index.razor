@@ -4,13 +4,14 @@
 @using Presentation.BlazorApp.GraphQL
 @using Presentation.BlazorApp.Models.Courses
 
+<PageTitle>Course Details</PageTitle>
+@inject ILogger<Index> Logger
+
 @attribute [StreamRendering]
 @rendermode @(new InteractiveServerRenderMode(false))
 
 
-
-@inject GraphQLService GraphQLService
-
+<Toast />
 
 @if (isLoading && !isError)
 {
@@ -261,17 +262,17 @@ else
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var currentUser = authState.User;
             var user = await UserService.GetCurrentUserAsync();
-            var result = await Http.PostAsJsonAsync($"{Config["URI:PRODUCT_PROVIDER"]}", new { Firstname = user.FirstName , UserId = user.Id, Email = user.Email , CourseId = course!.Id, CourseTitle = course.CourseTitle, AuthorName = course.Author.FullName });
+            var result = await Http.PostAsJsonAsync($"{Config["PRODUCT_PROVIDER"]}", new { Firstname = user.FirstName , UserId = user.Id, Email = user.Email , CourseId = course!.Id, CourseTitle = course.CourseTitle, AuthorName = course.Author.FullName });
             if (result.IsSuccessStatusCode)
             {
-                //message
+                ToastService.ShowToast("An email with confirmation was sent", ToastLevel.Success);
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-           
+            Logger.LogError($"ERROR : CourseDetailsIndex.JoinCourseConfirmAsync() :: {ex.Message}");
         }
-        //message
+        ToastService.ShowToast("Our server is having a bad day. We're on it! Please try again later!", ToastLevel.Error);
     }
 
     

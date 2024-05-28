@@ -1,19 +1,13 @@
 ﻿@page "/account/notifications"
 <PageTitle>Account Notifications</PageTitle>
 
-
-
 @rendermode InteractiveServer
+<Toast />
+
 
 <section class="account-notifications">
     <div class="container">
         <div class="d-flex flex-column gap-4">
-           @*  @if (Alert != null)
-            {
-                <div class="alert alert-@Alert.Icon" role="alert">
-                    @Alert.Message
-                </div>
-            } *@
             <h2>Notifications</h2>
             <div class="manage-notifications">
                 <EditForm FormName="notify" Model="NotifyForm" method="post" OnValidSubmit="HandleSubmitAsync" novalidate>
@@ -23,9 +17,7 @@
                         <div id="form-notify" class="input-group">
                             <label for="email-notify">Preferd email for notifications</label>
                             <InputText id="email-notify" @bind-Value="NotifyForm.Email" class="form-control" placeholder="example@gmail.com" />
-                           @*  <ValidationMessage For="() => NotifyForm.Email" class="text-danger" /> *@
                         </div>
-
                         <div id="form-newsletter" class="input-group">
                             <div class="btn-switch">
                                 <label class="switch" for="newsletter-toggle">
@@ -35,7 +27,6 @@
                                 <label>Subscribe to Newsletter</label>
                             </div>
                         </div>
-
                         <div id="form-darkmode" class="input-group">
                             <div class="btn-switch">
                                 <label class="switch" for="theme-toggle">
@@ -45,7 +36,6 @@
                                 <label>Use Dark Mode Theme in Application</label>
                             </div>
                         </div>
-
                         <div id="form-buttons">
                             <button @onclick="ResetForm" disabled="@IsBusy" class="btn-gray-small" type="button">Cancel</button>
                             <button disabled="@IsBusy" class="btn-theme-small" type="submit">
@@ -66,27 +56,19 @@
 </section>
 
 @code {
-
-
     private bool IsBusy;
     private UserDto user = default!;
-    private AlertModel? Alert { get; set; }
 
     [SupplyParameterFromForm(FormName ="notify")]
     private NotifyModel NotifyForm { get; set; } = new();
 
 
-
-
-
     protected override async Task OnInitializedAsync()
     {
         user = await UserService.GetCurrentUserAsync();
-
         NotifyForm.Email ??= user.NewsletterEmail;
         NotifyForm.Newsletter = user.Newsletter;
         NotifyForm.DarkMode = user.DarkMode;
-
 
     }
 
@@ -99,43 +81,25 @@
             switch (result.StatusCode)
             {
                 case ResultStatus.OK:
-                    // Alert = new AlertModel { Message = result.Message, Icon = "success" };
-
-                    await Swal.FireAsync("Success", result.Message, SweetAlertIcon.Success);
-
-                    
-
-
-
-       
-
-
+                    ToastService.ShowToast(result.Message!, ToastLevel.Success);
                     break;
 
                 default:
-                    // Alert = new AlertModel { Message = result.Message, Icon = "danger" };
-
-                    await Swal.FireAsync("error", result.Message, SweetAlertIcon.Error);
-
+                    ToastService.ShowToast(result.Message!, ToastLevel.Error);
                     break;
             }
         }
         catch (Exception)
         {
-            // Alert = new AlertModel { Message = "An error occurred. Your changes could not be saved. Please contact support!", Icon = "danger" };
-            await Swal.FireAsync("error", "An error occurred. Your changes could not be saved. Please contact support!", SweetAlertIcon.Error);
+            ToastService.ShowToast("Your changes could not be saved. Please contact support", ToastLevel.Error);
         }
         finally
         {
             IsBusy = false;
             NavigationManager.Refresh();
-            
-           
-         
-
-            
         }
     }
+
 
 
     private sealed class NotifyModel
@@ -168,6 +132,7 @@
             return ValidationResult.Success!;
         }
     }
+
 
     private void ResetForm()
     {

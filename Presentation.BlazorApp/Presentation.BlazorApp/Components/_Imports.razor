@@ -16,6 +16,7 @@
 
 
 
+@using Presentation.BlazorApp.Helper
 @using Presentation.BlazorApp.Models
 @using Presentation.BlazorApp.Models.Account
 @using Presentation.BlazorApp.Components.Shared
@@ -36,6 +37,19 @@
 @inject SweetAlertService Swal
 
 
+
+
+
+
+
+
+@inject GraphQLService GraphQLService
+
+
+@inject ToastService ToastService
+
+
+
 @inject IConfiguration Config
 @inject HttpClient Http
 
@@ -48,4 +62,6 @@
 @using Infrastructure.Dtos.User
 @using Infrastructure.Helpers.Responses
 @using Infrastructure.Factories
-
+@using Infrastructure.Models
+@using Presentation.BlazorApp.GraphQL
+@using Presentation.BlazorApp.Models.Courses
