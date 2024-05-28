@@ -2578,6 +2578,42 @@ footer .container .social-media a {
   border: 1px solid var(--clr-gray-100);
   cursor: pointer;
 }
+.account .container .account-panel .content .account-user .account-user-img .change-user-img .tooltiptext {
+  line-height: 160%;
+  font-weight: 400;
+  color: var(--clr-text-body);
+  font-family: "Manrope", sans-serif;
+  margin: 0;
+  padding: 0;
+  visibility: hidden;
+  width: 130px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 99;
+  top: 0px;
+  right: 45px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  padding: 6px 0;
+}
+.account .container .account-panel .content .account-user .account-user-img .change-user-img .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  transform: rotate(-90deg);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+.account .container .account-panel .content .account-user .account-user-img .change-user-img:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
 .account .container .account-panel .content .account-user h5 {
   padding: 1rem 0 0.5rem 0;
 }
@@ -2813,8 +2849,14 @@ footer .container .social-media a {
 .account-security .change-password .verify-newpassword .content {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   grid-template-areas: "form" "button";
+}
+@media (min-width: 992px) {
+  .account-security .change-password .verify-newpassword .content {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-areas: "form" "button";
+  }
 }
 .account-security .change-password .verify-newpassword .content form {
   grid-area: form;

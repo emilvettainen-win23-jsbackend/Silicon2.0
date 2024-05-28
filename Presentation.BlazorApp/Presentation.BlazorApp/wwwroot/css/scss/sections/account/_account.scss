@@ -53,6 +53,40 @@
                             border-radius: 50%;
                             border: 1px solid var(--clr-gray-100);
                             cursor: pointer;
+
+                            .tooltiptext {
+                                @include standard-text;
+                                visibility: hidden;
+                                width: 130px;
+                                background-color: #555;
+                                color: #fff;
+                                text-align: center;
+                                border-radius: 6px;
+                                position: absolute;
+                                z-index: 99;
+                                top: 0px;
+                                right: 45px;
+                                opacity: 0;
+                                transition: opacity 0.3s;
+                                padding: 6px 0;
+                            }
+
+                            .tooltiptext::after {
+                                content: "";
+                                position: absolute;
+                                top: 50%;
+                                left: 100%;
+                                margin-top: -5px;
+                                transform: rotate(-90deg);
+                                border-width: 5px;
+                                border-style: solid;
+                                border-color: #555 transparent transparent transparent;
+                            }
+                        }
+
+                        .change-user-img:hover .tooltiptext {
+                            visibility: visible;
+                            opacity: 1;
                         }
                     }
 
@@ -65,7 +99,6 @@
                     display: grid;
                     grid-template-columns: 1fr 1fr 1fr;
                     justify-items: center;
-                    
                     gap: 5px;
                     padding-top: 1.5rem;
 
@@ -74,7 +107,7 @@
                         justify-items: inherit;
                         width: 100%;
                     }
-                    
+
 
                     .link-text {
                         display: none;
