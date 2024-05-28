@@ -14,18 +14,14 @@
 @inject NavigationManager NavigationManager
 @inject ILogger<ExternalLogin> Logger
 
+<Toast />
 
 
 <section class="externallogin-section">
     <div class="container">
         <div class="content">
             <div id="content-alert">
-                @if (Alert != null)
-                {
-                    <div class="alert alert-@Alert.Icon" role="alert">
-                        @Alert.Message
-                    </div>
-                }
+
             </div>
             <div id="content-info">
                 <div class="alert alert-info">
@@ -52,7 +48,7 @@
 
 @code {
     public const string LoginCallbackAction = "LoginCallback";
-    private AlertModel1? Alert { get; set; }
+
     private string? message;
     private ExternalLoginInfo externalLoginInfo = default!;
 
@@ -135,11 +131,7 @@
                 NavigationManager.NavigateTo($"account/registerconfirmation?email={Input.Email}&returnUrl={ReturnUrl}");
             }
         }
-        Alert = new AlertModel1
-        {
-            Message = string.Join(",", result.Errors.Select(error => error.Description)),
-            Icon = "danger"
-        };
+        ToastService.ShowToast(string.Join(",", result.Errors.Select(error => error.Description)), ToastLevel.Error);
     }
 
     private ApplicationUser CreateUser()

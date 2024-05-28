@@ -1,7 +1,11 @@
 ﻿@page "/contact"
 <PageTitle>Contact</PageTitle>
 
+@inject ILogger<Index> Logger
+
 @rendermode InteractiveServer
+
+<Toast />
 
 <section class="contact">
     <div class="container grid-12">
@@ -35,13 +39,6 @@
         </div>
 
         <div class="contact-form">
-            @if (Alert != null)
-            {
-                <div class="alert alert-@Alert.Icon" role="alert">
-                    @Alert.Message
-                </div>
-            }
-
             <h2>Get In Contact With Us</h2>
             <EditForm Model="_contact" id="contactForm" method="post" OnValidSubmit="ContactRequestAsync" FormName="contact" Enhance novalidate >
                 <DataAnnotationsValidator />
@@ -95,7 +92,7 @@
     [SupplyParameterFromForm]
     private ContactModel _contact { get; set; } = new();
 
-    private AlertModel1? Alert { get; set; }
+
     private bool isBusy { get; set; } = false;
 
     private async Task ContactRequestAsync()
@@ -107,19 +104,19 @@
             switch (response.StatusCode)
             {
                 case System.Net.HttpStatusCode.Created:
-                    Alert = new AlertModel1 { Message = "Contact request was sent", Icon = "success" };
+                    ToastService.ShowToast("Contact request was sent", ToastLevel.Success);
                     _contact = new();
                     break;
 
                 default:
-                    Alert = new AlertModel1 { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
+                    ToastService.ShowToast("Our server is having a bad day. We're on it! Please try again later!", ToastLevel.Error);
                     break;
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
-            Alert = new AlertModel1 { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
+            Logger.LogError($"ERROR : Contact.ContactRequestAsync() :: {ex.Message}");
+            ToastService.ShowToast("Our server is having a bad day. We're on it! Please try again later!", ToastLevel.Error);
         }
         finally
         {

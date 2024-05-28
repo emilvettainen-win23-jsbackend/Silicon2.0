@@ -1,5 +1,6 @@
 ﻿@inject ILogger<NewsletterSection> Logger
 
+<Toast />
 
 <section id="subscribe" class="newsletter">
     <div class="container grid-12">
@@ -75,22 +76,22 @@
             switch (response.StatusCode)
             {
                 case System.Net.HttpStatusCode.OK:
-                    await Swal.FireAsync("Subscribe", "You have been subscribed!", SweetAlertIcon.Success);
+                    ToastService.ShowToast("You have been subscribed!", ToastLevel.Success);
                     break;
 
                 case System.Net.HttpStatusCode.Conflict:
-                    await Swal.FireAsync("Subscribe", "You have already been subscribed!", SweetAlertIcon.Warning);
+                    ToastService.ShowToast("You have already been subscribed!", ToastLevel.Warning);
                     break;
 
                 default:
-                    await Swal.FireAsync("Subscribe", "An unexpected error occurred, Please contact support!", SweetAlertIcon.Error);
+                    ToastService.ShowToast("An unexpected error occurred, Please contact support!", ToastLevel.Error);
                     break;
             }
         }
         catch (Exception ex)
         {
             Logger.LogError($"ERROR : NewsletterSection.SubscribeRequestAsync() :: {ex.Message}");
-            await Swal.FireAsync("Subscribe", "An unexpected error occurred, Please contact support!", SweetAlertIcon.Error);
+            ToastService.ShowToast("An unexpected error occurred, Please contact support!", ToastLevel.Error); ;
         }
         finally
         {
