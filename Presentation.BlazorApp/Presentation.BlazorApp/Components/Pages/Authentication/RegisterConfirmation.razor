@@ -3,6 +3,7 @@
 
 @inject ILogger<RegisterConfirmation> Logger
 
+@inject IServiceScopeFactory ScopeFactory
 
 <section id="confirmation">
     <div class="container">
@@ -84,17 +85,21 @@
 
     private async Task VerifyAsync()
     {
-        try
+        // try
+        // {
+        var result = await Http.PostAsJsonAsync($"{Config["URI:ValidateCode"]}", new { Email = Email, Code = VerifyForm.Code });
+        if (result.IsSuccessStatusCode)
         {
-            var result = await Http.PostAsJsonAsync($"{Config["URI:ValidateCode"]}", new { Email = Email, Code = VerifyForm.Code });
-            if (result.IsSuccessStatusCode)
+            user.EmailConfirmed = true;
+            var updateResult = await UserManager.UpdateAsync(user);
+            if (updateResult.Succeeded)
             {
-                user.EmailConfirmed = true;
-                var updateResult = await UserManager.UpdateAsync(user);
-                if (updateResult.Succeeded)
-                {
-                    Alert = new AlertModel { Message = "Account verified successfully. You may now proceed to sign in.", Icon = "success" };
-                    VerifyForm = new();
+
+                await SignInManager.SignInAsync(user, false );
+
+                    NavigationManager.NavigateTo("/account/details", forceLoad: true);
+                    // Alert = new AlertModel { Message = "Account verified successfully. You may now proceed to sign in.", Icon = "success" };
+                    // VerifyForm = new();
                     return;
                 }
             }
@@ -104,11 +109,11 @@
                 VerifyForm = new();
                 return;
             }
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError($"ERROR : Register.SignUpAsync() :: {ex.Message}");
-        }
+        // }
+        // catch (Exception ex)
+        // {
+        //     Logger.LogError($"ERROR : Register.SignUpAsync() :: {ex.Message}");
+        // }
         Alert = new AlertModel { Message = "Our server is having a bad day. We're on it! Please try again later!", Icon = "danger" };
         VerifyForm = new();
     }

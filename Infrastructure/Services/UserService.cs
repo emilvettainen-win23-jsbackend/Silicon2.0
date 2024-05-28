@@ -69,7 +69,7 @@ public class UserService
     {
         try
         {
-            var isFirstUser = !await _userManager.Users.AnyAsync(x => !x.IsExternalAccount);
+            
             var userExists = await _userManager.Users.AnyAsync(x => x.Email == user.Email);
             if (userExists)
             {
@@ -77,13 +77,7 @@ public class UserService
             }
 
             var createUser = await _userManager.CreateAsync(user, password);
-            if (!createUser.Succeeded)
-            {
-                return ResponseFactory.Error();
-            }
-            var standardRole = isFirstUser ? "Admin" : "User";
-            var roleResult = await _userManager.AddToRoleAsync(user, standardRole);
-            return roleResult.Succeeded ? ResponseFactory.Ok() : ResponseFactory.Error();
+            return createUser.Succeeded ? ResponseFactory.Ok() : ResponseFactory.Error();
         }
         catch (Exception ex)
         {

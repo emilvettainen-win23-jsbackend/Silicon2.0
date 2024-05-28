@@ -3,20 +3,20 @@
 
 
 
-@rendermode @(new InteractiveServerRenderMode(false))
+@rendermode InteractiveServer
 
 <section class="account-notifications">
     <div class="container">
         <div class="d-flex flex-column gap-4">
-            @if (Alert != null)
+           @*  @if (Alert != null)
             {
                 <div class="alert alert-@Alert.Icon" role="alert">
                     @Alert.Message
                 </div>
-            }
+            } *@
             <h2>Notifications</h2>
             <div class="manage-notifications">
-                <EditForm FormName="notify" Model="NotifyForm" method="post" OnValidSubmit="HandleSubmitAsync" Enhance novalidate>
+                <EditForm FormName="notify" Model="NotifyForm" method="post" OnValidSubmit="HandleSubmitAsync" novalidate>
                     <DataAnnotationsValidator />
                     <ValidationSummary />
                     <div class="content">
@@ -99,7 +99,7 @@
             switch (result.StatusCode)
             {
                 case ResultStatus.OK:
-                    Alert = new AlertModel { Message = result.Message, Icon = "success" };
+                    // Alert = new AlertModel { Message = result.Message, Icon = "success" };
 
                     await Swal.FireAsync("Success", result.Message, SweetAlertIcon.Success);
 
@@ -113,13 +113,17 @@
                     break;
 
                 default:
-                    Alert = new AlertModel { Message = result.Message, Icon = "danger" };
+                    // Alert = new AlertModel { Message = result.Message, Icon = "danger" };
+
+                    await Swal.FireAsync("error", result.Message, SweetAlertIcon.Error);
+
                     break;
             }
         }
         catch (Exception)
         {
-            Alert = new AlertModel { Message = "An error occurred. Your changes could not be saved. Please contact support!", Icon = "danger" };
+            // Alert = new AlertModel { Message = "An error occurred. Your changes could not be saved. Please contact support!", Icon = "danger" };
+            await Swal.FireAsync("error", "An error occurred. Your changes could not be saved. Please contact support!", SweetAlertIcon.Error);
         }
         finally
         {
