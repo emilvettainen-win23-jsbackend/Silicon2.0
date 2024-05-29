@@ -14,7 +14,7 @@
             width: 100%;
 
             @include md {
-                width: 35%;
+                width: 20%;
                 flex-grow: 1;
             }
         }
@@ -46,7 +46,7 @@
                 }
 
                 .author-information {
-                    border: 1px solid red;
+                    
 
                     h1 {
                         color: var(--clr-white);

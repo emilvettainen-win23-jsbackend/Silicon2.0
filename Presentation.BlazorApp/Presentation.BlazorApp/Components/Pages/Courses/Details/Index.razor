@@ -72,13 +72,13 @@ else if (course != null)
                 </div>
 
                 <p>(1.2K reviews)</p>
-                <p><i class="fa-regular fa-thumbs-up"></i>@(course.Rating.InNumbers / 1000) K likes</p>
+                <p><i class="fa-regular fa-thumbs-up"></i>@(course.Rating.InNumbers) K likes</p>
 
                 <p><i class="fa-regular fa-clock"></i>@course.Included.HoursOfVideo hours</p>
             </div>
 
             <div class="course-created">
-                <img src="@(!string.IsNullOrEmpty(course.Author.ProfileImageUrl) ? course.Author.ProfileImageUrl : "/images/courses/single-course/created_by_img.svg")" alt="@course.Author.FullName">
+                <img src="@(!string.IsNullOrEmpty(course.Author.ProfileImageUrl) ? course.Author.ProfileImageUrl : "/images/courses/user-profile.png")" alt="@course.Author.FullName">
                 <div>
                     <h6>Created by</h6>
                     <p class="text-m">@course.Author.FullName</p>
@@ -180,11 +180,11 @@ else if (course != null)
                         <div class="author-followers">
                             <a class="youtube btn-theme-m" href="@course.Author.SocialMedia.YouTubeUrl">
                                 <i class="fa-brands fa-youtube"></i>
-                                @course.Author.SocialMedia.Subscribers k subscribers
+                                @course.Author.SocialMedia.Subscribers Subscribers
                             </a>
                             <a class="facebook btn-theme-m" href="@course.Author.SocialMedia.FacebookUrl">
                                 <i class="fa-brands fa-square-facebook"></i>
-                                @course.Author.SocialMedia.Followers k followes
+                                @course.Author.SocialMedia.Followers Followes
                             </a>
                         </div>
                     }

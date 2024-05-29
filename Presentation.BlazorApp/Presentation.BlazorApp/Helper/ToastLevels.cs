@@ -1,10 +1,9 @@
-﻿namespace Presentation.BlazorApp.Helper
+﻿namespace Presentation.BlazorApp.Helper;
+
+public enum ToastLevel
 {
-    public enum ToastLevel
-    {
-        Info,
-        Success,
-        Warning,
-        Error
-    }
+    Info,
+    Success,
+    Warning,
+    Error
 }

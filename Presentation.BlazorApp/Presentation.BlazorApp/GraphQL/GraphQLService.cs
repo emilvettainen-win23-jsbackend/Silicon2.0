@@ -20,7 +20,7 @@ public class GraphQLService(HttpClient httpClient, IConfiguration configuration)
                 isBestseller
                 category
                 created
-
+                lastUpdated
                 rating {
                     inNumbers
                     inProcent
@@ -66,6 +66,7 @@ public class GraphQLService(HttpClient httpClient, IConfiguration configuration)
                     IsBestseller = courseElement.GetProperty("isBestseller").GetBoolean(),
                     Category = courseElement.GetProperty("category").GetString() ?? "",
                     Created = courseElement.GetProperty("created").GetDateTime(),
+                    LastUpdated = courseElement.GetProperty("lastUpdated").GetDateTime(),
                     Rating = new RatingBoxModel
                     {
                         InNumbers = courseElement.GetProperty("rating").GetProperty("inNumbers").GetDecimal(),
@@ -90,7 +91,7 @@ public class GraphQLService(HttpClient httpClient, IConfiguration configuration)
                 courses.Add(course);
             }
         }
-        return courses.OrderByDescending(c => c.Created).ToList();
+        return courses.OrderByDescending(c => c.LastUpdated).ToList();
     }
 
 
@@ -104,6 +105,8 @@ public class GraphQLService(HttpClient httpClient, IConfiguration configuration)
                     courseTitle
                     isBestseller
                     category
+                    created
+                    lastUpdated
                     rating {
                         inNumbers
                         inProcent
@@ -148,6 +151,8 @@ public class GraphQLService(HttpClient httpClient, IConfiguration configuration)
                     CourseTitle = courseElement.GetProperty("courseTitle").GetString() ?? "",
                     IsBestseller = courseElement.GetProperty("isBestseller").GetBoolean(),
                     Category = courseElement.GetProperty("category").GetString() ?? "",
+                    Created = courseElement.GetProperty("created").GetDateTime(),
+                    LastUpdated = courseElement.GetProperty("lastUpdated").GetDateTime(),
                     Rating = new RatingBoxModel
                     {
                         InNumbers = courseElement.GetProperty("rating").GetProperty("inNumbers").GetDecimal(),
@@ -174,7 +179,7 @@ public class GraphQLService(HttpClient httpClient, IConfiguration configuration)
             }
         }
 
-        return courses;
+        return courses.OrderByDescending(c => c.LastUpdated).ToList();
     }
 
 
@@ -219,6 +224,8 @@ public class GraphQLService(HttpClient httpClient, IConfiguration configuration)
             courseTitle
             isBestseller
             category
+            created
+            lastUpdated
             rating {
                 inNumbers
                 inProcent
@@ -259,6 +266,8 @@ public class GraphQLService(HttpClient httpClient, IConfiguration configuration)
                     CourseTitle = courseElement.GetProperty("courseTitle").GetString() ?? "",
                     IsBestseller = courseElement.GetProperty("isBestseller").GetBoolean(),
                     Category = courseElement.GetProperty("category").GetString() ?? "",
+                    Created = courseElement.GetProperty("created").GetDateTime(),
+                    LastUpdated = courseElement.GetProperty("lastUpdated").GetDateTime(),
                     Rating = new RatingBoxModel
                     {
                         InNumbers = courseElement.GetProperty("rating").GetProperty("inNumbers").GetDecimal(),
@@ -285,7 +294,7 @@ public class GraphQLService(HttpClient httpClient, IConfiguration configuration)
             }
         }
 
-        return courses;
+        return courses.OrderByDescending(c => c.LastUpdated).ToList();
     }
 
 
@@ -424,6 +433,8 @@ public class GraphQLService(HttpClient httpClient, IConfiguration configuration)
             courseTitle
             isBestseller
             category
+            created
+            lastUpdated
             rating { inNumbers inProcent }
             prices { originalPrice discountPrice }
             included { hoursOfVideo }
@@ -453,6 +464,8 @@ public class GraphQLService(HttpClient httpClient, IConfiguration configuration)
                     CourseTitle = courseElement.GetProperty("courseTitle").GetString() ?? "",
                     IsBestseller = courseElement.GetProperty("isBestseller").GetBoolean(),
                     Category = courseElement.GetProperty("category").GetString() ?? "",
+                    Created = courseElement.GetProperty("created").GetDateTime(),
+                    LastUpdated = courseElement.GetProperty("lastUpdated").GetDateTime(),
                     Rating = new RatingBoxModel
                     {
                         InNumbers = courseElement.GetProperty("rating").GetProperty("inNumbers").GetDecimal(),
@@ -479,7 +492,7 @@ public class GraphQLService(HttpClient httpClient, IConfiguration configuration)
             }
         }
 
-        return courses;
+        return courses.OrderByDescending(c => c.LastUpdated).ToList();
 
 
 

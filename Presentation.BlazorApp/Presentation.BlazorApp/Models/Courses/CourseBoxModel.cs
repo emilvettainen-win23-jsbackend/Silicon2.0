@@ -8,6 +8,7 @@ public class CourseBoxModel
     public bool IsBestseller { get; set; } = false;
     public string? Category { get; set; }
     public DateTime Created { get; set; }
+    public DateTime LastUpdated { get; set; }
     public RatingBoxModel Rating { get; set; } = null!;
     public PriceBoxModel Prices { get; set; } = null!;
     public IncludedBoxModel Included { get; set; } = null!;
