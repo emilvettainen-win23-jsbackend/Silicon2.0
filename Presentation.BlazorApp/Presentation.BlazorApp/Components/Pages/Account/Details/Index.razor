@@ -1,9 +1,9 @@
 ﻿@page "/account/details"
 <PageTitle>Account Details</PageTitle>
 @inject ILogger<Index> Logger
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(false))
 
-<Toast />
+<Toast/>
 
 <section class="account-details">
     <div class="container">

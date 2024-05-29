@@ -1,4 +1,6 @@
-﻿<header>
+﻿
+
+<header>
     <nav class="navbar navbar-expand-xl container hamburger-menu">
         <div class="container">
             <a class="navbar-brand" href="/"><img id="logo-img" src="/images/logo/@(IsDarkMode ? "logo-dark.svg" : "logo-light.svg")" alt="SiliconDesign"></a>
@@ -14,12 +16,12 @@
                     </button>
                 </div>
                 <div class="offcanvas-body">
-                    <ul class="navbar-nav gap-3">
-                        <li class="nav-item">
+                    <ul class="navbar-nav gap-3" data-bs-dismiss="offcanvas">
+                        <li class="nav-item" >
                             <NavLink class="menu-link" href="/#showcase">Overview</NavLink>
                         </li>
                         <li class="nav-item">
-                            <NavLink class="menu-link" href="/#features">Features</NavLink>
+                            <NavLink class="menu-link"  href="/#features">Features</NavLink>
                         </li>
                         <li class="nav-item">
                             <NavLink class="menu-link" href="/contact">Contact</NavLink>
