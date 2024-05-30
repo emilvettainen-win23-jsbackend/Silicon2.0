@@ -1,0 +1,17 @@
+.chat-bubble-right {
+    text-align: right;
+    background-color: var(--clr-theme);
+    margin-left: auto;
+    border-radius: 15px;
+    padding: 10px;
+    max-width: 75%;
+}
+
+.chat-bubble-right {
+    text-align: left;
+    background-color: var(--clr-theme-secondary);
+    margin-right: auto;
+    border-radius: 15px;
+    padding: 10px;
+    max-width: 75%;
+}

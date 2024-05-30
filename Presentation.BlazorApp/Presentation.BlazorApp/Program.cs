@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Presentation.BlazorApp;
 using Presentation.BlazorApp.Components;
 using Presentation.BlazorApp.Configurations;
+using Presentation.BlazorApp.Hubs;
 
 internal class Program
 {
@@ -69,7 +70,7 @@ internal class Program
 
 
 
-       
+        builder.Services.AddSignalR();
 
  
 
@@ -107,6 +108,8 @@ internal class Program
             .AddAdditionalAssemblies(typeof(Presentation.BlazorApp.Client._Imports).Assembly);
 
         app.MapAdditionalIdentityEndpoints();
+
+        app.MapHub<ChatHub>("/chathub");
 
         app.Run();
     }
