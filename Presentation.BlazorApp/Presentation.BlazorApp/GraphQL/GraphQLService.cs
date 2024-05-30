@@ -7,7 +7,7 @@ namespace Presentation.BlazorApp.GraphQL;
 public class GraphQLService(HttpClient httpClient, IConfiguration configuration)
 {
     private readonly HttpClient _httpClient = httpClient;
-    private readonly string _graphqlEndpoint = configuration["COURSE_PROVIDER"]!;
+    private readonly string _graphqlEndpoint = configuration["CourseProvider"]!;
 
     public async Task<List<CourseBoxModel>> GetAllCoursesAsync()
     {

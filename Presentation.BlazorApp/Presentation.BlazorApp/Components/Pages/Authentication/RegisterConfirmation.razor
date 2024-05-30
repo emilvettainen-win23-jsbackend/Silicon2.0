@@ -82,7 +82,7 @@
     {
         // try
         // {
-        var result = await Http.PostAsJsonAsync($"{Config["VALIDATE_CODE"]}", new { Email = Email, Code = VerifyForm.Code });
+        var result = await Http.PostAsJsonAsync($"{Config["ValidateCode"]}", new { Email = Email, Code = VerifyForm.Code });
         if (result.IsSuccessStatusCode)
         {
             user.EmailConfirmed = true;

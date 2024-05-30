@@ -18,7 +18,7 @@ public static class ServicesConfiguration
         services.AddSingleton<GraphQLService>();
 
 
-        services.AddSingleton(new ServiceBusClient(configuration.GetConnectionString("ServiceBusConnection")));
+        services.AddSingleton(new ServiceBusClient(configuration.GetValue<string>("ServiceBusConnection")));
         services.AddHttpClient();
 
 

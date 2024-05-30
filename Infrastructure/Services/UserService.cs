@@ -221,7 +221,7 @@ public class UserService
     {
         if (!user.Newsletter && newsletter)
         {
-            var result = await _httpClient.PostAsJsonAsync($"{_config["CREATE_SUBSCRIPTION"]}", new { Email = email });
+            var result = await _httpClient.PostAsJsonAsync($"{_config["CreateSubscription"]}", new { Email = email });
             return result.StatusCode switch
             {
                 System.Net.HttpStatusCode.OK => ResponseFactory.Ok(),
@@ -232,7 +232,7 @@ public class UserService
 
         if (user.Newsletter && !newsletter)
         {
-            var result = await _httpClient.PostAsJsonAsync($"{_config["DELETE_SUBSCRIPTION"]}", new { Email = email });
+            var result = await _httpClient.PostAsJsonAsync($"{_config["DeleteSubscription"]}", new { Email = email });
             return result.StatusCode switch 
             { 
                 System.Net.HttpStatusCode.OK => ResponseFactory.Ok(),

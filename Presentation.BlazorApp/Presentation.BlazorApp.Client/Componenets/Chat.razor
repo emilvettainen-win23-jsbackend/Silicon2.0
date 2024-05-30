@@ -1,7 +1,7 @@
 ﻿@page "/chat"
 <PageTitle>Messages</PageTitle>
 
-
+@inject HttpClient Http
 @rendermode InteractiveAuto
 
 @using Microsoft.AspNetCore.SignalR.Client
@@ -72,7 +72,7 @@
         if (!string.IsNullOrEmpty(currentMessage))
         {
             var message = new ChatMessage { UserName = userName, Message = currentMessage };
-            
+
             await connection!.SendAsync("SendMessageToAll", message.UserName, message.Message, message.Created);
 
             currentMessage = "";
@@ -98,17 +98,35 @@
             userName = "Anonymous";
         }
 
-        connection = new HubConnectionBuilder()
-        .WithUrl(NavigationManager.ToAbsoluteUri("/chathub")).Build();
+        // var response = await Http.PostAsync("https://signalrprovider-silicon-ev-er.azurewebsites.net/api/negotiate?code=iBxDI3a1qyai2XLF0ee2AVYzMLy6p6x_38oqAJg_kxRPAzFuQ6Dcow%3D%3D", null);
+        // if (response.IsSuccessStatusCode)
+        // {
+        //     var connectionInfo = await response.Content.ReadFromJsonAsync<SignalRConnectionInfo>();
+
+        //     connection = new HubConnectionBuilder()
+        //         .WithUrl(connectionInfo.Url, options =>
+        //         {
+        //             options.AccessTokenProvider = () => Task.FromResult(connectionInfo.AccessToken);
+        //         })
+        //         .Build();
 
 
+
+
+
+        // }
+
+        connection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/chathub")).Build();
+
+      
+       
         connection.On<string, string, DateTime>("ReceiveMessage", (fromUser, message, dateTime) =>
-        {
-            var newMessage = new ChatMessage { UserName = fromUser, Message = message, Created = dateTime };
-            messages.Add(newMessage);
+                {
+                    var newMessage = new ChatMessage { UserName = fromUser, Message = message, Created = dateTime };
+                    messages.Add(newMessage);
 
-            InvokeAsync(StateHasChanged);
-        });
+                    InvokeAsync(StateHasChanged);
+                });
 
 
         connection.On<string>("UserTyping", (typingUserName) =>
@@ -130,6 +148,15 @@
 
         await connection.StartAsync();
 
+
+       
+
+    }
+
+     private class SignalRConnectionInfo
+    {
+        public string Url { get; set; }
+        public string AccessToken { get; set; }
     }
 
 }
