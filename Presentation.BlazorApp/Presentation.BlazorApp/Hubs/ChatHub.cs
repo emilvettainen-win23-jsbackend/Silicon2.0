@@ -6,6 +6,7 @@ public class ChatHub : Hub
 {
     public override Task OnConnectedAsync()
     {
+       
         return base.OnConnectedAsync();
     }
 
@@ -24,4 +25,8 @@ public class ChatHub : Hub
         await Clients.All.SendAsync("ReceiveMessage", userName, message, dateTime);
     }
 
+    public async Task Broadcast(string username, string message)
+    {
+        await Clients.All.SendAsync("Broadcast", username, message);
+    }
 }

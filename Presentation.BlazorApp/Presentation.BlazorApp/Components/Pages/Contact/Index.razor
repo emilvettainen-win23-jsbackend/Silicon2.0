@@ -100,7 +100,7 @@
         isBusy = true;
         try
         {
-            var response = await Http.PostAsJsonAsync<ContactModel>($"{Config["CONTACT_PROVIDER"]}", _contact);
+            var response = await Http.PostAsJsonAsync<ContactModel>($"{Config["ContactProvider"]}", _contact);
             switch (response.StatusCode)
             {
                 case System.Net.HttpStatusCode.OK:

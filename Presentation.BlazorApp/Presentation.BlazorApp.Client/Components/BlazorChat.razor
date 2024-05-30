@@ -1,0 +1,267 @@
+﻿
+@rendermode InteractiveAuto
+@inject IJSRuntime JS
+
+@using Microsoft.AspNetCore.SignalR.Client
+@using System.Text.Json.Serialization
+
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+
+
+
+@if (!_isChatting)
+{
+    <div class="start-chat-container">
+        <p>
+            Enter your name to start chatting:
+        </p>
+
+        <input type="text" maxlength="32" @bind="@_username" class="form-control" placeholder="Your name" />
+        <button type="button" class="btn-theme-medium" @onclick="@Chat">Chat</button>
+
+        @if (_message != null)
+        {
+            <div class="invalid-feedback d-block mt-2">@_message</div>
+        }
+    </div>
+}
+else
+{
+    <div class="chat-container">
+        <div class="alert alert-secondary d-flex align-items-center justify-content-between mt-4" role="alert">
+            <span>
+                <span class="oi oi-person mr-2" aria-hidden="true"></span>
+                You are connected as <b>@_username</b>
+            </span>
+            <button class="btn btn-sm btn-warning" @onclick="@DisconnectAsync">Disconnect</button>
+        </div>
+
+        <div id="scrollbox" class="message-box">
+            @foreach (var item in _messages)
+            {
+                @if (item.IsNotice)
+                {
+                    <div class="alert alert-info">@item.Body</div>
+                }
+                else
+                {
+                    <div class="message-bubble @item.CSS">
+                        <div class="user"><b>@item.Username</b></div>
+                        <div class="msg">@item.Body</div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="input-group mt-2">
+            <textarea class="form-control" placeholder="Send a message..." @bind="@_newMessage" ></textarea>
+            <div class="input-group-append">
+                <button class="btn-theme-medium" @onclick="@(() => SendAsync(_newMessage))">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+
+
+
+
+@code {
+    // flag to indicate chat status
+    private bool _isChatting = false;
+
+    // name of the user who will be chatting
+    private string _username;
+
+    // on-screen message
+    private string _message;
+
+    // new message input
+    private string _newMessage;
+
+    // list of messages in chat
+    private List<Message> _messages = new List<Message>();
+
+    private string _hubUrl;
+    private HubConnection _hubConnection;
+
+    private bool isLoading = true;
+
+
+    protected override async void OnInitialized()
+    {
+        await Task.Delay(2000);
+        isLoading = false;
+
+
+        NavigationManager.LocationChanged += OnLocationChanged;
+
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        if (_isChatting)
+        {
+            _ = DisconnectAsync();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_messages.Count > 0)
+        {
+            await ScrollToBottom();
+        }
+    }
+
+    private async Task ScrollToBottom()
+    {
+        await JS.InvokeVoidAsync("scrollToBottom", "scrollbox");
+    }
+
+ 
+
+    public async Task Chat()
+    {
+        // check username is valid
+        if (string.IsNullOrWhiteSpace(_username))
+        {
+            _message = "Please enter a name";
+            return;
+        };
+
+        try
+        {
+            // Start chatting and force refresh UI.
+            _isChatting = true;
+            await Task.Delay(1);
+
+            // remove old messages if any
+            _messages.Clear();
+
+            // Create the chat client
+            // string baseUrl = NavigationManager.BaseUri;
+
+            // _hubUrl = baseUrl.TrimEnd('/') + BlazorChatSampleHub.HubUrl;
+
+            // var response = await Http.PostAsync("https://signalrprovider-silicon-ev-er.azurewebsites.net/api/negotiate?code=iBxDI3a1qyai2XLF0ee2AVYzMLy6p6x_38oqAJg_kxRPAzFuQ6Dcow%3D%3D", null);
+            // if (response.IsSuccessStatusCode)
+            // {
+
+            //     // var responseContent = await response.Content.ReadAsStringAsync();
+            //     // var connectionInfo = JsonConvert.DeserializeObject<SignalRConnectionInfo>(responseContent);
+
+            //     var connectionInfo = await response.Content.ReadFromJsonAsync<SignalRConnectionInfo>();
+
+
+
+            //     _hubConnection = new HubConnectionBuilder()
+            //         .WithUrl(connectionInfo.Url, options =>
+            //         {
+            //             options.AccessTokenProvider = () => Task.FromResult(connectionInfo.AccessToken);
+            //         })
+            //         .Build();
+
+            //     _hubConnection.On<string, string>("Broadcast", BroadcastMessage);
+
+            //     await _hubConnection.StartAsync();
+
+            //     await SendAsync($"[Notice] {_username} joined chat room.");
+
+            // }
+
+
+
+            _hubConnection = new HubConnectionBuilder()
+                .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+                .Build();
+
+
+            _hubConnection.On<string, string>("Broadcast", BroadcastMessage);
+
+            await _hubConnection.StartAsync();
+
+            await SendAsync($"[Notice] {_username} joined chat room.");
+
+        }
+        catch (Exception e)
+        {
+            _message = $"ERROR: Failed to start chat client: {e.Message}";
+            _isChatting = false;
+        }
+    }
+
+    private void BroadcastMessage(string name, string message)
+    {
+        bool isMine = name.Equals(_username, StringComparison.OrdinalIgnoreCase);
+
+        _messages.Add(new Message(name, message, isMine));
+
+        // Inform blazor the UI needs updating
+        InvokeAsync(StateHasChanged);
+    }
+
+    private async Task DisconnectAsync()
+    {
+        if (_isChatting)
+        {
+            await SendAsync($"[Notice] {_username} left chat room.");
+
+            await _hubConnection.StopAsync();
+            await _hubConnection.DisposeAsync();
+
+            _hubConnection = null;
+            _isChatting = false;
+        }
+    }
+
+    private async Task SendAsync(string message)
+    {
+        if (_isChatting && !string.IsNullOrWhiteSpace(message))
+        {
+            await _hubConnection.SendAsync("Broadcast", _username, message);
+
+            _newMessage = string.Empty;
+            await ScrollToBottom();
+        }
+    }
+
+    private class Message
+    {
+        public Message(string username, string body, bool mine)
+        {
+            Username = username;
+            Body = body;
+            Mine = mine;
+        }
+
+        public string Username { get; set; }
+        public string Body { get; set; }
+        public bool Mine { get; set; }
+
+        public bool IsNotice => Body.StartsWith("[Notice]");
+
+        public string CSS => Mine ? "sent" : "received";
+    }
+
+
+    private class SignalRConnectionInfo
+    {
+        public string Url { get; set; }
+        public string AccessToken { get; set; }
+    }
+
+
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+        
+    }
+}

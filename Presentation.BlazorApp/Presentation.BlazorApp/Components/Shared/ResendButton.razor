@@ -14,7 +14,7 @@
     {
         try
         {
-            var result = await Http.PostAsJsonAsync($"{Config["GENERATE_CODE"]}", new { Email = Email });
+            var result = await Http.PostAsJsonAsync($"{Config["GenerateCode"]}", new { Email = Email });
             if (result.IsSuccessStatusCode)
             {
                 //code resent
