@@ -1,8 +1,6 @@
 ﻿@page "/courses/details/"
 @attribute [Microsoft.AspNetCore.Authorization.Authorize]
-@using Presentation.BlazorApp.Components.Layout
-@using Presentation.BlazorApp.GraphQL
-@using Presentation.BlazorApp.Models.Courses
+
 
 <PageTitle>Course Details</PageTitle>
 @inject ILogger<Index> Logger
@@ -29,7 +27,6 @@ else if (isError)
 }
 else if (course != null)
 {
-
     <section class="single-course-header" style="@(GetBackgroundImageStyle(course.CourseImageUrl!))">
         <div class="container">
             <div class="breadcrumbs">
@@ -70,13 +67,10 @@ else if (course != null)
                     <i class="star fas fa-star"></i>
                     <i class="star far fa-star"></i>
                 </div>
-
                 <p>(1.2K reviews)</p>
                 <p><i class="fa-regular fa-thumbs-up"></i>@(course.Rating.InNumbers) K likes</p>
-
                 <p><i class="fa-regular fa-clock"></i>@course.Included.HoursOfVideo hours</p>
             </div>
-
             <div class="course-created">
                 <img src="@(!string.IsNullOrEmpty(course.Author.ProfileImageUrl) ? course.Author.ProfileImageUrl : "/images/courses/user-profile.png")" alt="@course.Author.FullName">
                 <div>
@@ -86,7 +80,6 @@ else if (course != null)
             </div>
         </div>
     </section>
-
     <section class="single-course-description">
         <div class="container grid-12">
             <div class="course-content">
@@ -164,7 +157,6 @@ else if (course != null)
             </aside>
         </div>
     </section>
-
     <section class="single-course-author">
         <div class="container">
             <img class="author-img" src="@(!string.IsNullOrEmpty(course.Author.ProfileImageUrl) ? course.Author.ProfileImageUrl : "/images/courses/user-profile-default.png")" alt="@course.Author.FullName">
@@ -192,7 +184,6 @@ else if (course != null)
             </div>
         </div>
     </section>
-
 }
 else
 {
@@ -206,13 +197,11 @@ else
 @code {
     private bool isLoading;
     private bool isError;
-
     private CourseModel? course;
-
-
 
     [SupplyParameterFromQuery]
     public string? Id { get; set; }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -220,10 +209,7 @@ else
         {
             NavigationManager.NavigateTo("/not-found");
         }
-
         await LoadCourseDetails(Id!);
-
-
     }
 
 
@@ -233,18 +219,16 @@ else
         try
         {
             course = await GraphQLService.GetCourseByIdAsync(id);
-
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
+            Logger.LogError($"ERROR : CourseDetailsIndex.LoadCourseDetails() :: {ex.Message}");
             isError = true;
         }
         finally
         {
             isLoading = false;
         }
-
     }
 
 
@@ -266,6 +250,7 @@ else
             if (result.IsSuccessStatusCode)
             {
                 ToastService.ShowToast("An email with confirmation was sent", ToastLevel.Success);
+                return;
             }
         }
         catch (Exception ex)
