@@ -1,15 +1,11 @@
 ﻿using Azure.Messaging.ServiceBus;
-using Azure.Messaging.ServiceBus.Administration;
-using Infrastructure.Data.Contexts;
 using Infrastructure.Data.Entities;
 using Infrastructure.Dtos.User;
 using Infrastructure.Factories;
 using Infrastructure.Helpers.Responses;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -137,10 +133,9 @@ public class UserService
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex.Message);
+            _logger.LogError($"ERROR : UserService.PopulateBaseInfoAsync() :: {ex.Message}");
             return null!;
         }
-
     }
 
     public async Task<bool> VerifyCurrentPasswordAsync(string userId, string currentPassword)
@@ -152,14 +147,11 @@ public class UserService
             {
                 var result = await _userManager.CheckPasswordAsync(user, currentPassword);
                 return result;
-
             }
-
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
-
+            _logger.LogError($"ERROR : UserService.VerifyCurrentPasswordAsync() :: {ex.Message}");
         }
         return false;
     }
@@ -176,11 +168,10 @@ public class UserService
 
             var updatePassword = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
             return updatePassword.Succeeded ? ResponseFactory.Ok() : ResponseFactory.Error();
-
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
+            _logger.LogError($"ERROR : UserService.UpdatePasswordAsync() :: {ex.Message}");
             return ResponseFactory.ServerError();
         }
     }
@@ -250,15 +241,12 @@ public class UserService
             var sender = _serviceBusClient.CreateSender("verification_request");
             await sender.SendMessageAsync(new ServiceBusMessage(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new { Email = email }))));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
-            throw;
+            _logger.LogError($"ERROR : UserService.VerificationRequest() :: {ex.Message}");
         }
     }
 
-
-   
 
     public async Task<bool> UpdateProfileImageAsync(string filePath)
     {
@@ -273,19 +261,15 @@ public class UserService
                 return updateResult.Succeeded;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
-            
+            _logger.LogError($"ERROR : UserService.UpdateProfileImageAsync() :: {ex.Message}");
         }
         return false;
-
     }
 
     public async Task SignOutAsync()
     {
         await _signInManager.SignOutAsync();
     }
-
-
 }

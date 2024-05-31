@@ -2,35 +2,22 @@
 @using System.Text.Json
 
 
-
 <InputFile id="uploadFile" OnChange="OnInputFileChange" accept="image/*" hidden />
 <label for="uploadFile" class="fa-regular fa-arrows-rotate-reverse change-user-img"><span class="tooltiptext">Change picture</span></label>
 
 @code {
 
-
-
-
-
-
-
-
     private async Task OnInputFileChange(InputFileChangeEventArgs e)
     {
-
-
-
         if (e.File != null)
         {
             var formData = new MultipartFormDataContent();
             formData.Headers.ContentType!.MediaType = "multipart/form-data";
-
-
             formData.Add(new StreamContent(e.File.OpenReadStream(10*1024*1204)), "file", e.File.Name);
 
             try
             {
-                var response = await Http.PostAsync($"{Config["FILE_PROVIDER"]}&containerName={"profiles"}", formData);
+                var response = await Http.PostAsync($"{Config["FileProvider"]}&containerName={"profiles"}", formData);
                 if (response.IsSuccessStatusCode)
                 {
                     var responseString = await response.Content.ReadAsStringAsync();
@@ -47,36 +34,16 @@
                         {
                             NavigationManager.Refresh();
                             ToastService.ShowToast("Profile Image was updated", ToastLevel.Success);
+                            return;
                         }
                     }
-
-
-
-
-
                 }
-
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                Console.WriteLine(ex.Message);
             }
-            //message
-
-
-
-            
-
-
+            ToastService.ShowToast("Our server is having a bad day. We're on it! Please try again later!", ToastLevel.Error);
         }
-
-
-        
-
-
-
-
-
     }
 }

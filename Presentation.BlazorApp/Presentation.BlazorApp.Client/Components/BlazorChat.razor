@@ -73,33 +73,18 @@ else
 
 
 @code {
-    // flag to indicate chat status
     private bool _isChatting = false;
-
-    // name of the user who will be chatting
-    private string _username;
-
-    // on-screen message
-    private string _message;
-
-    // new message input
-    private string _newMessage;
-
-    // list of messages in chat
+    private string? _username;
+    private string? _message;
+    private string? _newMessage;
     private List<Message> _messages = new List<Message>();
+    private string? _hubUrl;
+    private HubConnection? _hubConnection;
 
-    private string _hubUrl;
-    private HubConnection _hubConnection;
+   
 
-    private bool isLoading = true;
-
-
-    protected override async void OnInitialized()
+    protected override void OnInitialized()
     {
-        await Task.Delay(2000);
-        isLoading = false;
-
-
         NavigationManager.LocationChanged += OnLocationChanged;
 
     }
@@ -138,45 +123,9 @@ else
 
         try
         {
-            // Start chatting and force refresh UI.
             _isChatting = true;
             await Task.Delay(1);
-
-            // remove old messages if any
             _messages.Clear();
-
-            // Create the chat client
-            // string baseUrl = NavigationManager.BaseUri;
-
-            // _hubUrl = baseUrl.TrimEnd('/') + BlazorChatSampleHub.HubUrl;
-
-            // var response = await Http.PostAsync("https://signalrprovider-silicon-ev-er.azurewebsites.net/api/negotiate?code=iBxDI3a1qyai2XLF0ee2AVYzMLy6p6x_38oqAJg_kxRPAzFuQ6Dcow%3D%3D", null);
-            // if (response.IsSuccessStatusCode)
-            // {
-
-            //     // var responseContent = await response.Content.ReadAsStringAsync();
-            //     // var connectionInfo = JsonConvert.DeserializeObject<SignalRConnectionInfo>(responseContent);
-
-            //     var connectionInfo = await response.Content.ReadFromJsonAsync<SignalRConnectionInfo>();
-
-
-
-            //     _hubConnection = new HubConnectionBuilder()
-            //         .WithUrl(connectionInfo.Url, options =>
-            //         {
-            //             options.AccessTokenProvider = () => Task.FromResult(connectionInfo.AccessToken);
-            //         })
-            //         .Build();
-
-            //     _hubConnection.On<string, string>("Broadcast", BroadcastMessage);
-
-            //     await _hubConnection.StartAsync();
-
-            //     await SendAsync($"[Notice] {_username} joined chat room.");
-
-            // }
-
-
 
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
@@ -203,7 +152,6 @@ else
 
         _messages.Add(new Message(name, message, isMine));
 
-        // Inform blazor the UI needs updating
         InvokeAsync(StateHasChanged);
     }
 
@@ -213,10 +161,10 @@ else
         {
             await SendAsync($"[Notice] {_username} left chat room.");
 
-            await _hubConnection.StopAsync();
+            await _hubConnection!.StopAsync();
             await _hubConnection.DisposeAsync();
 
-            _hubConnection = null;
+            _hubConnection = null!;
             _isChatting = false;
         }
     }
@@ -225,7 +173,7 @@ else
     {
         if (_isChatting && !string.IsNullOrWhiteSpace(message))
         {
-            await _hubConnection.SendAsync("Broadcast", _username, message);
+            await _hubConnection!.SendAsync("Broadcast", _username, message);
 
             _newMessage = string.Empty;
             await ScrollToBottom();
@@ -251,11 +199,6 @@ else
     }
 
 
-    private class SignalRConnectionInfo
-    {
-        public string Url { get; set; }
-        public string AccessToken { get; set; }
-    }
 
 
 

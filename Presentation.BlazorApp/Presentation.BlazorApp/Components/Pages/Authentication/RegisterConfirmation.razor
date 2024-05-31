@@ -3,10 +3,9 @@
 
 @inject ILogger<RegisterConfirmation> Logger
 
-@inject IServiceScopeFactory ScopeFactory
+@rendermode InteractiveServer
 
 <Toast />
-
 <section id="confirmation">
     <div class="container">
         <EditForm Model="VerifyForm" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="VerifyAsync" FormName="RegisterConfirmation" Enhance novalidate>
@@ -53,8 +52,8 @@
     private string? ReturnUrl { get; set; }
 
 
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
+    // [CascadingParameter]
+    // private HttpContext HttpContext { get; set; } = default!;
 
 
     [SupplyParameterFromForm]
@@ -90,10 +89,14 @@
             if (updateResult.Succeeded)
             {
 
-                await SignInManager.SignInAsync(user, false);
-                StateHasChanged();
+                // await SignInManager.SignInAsync(user, false);
+                // StateHasChanged();
+                ToastService.ShowToast("Account was verified. You may now proceed to sign in.", ToastLevel.Success);
+                VerifyForm = new();
 
-                NavigationManager.NavigateTo("/account/details");
+                // NavigationManager.NavigateTo("/account/signin?message=succeeded");
+                
+
                     // Alert = new AlertModel { Message = "Account verified successfully. You may now proceed to sign in.", Icon = "success" };
                     // VerifyForm = new();
                     return;

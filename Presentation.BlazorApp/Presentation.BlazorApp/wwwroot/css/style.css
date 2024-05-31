@@ -442,7 +442,12 @@ h1:focus {
   width: 25rem;
   top: 1rem;
   border-radius: 1rem;
-  right: 2rem;
+  right: 1rem;
+}
+@media (min-width: 576px) {
+  .cs-toast {
+    right: 2rem;
+  }
 }
 
 .cs-toast-icon {

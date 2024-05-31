@@ -1,4 +1,4 @@
-﻿<p>Didn´t receive an email? <button class="btn-resend" @onclick="ResendCodeAsync">Resend email</button></p>
+﻿<p>Didn´t receive an email? <button type="button" class="btn-resend" @onclick="ResendCodeAsync">Resend email</button></p>
 
 @code {
 
@@ -17,17 +17,16 @@
             var result = await Http.PostAsJsonAsync($"{Config["GenerateCode"]}", new { Email = Email });
             if (result.IsSuccessStatusCode)
             {
-                //code resent
+                ToastService.ShowToast("New code was sent", ToastLevel.Success);
             }
             else
             {
-                //try again
+                ToastService.ShowToast("An error occurred. Please try again later!", ToastLevel.Error);
             }
         }
         catch (Exception)
         {
-            //contact support
-            throw;
+            ToastService.ShowToast("Our server is having a bad day. We're on it! Please try again later!", ToastLevel.Error);
         }
 
     }

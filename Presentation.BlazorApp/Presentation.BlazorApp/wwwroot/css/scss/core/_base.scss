@@ -285,7 +285,11 @@ h1:focus {
     width: 25rem;
     top: 1rem;
     border-radius: 1rem;
-    right: 2rem;
+    right: 1rem;
+
+    @include sm {
+        right: 2rem;
+    }
 }
 
 .cs-toast-icon {

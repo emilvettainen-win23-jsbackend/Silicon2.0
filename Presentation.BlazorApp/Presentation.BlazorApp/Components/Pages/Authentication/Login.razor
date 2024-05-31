@@ -5,6 +5,8 @@
 @inject ILogger<Login> Logger
 
 
+
+
 <Toast />
 <section id="signin">
     <div class="container">
@@ -58,6 +60,10 @@
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
+    [SupplyParameterFromQuery]
+    private string? Message { get; set; }
+
+
     [SupplyParameterFromForm]
     private SignInModel SignInForm { get; set; } = new();
 
@@ -68,7 +74,16 @@
         {
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
         }
+
+        if (Message != null && Message.Equals("succeeded", StringComparison.OrdinalIgnoreCase))
+        {
+            ToastService.ShowToast("Account verified successfully", ToastLevel.Success);
+        }
+
     }
+
+ 
+    
 
 
     private async Task SignInAsync()

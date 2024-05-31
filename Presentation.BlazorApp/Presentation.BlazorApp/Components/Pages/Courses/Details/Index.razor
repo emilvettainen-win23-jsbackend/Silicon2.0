@@ -246,7 +246,7 @@ else
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var currentUser = authState.User;
             var user = await UserService.GetCurrentUserAsync();
-            var result = await Http.PostAsJsonAsync($"{Config["PRODUCT_PROVIDER"]}", new { Firstname = user.FirstName , UserId = user.Id, Email = user.Email , CourseId = course!.Id, CourseTitle = course.CourseTitle, AuthorName = course.Author.FullName });
+            var result = await Http.PostAsJsonAsync($"{Config["ProductProvider"]}", new { Firstname = user.FirstName , UserId = user.Id, Email = user.Email , CourseId = course!.Id, CourseTitle = course.CourseTitle, AuthorName = course.Author.FullName });
             if (result.IsSuccessStatusCode)
             {
                 ToastService.ShowToast("An email with confirmation was sent", ToastLevel.Success);
