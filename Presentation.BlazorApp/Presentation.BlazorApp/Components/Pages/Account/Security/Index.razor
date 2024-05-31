@@ -33,7 +33,7 @@
                     <EditForm FormName="delete" method="post" Model="DeleteAccountForm" OnValidSubmit="DeleteAccountAsync" novalidate>
                         <DataAnnotationsValidator />
                         <div class="content">
-                            <p class="text-m">When you delete your account, your public profile will be deactivated immediately. If you change your mind before the 14 days are up, sign in with your email and password, and we’ll send you a link to reactivate your account.</p>
+                            <p class="text-m">When you delete your account, your public profile will be deactivated immediately. This can´t be undone!</p>
                             <div id="form-delete" class="checkbox-group">
                                 <InputCheckbox id="delete-account" @bind-Value="DeleteAccountForm.DeleteAccount" class="form-check-input" />
                                 <label for="delete-account">Yes, I want to delete my account</label>
@@ -75,14 +75,17 @@
     private async Task DeleteAccountAsync()
     {
         var currentUser = await UserManager.FindByIdAsync(user.Id);
-        currentUser!.EmailConfirmed = false;
-        var result = await UserManager.UpdateAsync(currentUser!);
-        if (result.Succeeded)
+        if (currentUser != null)
         {
-            await SignInManager.SignOutAsync();
-            NavigationManager.NavigateTo("/");
+            var deleteResult = await UserManager.DeleteAsync(currentUser);
+            if (deleteResult.Succeeded)
+            {
+                await SignInManager.SignOutAsync();
+                NavigationManager.NavigateTo("/");
+                return;
+            }
+            ToastService.ShowToast("Our server is having a bad day. We're on it! Please try again later!", ToastLevel.Error);
         }
-
     }
 
 
