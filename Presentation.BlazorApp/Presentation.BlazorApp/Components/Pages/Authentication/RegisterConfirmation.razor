@@ -52,10 +52,6 @@
     private string? ReturnUrl { get; set; }
 
 
-    // [CascadingParameter]
-    // private HttpContext HttpContext { get; set; } = default!;
-
-
     [SupplyParameterFromForm]
     private VerifyRegistrationModel VerifyForm { get; set; } = new();
 
@@ -79,66 +75,38 @@
 
     private async Task VerifyAsync()
     {
-        // try
-        // {
-        var result = await Http.PostAsJsonAsync($"{Config["ValidateCode"]}", new { Email = Email, Code = VerifyForm.Code });
-        if (result.IsSuccessStatusCode)
+        try
         {
-            user.EmailConfirmed = true;
-            var updateResult = await UserManager.UpdateAsync(user);
-            if (updateResult.Succeeded)
+            var result = await Http.PostAsJsonAsync($"{Config["ValidateCode"]}", new { Email = Email, Code = VerifyForm.Code });
+            if (result.IsSuccessStatusCode)
             {
-
-                // await SignInManager.SignInAsync(user, false);
-                // StateHasChanged();
-                ToastService.ShowToast("Account was verified. You may now proceed to sign in.", ToastLevel.Success);
-                VerifyForm = new();
-
-                // NavigationManager.NavigateTo("/account/signin?message=succeeded");
-                
-
-                    // Alert = new AlertModel { Message = "Account verified successfully. You may now proceed to sign in.", Icon = "success" };
-                    // VerifyForm = new();
+                user.EmailConfirmed = true;
+                var updateResult = await UserManager.UpdateAsync(user);
+                if (updateResult.Succeeded)
+                {
+                    ToastService.ShowToast("Account was verified. You may now proceed to sign in.", ToastLevel.Success);
+                    VerifyForm = new();
                     return;
                 }
             }
             else
             {
-                ToastService.ShowToast("That code didn’t do the trick. Let's give it another shot.", ToastLevel.Error); 
+                ToastService.ShowToast("That code didn’t do the trick. Let's give it another shot.", ToastLevel.Error);
                 VerifyForm = new();
                 return;
             }
-        // }
-        // catch (Exception ex)
-        // {
-        //     Logger.LogError($"ERROR : Register.SignUpAsync() :: {ex.Message}");
-        // }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"ERROR : RegisterConfirmation.VerifyAsync() :: {ex.Message}");
+        }
         ToastService.ShowToast("Our server is having a bad day. We're on it! Please try again later!", ToastLevel.Error);
         VerifyForm = new();
+        
     }
 
 
-    // private async Task ResendCodeAsync()
-    // {
-    //     try
-    //     {
-    //         var result = await Http.PostAsJsonAsync($"{Config["URI:GenerateCode"]}", new { Email = Email });
-    //         if (result.IsSuccessStatusCode)
-    //         {
-    //             //code resent
-    //         }
-    //         else
-    //         {
-    //             //try again
-    //         }
-    //     }
-    //     catch (Exception)
-    //     {
-    //         //contact support
-    //         throw;
-    //     }
-
-    // }
+    
 
     private sealed class VerifyRegistrationModel
     {

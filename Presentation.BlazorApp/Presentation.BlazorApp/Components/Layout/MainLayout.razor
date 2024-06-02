@@ -1,13 +1,20 @@
 ﻿@inherits LayoutComponentBase
 
 
+
 <div class="wrapper">
     <Header />
-        <main>
-            @Body
-        </main>
+    <main>
+        @Body
+    </main>
     <Footer />
+
 </div>
+
+<CookieConsent />
+
+
+
 
 
 <div id="blazor-error-ui">
@@ -15,65 +22,3 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
-
-
-@* @if (ShowCookies)
-{
-    <div id="cookie-consent" class="cookie-consent fixed-bottom">
-        <div class="container">
-            <h6>We´re using cookies! Mummms.</h6>
-            <EditForm FormName="cookie" method="post" Model="HiddenForm" novalidate OnValidSubmit="AcceptCookies">
-                <InputText hidden @bind-Value="HiddenForm!.HiddenInput" />
-                <button class="btn-theme-medium" type="submit">Ok</button>
-            </EditForm>
-        </div>
-    </div>
-}
-
-
-@code {
-    private bool ShowCookies;
-
-    [SupplyParameterFromForm(FormName ="cookie")]
-    private HiddenModel? HiddenForm { get; set; }
-
-
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
-
-    protected override async Task OnInitializedAsync()
-    {
-        
-
-        @if (HttpContext.Request.Cookies["CookieConsent"] == null)
-        {
-           
-            ShowCookies = true;
-            HiddenForm ??= new();
-        }
-    }
-
-
-    private void AcceptCookies(EditContext editContext)
-    {
-        var option = new CookieOptions
-        {
-            Expires = DateTime.Now.AddYears(1),
-            HttpOnly = true,
-            Secure = true,
-        };
-      
-        
-           HttpContext.Response.Cookies.Append("CookieConsent", "true", option);
-        
-
-        StateHasChanged();
-    }
-
-    private sealed class HiddenModel
-    {
-        public string? HiddenInput;
-    }
-
-    
-} *@

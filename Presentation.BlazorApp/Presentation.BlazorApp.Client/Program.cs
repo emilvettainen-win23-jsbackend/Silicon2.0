@@ -8,7 +8,7 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 
-builder.Services.AddHttpClient();
+
 
 
 await builder.Build().RunAsync();

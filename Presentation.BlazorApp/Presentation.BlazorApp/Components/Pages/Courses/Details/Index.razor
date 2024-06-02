@@ -153,7 +153,18 @@ else if (course != null)
                         <h2>$@course.Price.OriginalPrice.ToString("F2")</h2>
                     </div>
                 }
-                <button @onclick="JoinCourseConfirmAsync" class="btn-theme-large" href="#">Join course</button>
+                @* <button @onclick="JoinCourseConfirmAsync" class="btn-theme-large" href="#">Join course</button> *@
+
+                <button disabled="@isBusy" @onclick="JoinCourseConfirmAsync" class="btn-theme-large">
+                    @if (isBusy)
+                    {
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    }
+                    <span>Join course</span>
+                </button>
+
             </aside>
         </div>
     </section>
@@ -195,6 +206,7 @@ else
 
 
 @code {
+    private bool isBusy;
     private bool isLoading;
     private bool isError;
     private CourseModel? course;
@@ -241,6 +253,7 @@ else
 
     private async Task JoinCourseConfirmAsync()
     {
+        isBusy = true;
         try
         {
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -250,6 +263,7 @@ else
             if (result.IsSuccessStatusCode)
             {
                 ToastService.ShowToast("An email with confirmation was sent", ToastLevel.Success);
+                isBusy = false;
                 return;
             }
         }
@@ -258,6 +272,7 @@ else
             Logger.LogError($"ERROR : CourseDetailsIndex.JoinCourseConfirmAsync() :: {ex.Message}");
         }
         ToastService.ShowToast("Our server is having a bad day. We're on it! Please try again later!", ToastLevel.Error);
+        isBusy = false;
     }
 
     
