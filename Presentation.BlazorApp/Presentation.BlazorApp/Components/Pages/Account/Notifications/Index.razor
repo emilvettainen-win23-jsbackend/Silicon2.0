@@ -77,7 +77,7 @@
         try
         {
             IsBusy = true;
-            var result = await UserService.HandleNotificationsFormAsync(user.Id!, NotifyForm.Email!, NotifyForm.Newsletter, NotifyForm.DarkMode);
+            var result = await UserService.HandleNotificationsFormAsync(user.Id!, NotifyForm.Email, NotifyForm.Newsletter, NotifyForm.DarkMode);
             switch (result.StatusCode)
             {
                 case ResultStatus.OK:

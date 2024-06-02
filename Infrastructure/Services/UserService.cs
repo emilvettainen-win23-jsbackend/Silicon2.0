@@ -15,28 +15,17 @@ using System.Text;
 
 namespace Infrastructure.Services;
 
-public class UserService
+public class UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<UserService> logger, ServiceBusClient serviceBusClient, AuthenticationStateProvider authenticationStateProvider, HttpClient httpClient, IConfiguration config)
 {
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly ILogger<UserService> _logger;
-    private readonly ServiceBusClient _serviceBusClient;
-    private readonly HttpClient _httpClient;
-    private readonly IConfiguration _config;
+    private readonly UserManager<ApplicationUser> _userManager = userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
+    private readonly ILogger<UserService> _logger = logger;
+    private readonly ServiceBusClient _serviceBusClient = serviceBusClient;
+    private readonly HttpClient _httpClient = httpClient;
+    private readonly IConfiguration _config = config;
    
   
-    private readonly AuthenticationStateProvider _authenticationStateProvider;
-
-    public UserService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<UserService> logger, ServiceBusClient serviceBusClient, AuthenticationStateProvider authenticationStateProvider, HttpClient httpClient, IConfiguration config)
-    {
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _logger = logger;
-        _serviceBusClient = serviceBusClient;
-        _authenticationStateProvider = authenticationStateProvider;
-        _httpClient = httpClient;
-        _config = config;
-    }
+    private readonly AuthenticationStateProvider _authenticationStateProvider = authenticationStateProvider;
 
     public async Task<UserDto> GetCurrentUserAsync()
     {
@@ -47,11 +36,8 @@ public class UserService
         {
             return new UserDto();
         }
-
         var currentUser = await _userManager.GetUserAsync(user);
         return UserFactory.GetUser(currentUser!) ?? new UserDto();
-       
-        
     }
 
     public async Task<bool> GetDarkModeSettingAsync()
@@ -65,7 +51,6 @@ public class UserService
     {
         try
         {
-            
             var userExists = await _userManager.Users.AnyAsync(x => x.Email == user.Email);
             if (userExists)
             {
@@ -177,26 +162,23 @@ public class UserService
     }
 
 
-    public async Task<ResponseResult> HandleNotificationsFormAsync(string userId, string email, bool newsletter, bool darkMode)
+    public async Task<ResponseResult> HandleNotificationsFormAsync(string userId, string? email, bool newsletter, bool darkMode)
     {
         
         var user = await _userManager.FindByIdAsync(userId);
         if (user != null)
         {
-            if (!string.IsNullOrEmpty(email))
+            var newsResult = await HandleNewsletterAsync(user, newsletter, email!);
+            switch (newsResult.StatusCode)
             {
-                var newsResult = await HandleNewsletterAsync(user, newsletter, email);
-                switch (newsResult.StatusCode)
-                {
-                    case ResultStatus.OK:
-                        break;
+                case ResultStatus.OK:
+                    break;
 
-                    case ResultStatus.EXISTS:
-                        return ResponseFactory.Exists("An subscription is already exists with the given email");
+                case ResultStatus.EXISTS:
+                    return ResponseFactory.Exists("An subscription is already exists with the given email");
 
-                    default:
-                        return ResponseFactory.Error("An error occurred. Your changes could not be saved. Please contact support!");
-                }
+                default:
+                    return ResponseFactory.Error("An error occurred. Your changes could not be saved. Please contact support!");
             }
 
             user.DarkMode = darkMode;
@@ -223,7 +205,7 @@ public class UserService
 
         if (user.Newsletter && !newsletter)
         {
-            var result = await _httpClient.PostAsJsonAsync($"{_config["DeleteSubscription"]}", new { Email = email });
+            var result = await _httpClient.PostAsJsonAsync($"{_config["DeleteSubscription"]}", new { Email = user.NewsletterEmail });
             return result.StatusCode switch 
             { 
                 System.Net.HttpStatusCode.OK => ResponseFactory.Ok(),
